@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+
+html, body {
+    font-family: "Poppins", sans-serif;
+}
+
+/* h1 {
+    font-family: "Jost", sans-serif;
+} */
+
+/* * {
+  outline: 1px solid red !important;
+} */
+
