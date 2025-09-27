@@ -2,7 +2,6 @@ package com.vtcweb.backend.util;
 
 import com.vtcweb.backend.model.entity.category.Category;
 import com.vtcweb.backend.model.entity.product.Product;
-import com.vtcweb.backend.model.entity.product.ProductImage;
 
 import java.util.Collections;
 import java.util.List;
