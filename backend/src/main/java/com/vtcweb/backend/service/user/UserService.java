@@ -17,7 +17,7 @@ public class UserService
         this.userRepository = userRepository;
     }
 
-    // CREATE - Register new user
+    //Registering new user
     public User createUser(User user)
     {
         if (userRepository.existsByEmail(user.getEmail()))
@@ -27,32 +27,32 @@ public class UserService
         return userRepository.save(user);
     }
 
-    // READ - Get all users
+    //Getting all available users
     public List<User> getAllUsers()
     {
         return userRepository.findAll();
     }
 
-    // READ - Get user by ID
+    //Getting relevant user by ID
     public User getUserById(Long id)
     {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
-    // READ - Get user by email
+    //Getting relevant user by email
     public User getUserByEmail(String email)
     {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
-    // UPDATE - Update user profile
+    //Updating the relevant user profile
     public User updateUser(Long id, User userDetails)
     {
         User user = getUserById(id);
 
-        // Check if email is being changed and if it already exists
+        //Checking whether the email is being changed and if the email already exists
         if (!user.getEmail().equals(userDetails.getEmail()) &&
                 userRepository.existsByEmail(userDetails.getEmail()))
         {
@@ -64,7 +64,7 @@ public class UserService
         user.setEmail(userDetails.getEmail());
         user.setRole(userDetails.getRole());
 
-        // Only update password if provided
+        //Updating the details if the password is provided only
         if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty())
         {
             user.setPassword(userDetails.getPassword());
@@ -73,14 +73,14 @@ public class UserService
         return userRepository.save(user);
     }
 
-    // DELETE - Delete user
+    //Deleting the user
     public void deleteUser(Long id)
     {
         User user = getUserById(id);
         userRepository.delete(user);
     }
 
-    // Simple validation
+    //Validating the email and password
     public boolean validateUser(String email, String password)
     {
         Optional<User> user = userRepository.findByEmail(email);
