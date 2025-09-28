@@ -1,6 +1,6 @@
-package com.vtcweb.backend.repository.user
+package com.vtcweb.backend.repository.user;
 
-import com.vidaratradecenter.vtcecommerce.model.User;
+import com.vtcweb.backend.model.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
