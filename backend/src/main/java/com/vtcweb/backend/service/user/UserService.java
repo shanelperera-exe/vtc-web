@@ -2,6 +2,8 @@ package com.vtcweb.backend.service.user;
 
 import com.vtcweb.backend.model.entity.user.User;
 import com.vtcweb.backend.repository.user.UserRepository;
+import com.vtcweb.backend.exception.NotFoundException;
+import com.vtcweb.backend.exception.ConflictException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,7 @@ public class UserService
     {
         if (userRepository.existsByEmail(user.getEmail()))
         {
-            throw new RuntimeException("Email already exists: " + user.getEmail());
+            throw new ConflictException("Email already exists: " + user.getEmail());
         }
         return userRepository.save(user);
     }
@@ -37,14 +39,14 @@ public class UserService
     public User getUserById(Long id)
     {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
     }
 
     //Getting relevant user by email
     public User getUserByEmail(String email)
     {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+                .orElseThrow(() -> new NotFoundException("User not found with email: " + email));
     }
 
     //Updating the relevant user profile
@@ -56,7 +58,7 @@ public class UserService
         if (!user.getEmail().equals(userDetails.getEmail()) &&
                 userRepository.existsByEmail(userDetails.getEmail()))
         {
-            throw new RuntimeException("Email already exists: " + userDetails.getEmail());
+            throw new ConflictException("Email already exists: " + userDetails.getEmail());
         }
 
         user.setFirstName(userDetails.getFirstName());
