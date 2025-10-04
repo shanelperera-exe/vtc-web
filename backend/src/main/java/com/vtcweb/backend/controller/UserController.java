@@ -3,137 +3,92 @@ package com.vtcweb.backend.controller;
 import com.vtcweb.backend.model.entity.user.User;
 import com.vtcweb.backend.service.user.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/users")
-// Dependency Injection
-public class UserController
-{
+public class UserController {
+
     private final UserService userService;
 
-    public UserController(UserService userService)
-    {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    //Registering new user
+    // Registering new user
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody User user)
-    {
-        try
-        {
-            User createdUser = userService.createUser(user);
-            return ResponseEntity.ok(createdUser);
-        } catch (RuntimeException e)
-        {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    public ResponseEntity<User> registerUser(@Valid @RequestBody User user) {
+        User createdUser = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    //Getting the details of all the users
+    // Getting details of all users
     @GetMapping
-    public List<User> getAllUsers()
-    {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
-    //Getting the relevant details of user by ID
+    // Getting user by ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id)
-    {
-        try
-        {
-            User user = userService.getUserById(id);
-            return ResponseEntity.ok(user);
-        } catch (RuntimeException e)
-        {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
     }
 
-    //Updating the user details
+    // Updating the user details
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails)
-    {
-        try
-        {
-            User updatedUser = userService.updateUser(id, userDetails);
-            return ResponseEntity.ok(updatedUser);
-        } catch (RuntimeException e)
-        {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails) {
+        User updatedUser = userService.updateUser(id, userDetails);
+        return ResponseEntity.ok(updatedUser);
     }
 
-    //Deleting the user
+    // Deleting the user
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id)
-    {
-        try
-        {
-            userService.deleteUser(id);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "User deleted successfully");
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e)
-        {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok(Map.of("message", "User deleted successfully"));
     }
 
-    //Login
+    // Login
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> loginRequest)
-    {
-        try
-        {
-            String email = loginRequest.get("email");
-            String password = loginRequest.get("password");
+    public ResponseEntity<Map<String, Object>> loginUser(@RequestBody Map<String, String> loginRequest) {
+        String email = loginRequest.get("email");
+        String password = loginRequest.get("password");
 
-            boolean isValid = userService.validateUser(email, password);
+        boolean isValid = userService.validateUser(email, password);
 
-            if (isValid)
-            {
-                User user = userService.getUserByEmail(email);
-                Map<String, Object> response = new HashMap<>();
-                response.put("message", "Login successful");
-                response.put("user", user);
-                return ResponseEntity.ok(response);
-            } else
-            {
-                Map<String, String> response = new HashMap<>();
-                response.put("error", "Invalid email or password");
-                return ResponseEntity.badRequest().body(response);
-            }
-        } catch (RuntimeException e)
-        {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
+        if (isValid) {
+            User user = userService.getUserByEmail(email);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Login successful",
+                    "user", user
+            ));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid email or password"));
         }
     }
 
-    //Health checkpoint
+    // Getting users by role - Admin privileges
+    @GetMapping("/role/{role}")
+    public ResponseEntity<List<User>> getUsersByRole(@PathVariable String role) {
+        List<User> users = userService.getUsersByRole(role);
+        return ResponseEntity.ok(users);
+    }
+
+    // Health check of the backend
     @GetMapping("/health")
-    public Map<String, String> healthCheck()
-    {
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "OK");
-        response.put("message", "User Management API is running");
-        return response;
+    public Map<String, String> healthCheck() {
+        return Map.of(
+                "status", "OK",
+                "message", "User Management API is running"
+        );
     }
 }
