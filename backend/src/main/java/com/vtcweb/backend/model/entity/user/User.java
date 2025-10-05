@@ -28,7 +28,7 @@ public class User {
 
     //Password Field
     @NotBlank(message = "Password is required")
-    @Size(max = 120, message = "Password must be less than 120 characters")
+    @Size(min = 6, max = 120, message = "Password must be between 6 and 120 characters")
     private String password;
 
     //Name Field - First Name
@@ -41,5 +41,8 @@ public class User {
     @Size(max = 50, message = "Last name must be less than 50 characters")
     private String lastName;
 
-    private String role = "CUSTOMER";
+    @Enumerated(EnumType.STRING)
+    private UserRole role = UserRole.CUSTOMER;
+
+    private boolean enabled = true;
 }
