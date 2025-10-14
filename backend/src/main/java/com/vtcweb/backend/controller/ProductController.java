@@ -1,6 +1,9 @@
 package com.vtcweb.backend.controller;
 
+import com.vtcweb.backend.dto.product.CreateProductFullRequest;
+import com.vtcweb.backend.dto.product.CreateProductRequest;
 import com.vtcweb.backend.dto.product.ProductDTO;
+import com.vtcweb.backend.dto.product.UpdateProductRequest;
 import com.vtcweb.backend.model.entity.product.Product;
 import com.vtcweb.backend.service.product.ProductService;
 import com.vtcweb.backend.util.Mapper;

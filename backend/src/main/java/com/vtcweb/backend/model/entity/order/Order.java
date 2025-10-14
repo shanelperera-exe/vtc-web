@@ -40,7 +40,6 @@ public class Order {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime placedAt; // creation timestamp
-
     private LocalDateTime processingStartedAt;
     private LocalDateTime shippedAt;
     private LocalDateTime deliveredAt;
