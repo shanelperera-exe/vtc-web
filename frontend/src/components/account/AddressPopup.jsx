@@ -1,7 +1,7 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const AddressPopup = ({ isOpen = true, onClose, children }) => {
+const AddressPopup = ({ isOpen = true, onClose, children, maxWidthClass = 'max-w-lg' }) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -18,7 +18,7 @@ const AddressPopup = ({ isOpen = true, onClose, children }) => {
             exit={{ scale: 0.95, rotate: "0deg" }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-lg h-auto overflow-hidden shadow-2xl cursor-default border-2 border-neutral-950 bg-white"
+            className={`relative w-full ${maxWidthClass} h-auto max-h-[90vh] overflow-hidden cursor-default border-2 border-neutral-950 bg-white`}
           >
             <button
               onClick={onClose}
@@ -39,7 +39,8 @@ const AddressPopup = ({ isOpen = true, onClose, children }) => {
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
             </button>
-            <div className="relative z-10 p-6">{children}</div>
+            {/* content area scrolls if taller than the popup max height */}
+            <div className="relative z-10 p-6 overflow-auto max-h-[calc(90vh-3rem)]">{children}</div>
           </motion.div>
         </motion.div>
       )}
