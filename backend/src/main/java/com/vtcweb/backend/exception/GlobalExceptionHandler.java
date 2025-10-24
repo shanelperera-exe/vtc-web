@@ -42,6 +42,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return build(HttpStatus.CONFLICT, ex.getMessage(), request.getRequestURI());
     }
 
+    @ExceptionHandler(OutOfStockException.class)
+    public ResponseEntity<ApiError> handleOutOfStock(OutOfStockException ex, HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, ex.getMessage(), request.getRequestURI());
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request) {
         log.debug("Data integrity violation at {}: {}", request.getRequestURI(), ex.getMostSpecificCause().getMessage());
@@ -52,7 +57,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
         String param = ex.getName();
         String value = ex.getValue() == null ? "null" : String.valueOf(ex.getValue());
-        String expected = ex.getRequiredType() == null ? "unknown" : ex.getRequiredType().getSimpleName();
+        Class<?> requiredType = ex.getRequiredType();
+        String expected = requiredType != null ? requiredType.getSimpleName() : "unknown";
         String msg = String.format("Parameter '%s' has invalid value '%s' (expected %s)", param, value, expected);
         return build(HttpStatus.BAD_REQUEST, msg, request.getRequestURI());
     }
@@ -94,6 +100,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiError> handleBadRequest(IllegalArgumentException ex, HttpServletRequest request) {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler({InvalidCredentialsException.class})
+    public ResponseEntity<ApiError> handleInvalidCredentials(RuntimeException ex, HttpServletRequest request) {
+        return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler({UnauthorizedException.class})
+    public ResponseEntity<ApiError> handleUnauthorized(RuntimeException ex, HttpServletRequest request) {
+        return build(HttpStatus.FORBIDDEN, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler({ForbiddenException.class})
+    public ResponseEntity<ApiError> handleForbidden(RuntimeException ex, HttpServletRequest request) {
+        return build(HttpStatus.FORBIDDEN, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler({TokenRefreshException.class})
+    public ResponseEntity<ApiError> handleTokenRefresh(RuntimeException ex, HttpServletRequest request) {
+        return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(Exception.class)

@@ -1,11 +1,10 @@
 package com.vtcweb.backend.repository.category;
 
 import com.vtcweb.backend.model.entity.category.Category;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,10 +27,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByNameIgnoreCase(String name);
 
     /**
-     * Fetch all categories paged.
-     * Recommended for large datasets.
-     * @param pageable paging information
-     * @return page of categories
+     * Find categories that are missing createdAt or updatedAt timestamps.
      */
-    Page<Category> findAll(Pageable pageable);
+    List<Category> findByCreatedAtIsNullOrUpdatedAtIsNull();
 }

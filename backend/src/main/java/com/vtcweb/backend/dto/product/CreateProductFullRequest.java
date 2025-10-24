@@ -1,6 +1,7 @@
 package com.vtcweb.backend.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -28,7 +29,11 @@ public class CreateProductFullRequest {
     @Size(max = 500)
     private String shortDescription;
 
-    private String description;
+    @JsonProperty("detailedDescription")
+    private String detailedDescription;
+
+    @JsonProperty("description")
+    private void legacyDescription(String legacy) { if (this.detailedDescription == null) this.detailedDescription = legacy; }
 
     @NotNull
     @DecimalMin("0.0")
@@ -42,5 +47,16 @@ public class CreateProductFullRequest {
 
     @Valid
     private List<ProductVariationCreateRequest> variations;
+
+    // Optional bullet-point highlights
+    private List<@Size(max = 300) String> highlights;
+
+    // Optional client-supplied SKU (ignored; server generates per category)
+    @Size(max = 40)
+    private String sku;
+
+    // Optional status at creation; defaults to ACTIVE server-side if missing
+    @Size(max = 16)
+    private String status;
 }
 

@@ -24,5 +24,11 @@ public interface ProductImageService {
 
     /** Bulk delete by product. Returns number of deleted images. */
     int deleteByProduct(Long productId);
+
+    /**
+     * Synchronise product images with the provided primary/secondary set. Incoming images may be secure URLs or
+     * data URIs. Returns the up-to-date list of persisted images.
+     */
+    java.util.List<ProductImage> syncProductImages(Long productId, String primaryImage, java.util.List<String> secondaryImages);
 }
 

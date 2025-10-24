@@ -19,5 +19,6 @@ public class ProductVariationDTO {
     private BigDecimal price;
     private Integer stock;
     private String imageUrl;
+    private Integer lowStockThreshold;
     private Map<String, String> attributes;
 }
