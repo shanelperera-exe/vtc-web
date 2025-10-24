@@ -5,10 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import jakarta.persistence.LockModeType;
 
 @Repository
 public interface ProductVariationRepository extends JpaRepository<ProductVariation, Long> {
@@ -43,4 +45,10 @@ public interface ProductVariationRepository extends JpaRepository<ProductVariati
      * Existence check for (product, variationKey) pair.
      */
     boolean existsByProductIdAndVariationKey(Long productId, String variationKey);
+
+    /**
+     * Lock a variation row for update to safely decrement stock in checkout.
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<ProductVariation> findWithLockingById(Long id);
 }

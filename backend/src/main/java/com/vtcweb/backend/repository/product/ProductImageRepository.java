@@ -75,4 +75,9 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     @Modifying
     @Transactional
     int deleteByProductId(Long productId);
+
+    /**
+     * Fetch all images for a set of product IDs. Caller can reduce to primary/first images.
+     */
+    java.util.List<ProductImage> findByProduct_IdIn(java.util.Collection<Long> productIds);
 }

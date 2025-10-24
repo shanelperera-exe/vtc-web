@@ -22,11 +22,14 @@ public class OrderDTO {
     private LocalDateTime processingStartedAt;
     private LocalDateTime shippedAt;
     private LocalDateTime deliveredAt;
+    private LocalDateTime cancelledAt;
 
     private String customerFirstName;
     private String customerLastName;
     private String customerEmail;
     private String customerPhone;
+    private Long customerId;
+    private String customerUserCode; // external user identifier (e.g., USR-xxxxxxx) for admin UI
 
     private AddressDTO billingAddress;
     private AddressDTO shippingAddress;
@@ -39,7 +42,10 @@ public class OrderDTO {
 
     private BigDecimal subtotal;
     private BigDecimal discountTotal;
+    private BigDecimal taxTotal;
     private BigDecimal shippingFee;
     private BigDecimal total;
+
+    private String orderNotes;
 }
 

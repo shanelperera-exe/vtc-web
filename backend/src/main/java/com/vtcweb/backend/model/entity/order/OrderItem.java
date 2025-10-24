@@ -46,6 +46,7 @@ public class OrderItem {
     @Column(name = "variation_id")
     private Long variationId; // optional
 
+
     @Column(nullable = false)
     private Integer quantity;
 
@@ -55,6 +56,10 @@ public class OrderItem {
     @Column(name = "total_price", precision = 14, scale = 2, nullable = false)
     private BigDecimal totalPrice;
 
+    // Snapshot of the best-known image URL at time of ordering (variation image > product primary > any)
+    @Column(name = "image_url", length = 1024)
+    private String imageUrl;
+
     // Variation attributes snapshot
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "order_item_attributes", joinColumns = @JoinColumn(name = "order_item_id"))
@@ -62,4 +67,6 @@ public class OrderItem {
     @Column(name = "attribute_value")
     @Builder.Default
     private Map<String, String> variationAttributes = new HashMap<>();
+
+    // Note: imageUrl is persisted in column image_url above
 }

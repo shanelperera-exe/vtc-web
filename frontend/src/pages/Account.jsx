@@ -2,9 +2,12 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { User, Package, MapPin, LogOut } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import CommonBtn from '../components/ui/CommonBtn'
+import { useAuth } from '../context/AuthContext'
+import { useEffect } from 'react'
 
 function Account() {
 	const navigate = useNavigate()
+  const { user, logout, isAuthenticated, loading } = useAuth()
 
 	const linkBase =
 		'flex items-center gap-3 px-3 py-2 transition-colors'
@@ -12,13 +15,20 @@ function Account() {
 	const linkIdle =
 		'text-gray-900 hover:bg-gray-100 hover:text-gray-900'
 
-	const handleLogout = () => {
+	const handleLogout = async () => {
 		try {
-			localStorage.removeItem('authToken')
-			localStorage.removeItem('user')
-		} catch {}
-		navigate('/')
+			await logout()
+			navigate('/')
+		} catch (e) {
+			console.warn('Logout failed', e)
+		}
 	}
+
+	useEffect(() => {
+		if (!loading && !isAuthenticated) {
+			navigate('/login')
+		}
+	}, [loading, isAuthenticated, navigate])
 
 		return (
 			<div className="min-h-screen bg-gray-50">
@@ -28,6 +38,9 @@ function Account() {
 					<div>
 						<h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight uppercase text-gray-900">My Account</h1>
 						<p className="mt-1 text-sm text-gray-500">Manage your details, orders, and addresses</p>
+              {user ? (
+                <p className="mt-2 text-sm text-gray-700">Signed in as <span className="font-medium">{user.firstName} {user.lastName}</span></p>
+              ) : null}
 					</div>
 				</div>
 

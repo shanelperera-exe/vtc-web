@@ -10,10 +10,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Address {
+    private String company;
     private String line1;
     private String line2;
     private String city;
-    private String state;
+    private String district;
+    private String province;
     private String postalCode;
     private String country;
 }

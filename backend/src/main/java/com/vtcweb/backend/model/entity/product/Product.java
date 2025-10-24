@@ -14,7 +14,15 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "products")
+@Table(name = "products",
+       uniqueConstraints = {
+           @UniqueConstraint(name = "uk_products_sku", columnNames = {"sku"})
+       },
+       indexes = {
+           @Index(name = "idx_products_category_id", columnList = "category_id"),
+           @Index(name = "idx_products_status", columnList = "status")
+       }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,6 +37,10 @@ public class Product {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Column(name = "sku", nullable = false, length = 40, unique = true)
+    @ToString.Include
+    private String sku; // Immutable stock keeping unit
+
     @Column(nullable=false, length=150)
     @ToString.Include
     private String name;
@@ -37,8 +49,8 @@ public class Product {
     private String shortDescription;
 
     @Lob // Large Object, suitable for large text or binary data
-    @Column(columnDefinition = "TEXT")
-    private String description; // detailed description
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String detailedDescription; // renamed from description
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -48,6 +60,11 @@ public class Product {
     @ToString.Include
     private BigDecimal basePrice;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = true, length = 16)
+    @Builder.Default
+    private ProductStatus status = ProductStatus.ACTIVE;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ProductVariation> variations = new ArrayList<>();
@@ -56,6 +73,13 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<ProductImage> images = new HashSet<>();
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "product_highlights", joinColumns = @JoinColumn(name = "product_id"))
+    @OrderColumn(name = "position")
+    @Column(name = "highlight", length = 300, nullable = false)
+    @Builder.Default
+    private List<String> highlights = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false)

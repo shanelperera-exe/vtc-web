@@ -1,6 +1,7 @@
 package com.vtcweb.backend.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,26 +21,37 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDTO {
     private Long id;
+    private String sku; // immutable identifier
     private String name;
     private String shortDescription;
-    private String description;
+    @JsonProperty("detailedDescription")
+    private String detailedDescription;
 
     private BigDecimal basePrice;
+    
+    private BigDecimal price;
 
-    // Category summary
+    private BigDecimal compareAtPrice;
+
     private Long categoryId;
     private String categoryName;
 
-    // Images as URLs for simple rendering
+    private String category;
+
     private List<String> imageUrls;
 
-    // Include variations for details view
+    private String image;
+    private String primaryImageUrl;
+
     private List<ProductVariationDTO> variations;
 
-    // Optional convenience stats
+    private List<String> highlights;
+
     private Integer imageCount;
     private Integer variationCount;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private String status; // "active" | "inactive"
 }
