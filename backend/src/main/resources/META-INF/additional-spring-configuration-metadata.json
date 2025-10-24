@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "app.cache.cart.ttl-seconds",
+      "type": "java.lang.Long",
+      "description": "Time-to-live for the cached cart in seconds."
+    },
+    {
+      "name": "app.cart.tax-rate",
+      "type": "java.math.BigDecimal",
+      "description": "Tax rate applied to cart subtotal when calculating totals."
+    }
+  ]
+}
