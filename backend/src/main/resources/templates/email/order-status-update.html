@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order Status Update</title>
+  <style>
+    body { margin:0; padding:0; background:#f7f7fb; color:#222; font-family: Arial, Helvetica, sans-serif; }
+    .card { max-width:600px; margin:24px auto; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+    .header { display:flex; align-items:center; gap:12px; padding:16px 20px; background: #ffffff; border-bottom:1px solid #eee; }
+    .header img { height:36px; }
+    .content { padding:20px; }
+    .muted { color:#666; }
+  </style>
+</head>
+<body>
+  <div class="card" th:with="primary=${brandPrimaryColor}">
+    <div class="header">
+      <img th:src="${logoUrl}" alt="[[${brandName}]] logo" />
+      <strong th:style="${'color:' + primary}">[[${brandName}]]</strong>
+    </div>
+    <div class="content" th:inline="text">
+      <h2>Hi [[${customer_name}]],</h2>
+      <p>Your order <strong>#[[${order_id}]]</strong> status is now <strong>[[${status}]]</strong>.</p>
+      <p class="muted">Thanks for shopping with [[${brandName}]].</p>
+    </div>
+  </div>
+</body>
+</html>
