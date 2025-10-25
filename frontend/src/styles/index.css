@@ -5,6 +5,38 @@ html, body {
     font-family: "Poppins", sans-serif;
 }
 
+/* Prevent horizontal scrollbar caused by 100vw and similar full-viewport widths */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Utility to hide native scrollbars while keeping scroll functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+/* Remove native up/down arrows (spinners) from number inputs */
+/* WebKit browsers (Chrome, Safari, Edge) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* If you want to scope this to only the cart quantity input, use a class like:
+   .product-quantity-picker input[type="number"] { ... }
+*/
+
 /* h1 {
     font-family: "Jost", sans-serif;
 } */

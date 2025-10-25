@@ -26,3 +26,8 @@ dist-ssr
 # Local History snapshots
 .history/
 **/.history/
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
