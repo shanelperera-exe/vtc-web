@@ -1,7 +1,10 @@
 package com.vtcweb.backend.repository.category;
 
 import com.vtcweb.backend.model.entity.category.Category;
+import com.vtcweb.backend.model.entity.category.CategoryStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,4 +33,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
      * Find categories that are missing createdAt or updatedAt timestamps.
      */
     List<Category> findByCreatedAtIsNullOrUpdatedAtIsNull();
+
+    /** List by status only. */
+    Page<Category> findByStatus(CategoryStatus status, Pageable pageable);
 }
