@@ -143,3 +143,4 @@ vite.config.ts.timestamp-*
 # Local editor and workspace caches
 .history/
 .idea/
+.vscode/

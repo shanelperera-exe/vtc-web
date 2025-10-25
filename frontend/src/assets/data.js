@@ -488,6 +488,13 @@ export const orders = [
       payment: { type: "Visa", last4: "4242", expires: "02 / 27" },
       summary: { subtotal: 2600, shipping: 450, tax: 0, total: 3050 },
     },
+    // Order-level timestamps for each status step (same for all items in the order)
+    statusTimes: {
+      placed: { date: "2025-07-28", time: "14:32" },
+      processing: { date: "2025-07-29", time: "10:00" },
+      shipped: { date: "2025-07-30", time: "09:15" },
+      delivered: { date: "2025-07-30", time: "12:45" },
+    },
   },
   {
     id: "1002B",
@@ -533,6 +540,12 @@ export const orders = [
       payment: { type: "Visa", last4: "8812", expires: "09 / 26" },
       summary: { subtotal: 4100, shipping: 550, tax: 0, total: 4650 },
     },
+    statusTimes: {
+      placed: { date: "2025-08-15", time: "09:15" },
+      processing: { date: "2025-08-15", time: "13:00" },
+      shipped: { date: "2025-08-16", time: "08:20" },
+      delivered: null,
+    },
   },
   {
     id: "1003C",
@@ -577,6 +590,12 @@ export const orders = [
       ],
       payment: { type: "Visa", last4: "1123", expires: "01 / 28" },
       summary: { subtotal: 2950, shipping: 500, tax: 0, total: 3450 },
+    },
+    statusTimes: {
+      placed: { date: "2025-09-05", time: "18:47" },
+      processing: { date: "2025-09-06", time: "09:00" },
+      shipped: null,
+      delivered: null,
     },
   },
 ];
