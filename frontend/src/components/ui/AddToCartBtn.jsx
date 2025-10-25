@@ -1,7 +1,10 @@
+import React from 'react'
+import styled from 'styled-components'
+import { FiShoppingCart } from 'react-icons/fi'
 import { useCart } from '../../context/CartContext.jsx'
 import { useNotifications } from './notificationsContext.js'
 
-const AddToCartBtn = ({ product, quantity = 1 }) => {
+const AddToCartBtn = ({ product, quantity = 1, className = '', fullWidth = false }) => {
   const { addToCart } = useCart()
   const { notify } = useNotifications()
 
@@ -11,33 +14,72 @@ const AddToCartBtn = ({ product, quantity = 1 }) => {
     notify({ type: 'cart', text: `Added ${quantity} × ${name} to cart`, ttl: 3500 })
   }
   return (
-    <div className="bg-white flex items-start">
-      <div className="group relative h-fit w-fit">
-        <div
-          className="absolute inset-0 z-0 translate-x-0.5 translate-y-0.5 bg-neutral-950 pointer-events-none"
-          // style={{
-          //   clipPath:
-          //     'polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% 100%, calc(100% - 8px) 100%, 8px 100%, 0px 100%, 0px 0px)',
-          // }}
-        />
-        <button
-          type="button"
-          onClick={handleAdd}
-          className="relative z-10 cursor-pointer overflow-hidden font-medium text-base py-2 px-6 bg-neutral-600 text-white w-55 shimmer_shine__jD_i0 transition-all flex items-center justify-center gap-2 group-hover:-translate-x-1 group-hover:-translate-y-1 group-active:-translate-x-0 group-active:-translate-y-0"
-          // style={{
-          //   clipPath:
-          //     'polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% 100%, calc(100% - 8px) 100%, 8px 100%, 0px 100%, 0px 0px)',
-          // }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-cart-plus" viewBox="0 0 16 16">
-            <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9z"/>
-            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zm3.915 10L3.102 4h10.796l-1.313 7zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-          </svg>
-          <span>Add to Cart</span>
+    <div className={`bg-white flex items-start ${fullWidth ? 'w-full' : ''} ${className}`}>
+      <StyledWrapper className={`${fullWidth ? 'w-full' : 'h-fit w-fit'}`} $heightPx={48} $fontSizePx={16} $minWidthEm={27} $fullWidth={fullWidth}>
+        <button type="button" onClick={handleAdd} aria-label="Add to cart">
+          <span className="btn-icon" aria-hidden="true"><FiShoppingCart size={18} strokeWidth={2.4} /></span>
+          <span className="btn-label">Add to Cart</span>
         </button>
-      </div>
+      </StyledWrapper>
     </div>
   );
 };
 
 export default AddToCartBtn;
+
+// Reuse the same styled outline wrapper as BuyNow
+const StyledWrapper = styled.div`
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0;
+  width: ${p => (p.$fullWidth ? '100%' : 'auto')};
+
+  --btn-color: #00bf63;
+  --btn-border: #000;
+  --anim-color: #000;
+  --text-default: #000;
+  --text-hover: #fff;
+
+  button {
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: ${p => (p.$fullWidth ? '100%' : 'auto')};
+    min-width: ${p => (p.$fullWidth ? '0' : (p.$minWidthEm ? `${p.$minWidthEm}em` : '8em'))};
+    height: ${p => (p.$heightPx ? `${p.$heightPx}px` : '40px')};
+    line-height: 1.2;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border: 2px solid var(--btn-border);
+    transition: color 0.5s, transform 0.2s ease;
+    z-index: 1;
+    font-size: ${p => (p.$fontSizePx ? `${p.$fontSizePx}px` : '16px')};
+    font-weight: 600;
+    color: var(--text-default);
+    padding: 0 16px;
+    background: transparent;
+  }
+
+  .btn-icon { display: inline-flex; }
+  .btn-icon svg { stroke-width: 2.2; }
+  .btn-label { white-space: nowrap; }
+
+  button::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    background: var(--anim-color);
+    height: 200px;
+    width: 700px;
+    border-radius: 50%;
+  }
+
+  button:hover { color: var(--text-hover); }
+  button::before { top: 100%; left: 100%; transition: all 0.7s; }
+  button:hover::before { top: -50px; left: -50px; }
+  button:active::before { background: var(--anim-color); transition: background 0s; }
+`

@@ -2,19 +2,24 @@ import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { FiMenu, FiX, FiUser, FiPackage, FiLogOut } from 'react-icons/fi';
-import assets from '../../assets/assets';
+import logo2 from '../../assets/vtc_logo2.svg';
 import Searchbar from './SearchBar';
-import { categories as categoryData } from '../../assets/data';
+import { useCategories } from '../../api/hooks/useCategories';
 
-// Use real categories from data.js; we'll derive a slug used by route /category/:slug
-const categories = categoryData.map(c => {
-    const slug = c.label
-        .toLowerCase()
-        .replace(/&/g, 'and')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    return { label: c.label, slug };
-});
+// derive categories from backend data; fallback to empty list (retain shape {label, slug})
+function useCategoryButtons() {
+    const { data } = useCategories({ size: 200 });
+    return (data || [])
+        .filter(c => String(c.status || '').toLowerCase() === 'active')
+        .map(c => {
+    const name = c.name || c.label || '';
+    const slug = name.toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    return { label: name, slug };
+    });
+}
 
 // Primary menu links (mobile panel)
 const menuLinks = [
@@ -42,6 +47,7 @@ export default function CornerNav({
     // Logged-in footer drop-up state
     const [profileOpen, setProfileOpen] = useState(false);
     const navigate = useNavigate();
+    const categories = useCategoryButtons();
 
     // Close on ESC
     useEffect(() => {
@@ -70,14 +76,14 @@ export default function CornerNav({
                             key="menu-button"
                             layoutId="hamburger-panel"
                             initial={false}
-                            className="w-10 h-10 bg-white border-2 border-black shadow-[2px_2px_0_#000] flex items-center justify-center focus:outline-none z-[9999]"
+                            className="w-10 h-10 bg-white border-3 border-black flex items-center justify-center focus:outline-none z-[9999] hover:bg-[#0bd964] hover:text-white"
                             aria-label="Open menu"
                             aria-expanded={false}
                             onClick={toggle}
-                            style={{ cursor: 'pointer', boxShadow: '2px 2px 0 #000' }}
+                            style={{ cursor: 'pointer' }}
                             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
                         >
-                            <FiMenu className="w-7 h-7 text-black" />
+                            <FiMenu className="w-7 h-7 text-current" />
                         </motion.button>
                     )}
                 </AnimatePresence>
@@ -103,7 +109,7 @@ export default function CornerNav({
                         >
                             {/* Logo top-left */}
                             <div className="absolute top-3 left-3 flex items-center gap-2 pointer-events-none select-none">
-                                <img src={assets.logo2} alt="Logo" className="h-8 w-auto" />
+                                <img src={logo2} alt="Logo" className="h-8 w-auto" />
                             </div>
                             <button
                                 onClick={toggle}

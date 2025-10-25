@@ -1,17 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { products } from '../assets/data';
 import ProductCard from '../components/products/ProductCard';
 import Navbar from '../components/layout/Navbar';
 import ProductFilterSection from '../components/products/ProductFilterSection';
+import { useProducts } from '../api/hooks/useProducts';
+import { useCategories } from '../api/hooks/useCategories';
+import { slugifyCategory, deslugifyCategory } from '../utils/slugify';
 
 const ProductsByCategory = () => {
 	const { category } = useParams();
+	const { data: categories } = useCategories({ size: 200 });
+
+	// Pagination state (match admin style)
+	const [page, setPage] = useState(1); // 1-based for UI
+	const [pageSize, setPageSize] = useState(12);
+	// Filters need to be declared before any usage below to avoid TDZ errors
+	const [filterState, setFilterState] = useState({
+		availability: { inStock: false, outOfStock: false },
+		priceRange: [0, 9500],
+		sortBy: 'Manual',
+	});
+	const handleFilterChange = (filters) => setFilterState(filters);
+	const slugToId = useMemo(() => {
+		const map = new Map();
+		(categories||[]).forEach(c => {
+			const slug = slugifyCategory(c.name || '');
+			map.set(slug, c.id);
+		});
+		return map;
+	}, [categories]);
+	const categoryId = slugToId.get((category||'').toLowerCase());
+	// Reset to first page when category changes
+	useEffect(() => { setPage(1); }, [categoryId]);
+	// Map sidebar sort to backend sort param
+	const sortToBackend = (val) => {
+		switch(val) {
+			case 'Price: Low-High': return 'basePrice,asc';
+			case 'Price: High-Low': return 'basePrice,desc';
+			default: return undefined;
+		}
+	};
+	// Map availability (mutually exclusive) to backend stock filter
+	const stockToBackend = (availability) => {
+		const { inStock, outOfStock } = availability || {};
+		if (inStock && !outOfStock) return 'in';
+		if (outOfStock && !inStock) return 'out';
+		return undefined;
+	};
+
+	const {
+		data: products,
+		page: pageMeta,
+		loading,
+		error,
+		reload
+	} = useProducts({
+		page: page - 1,
+		size: pageSize,
+		categoryId,
+		sort: sortToBackend(filterState.sortBy),
+		stock: stockToBackend(filterState.availability),
+		status: 'ACTIVE',
+	});
 	// Helper to convert string to title case
-	const toTitleCase = (str) =>
-	  str.replace(/-/g, ' ')
-		.replace(/\b\w/g, (c) => c.toUpperCase())
-		.replace(/\s+/g, ' ');
+	const toTitleCase = (str) => deslugifyCategory(str);
 
 	const breadcrumbs = [
 		{ id: 1, name: 'Home', href: '/' },
@@ -19,96 +71,29 @@ const ProductsByCategory = () => {
 		{ id: 3, name: category ? toTitleCase(category) : 'Category', href: `/category/${category}` },
 	];
 
-    // Filter state managed here, passed to ProductFilterSection
-    const [filterState, setFilterState] = useState({
-        availability: { inStock: false, outOfStock: false },
-        priceRange: [0, 9500],
-        sortBy: 'Manual',
-    });
 
-    // Handler for filter changes from ProductFilterSection
-    const handleFilterChange = (filters) => {
-        setFilterState(filters);
-    };
 
-    // Filter products by category and filterState
-    const isProductInStockByVariants = (product) => {
-        // If product has a simple string availability
-        if (typeof product.availability === 'string') {
-            return product.availability.toLowerCase() === 'in stock';
-        }
-        // If product has nested availability by color/size
-        if (product.availability && typeof product.availability === 'object') {
-            for (const color of Object.keys(product.availability)) {
-                const sizes = product.availability[color];
-                for (const size of Object.keys(sizes)) {
-                    if (String(sizes[size]).toLowerCase() === 'in stock') return true;
-                }
-            }
-            return false;
-        }
-        // Fallback: treat as out of stock
-        return false;
-    };
+	const filteredProducts = useMemo(() => {
+		return (products||[]).filter(p => {
+			const price = Number(p.basePrice || p.price || 0);
+			if (price < filterState.priceRange[0] || price > filterState.priceRange[1]) return false;
+			return true;
+		});
+	}, [products, filterState.priceRange]);
 
-    const isProductOutOfStockByVariants = (product) => {
-        // Only true if all variants (if any) are out of stock OR explicit string 'out of stock'
-        if (typeof product.availability === 'string') {
-            return product.availability.toLowerCase() === 'out of stock';
-        }
-        if (product.availability && typeof product.availability === 'object') {
-            let foundAny = false;
-            for (const color of Object.keys(product.availability)) {
-                const sizes = product.availability[color];
-                for (const size of Object.keys(sizes)) {
-                    foundAny = true;
-                    if (String(sizes[size]).toLowerCase() === 'in stock') return false;
-                }
-            }
-            // If there were variants and none were in stock, it's out of stock
-            return foundAny;
-        }
-        return true;
-    };
+	// Sorting handled server-side; keep current order
+	const sortedProducts = filteredProducts;
 
-    const filteredProducts = products
-        .filter(product => product.category && product.category.toLowerCase().replace(/ /g, '-') === (category || '').toLowerCase())
-        .filter(product => {
-            const { inStock, outOfStock } = filterState.availability;
-            // If both selected, don't filter by availability
-            if (inStock && outOfStock) {
-                // continue
-            } else if (inStock) {
-                if (!isProductInStockByVariants(product)) return false;
-            } else if (outOfStock) {
-                if (!isProductOutOfStockByVariants(product)) return false;
-            }
-            // Price filter
-            if (product.price < filterState.priceRange[0] || product.price > filterState.priceRange[1]) return false;
-            return true;
-        });
-
-    // Sort products
-    const sortedProducts = [...filteredProducts].sort((a, b) => {
-        switch (filterState.sortBy) {
-            case 'Price: Low-High':
-                return a.price - b.price;
-            case 'Price: High-Low':
-                return b.price - a.price;
-            case 'Date, new to old':
-                return new Date(b.date) - new Date(a.date);
-            case 'Manual':
-            case 'Best Selling':
-            default:
-                return 0;
-        }
-    });
+	const totalElements = Number(pageMeta?.totalElements || 0);
+	const totalPages = Math.max(1, Number(pageMeta?.totalPages || 1));
+	const showingFrom = totalElements === 0 ? 0 : ((page - 1) * pageSize + 1);
+	const showingTo = Math.min(page * pageSize, Math.max(totalElements, products?.length || 0));
 
 	return (
 		<div className="bg-white">
 			<Navbar />
-            
-            {/* Breadcrumbs */}
+			
+			{/* Breadcrumbs */}
 			<div className="pt-6">
 				<nav aria-label="Breadcrumb">
 					<ol role="list" className="flex max-w-2xl items-center space-x-2 pl-4 sm:pl-8 lg:max-w-7xl lg:pl-14">
@@ -147,32 +132,78 @@ const ProductsByCategory = () => {
 					</ol>
 				</nav>
 			</div>
-            
-            <div>
-                {/* Category Name */}
-                <div className="flex flex-col justify-center text-left gap-1 px-14 mt-8">
-                    <h2 className="font-extrabold uppercase tracking-tight leading-tight text-[#1e2a38] text-4xl md:text-5xl lg:text-6xl m-0" style={{ fontFamily: "Jost, sans-serif" }}>
-                        {category ? category.replace(/-/g, ' ').toUpperCase() : 'CATEGORY'}
-                    </h2>
+			
+			<div>
+				{/* Category Name */}
+				<div className="flex flex-col justify-center text-left gap-1 px-14 mt-8">
+					<h2 className="font-extrabold uppercase tracking-tight leading-tight text-[#1e2a38] text-4xl md:text-5xl lg:text-6xl m-0" style={{ fontFamily: "Jost, sans-serif" }}>
+						{category ? category.replace(/-/g, ' ').toUpperCase() : 'CATEGORY'}
+					</h2>
 
-                    {/* Product count */}
-                    <div className="text-md font-medium text-gray-600 mt-0 ml-1">
-                        {sortedProducts.length} product{sortedProducts.length === 1 ? '' : 's'} found
-                    </div>
-                    <hr className='mt-2 text-gray-300'/>
-                </div>
-                {/* Filter and sort sidebar + Products grid */}
-                <div className="mt-10 flex flex-row gap-8 px-14">
-                    {/* Sidebar replaced with ProductFilterSection */}
-                    <ProductFilterSection onFilterChange={handleFilterChange} />
-                    {/* Product grid */}
-                    <div className="flex-1 flex flex-wrap gap-8 justify-start px-12">
-                        {sortedProducts.map(product => (
-                            <ProductCard key={product.id} {...product} />
-                        ))}
-                    </div>
-                </div>
-            </div>
+					{/* Product count */}
+					<div className="text-md font-medium text-gray-600 mt-0 ml-1">
+						{totalElements} product{totalElements === 1 ? '' : 's'} found
+					</div>
+					<hr className='mt-2 text-gray-300'/>
+				</div>
+				{/* Filter and sort sidebar + Products grid */}
+				<div className="mt-10 flex flex-row gap-8 px-14">
+					{/* Sidebar replaced with ProductFilterSection */}
+					<ProductFilterSection onFilterChange={handleFilterChange} />
+					{/* Product grid */}
+					<div className="flex-1 flex flex-wrap gap-8 justify-start px-12">
+						{loading && <div className="text-sm text-gray-500 py-8">Loading products…</div>}
+						{!loading && sortedProducts.map(product => (
+							<ProductCard
+								key={product.id}
+								id={product.id}
+								sku={product.sku}
+								name={product.name}
+								description={product.shortDescription || product.description}
+								image={(product.primaryImageUrl || (product.imageUrls && product.imageUrls[0]))}
+								price={product.basePrice || product.price || 0}
+								category={product.categoryName || product.category}
+								rating={product.rating}
+								numOfReviews={product.numOfReviews}
+							/>
+						))}
+					</div>
+				</div>
+
+				{/* Pagination controls (mirroring admin style) */}
+				<div className="mt-10 px-14 flex flex-col sm:flex-row items-center justify-between gap-3">
+					<div className="flex items-center gap-2 text-sm">
+						<span>Rows per page</span>
+						<select
+							value={pageSize}
+							onChange={(e) => { setPageSize(parseInt(e.target.value)); setPage(1); }}
+							className="border-2 border-black px-2 py-1 bg-white"
+						>
+							{[8, 12, 24].map((s) => (
+								<option key={s} value={s}>{s}</option>
+							))}
+						</select>
+						<span className="text-gray-600">Showing {showingFrom}-{showingTo} of {totalElements}</span>
+					</div>
+					<div className="inline-flex border-2 border-black">
+						<button
+							className="px-3 py-2 bg-white hover:bg-[#23f47d]"
+							onClick={() => setPage(p => Math.max(1, p - 1))}
+							disabled={page <= 1}
+						>
+							Prev
+						</button>
+						<div className="px-3 py-2 bg-black text-green-400 text-sm">{page} / {totalPages}</div>
+						<button
+							className="px-3 py-2 bg-white hover:bg-[#23f47d]"
+							onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+							disabled={page >= totalPages}
+						>
+							Next
+						</button>
+					</div>
+				</div>
+			</div>
 
 		</div>
 	);
