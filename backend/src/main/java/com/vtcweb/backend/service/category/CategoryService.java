@@ -1,6 +1,7 @@
 package com.vtcweb.backend.service.category;
 
 import com.vtcweb.backend.model.entity.category.Category;
+import com.vtcweb.backend.model.entity.category.CategoryStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,6 +15,9 @@ public interface CategoryService {
     Category getById(Long id);
 
     Page<Category> list(Pageable pageable);
+
+    /** Optional status-based listing. When status is null, returns all. */
+    Page<Category> list(Pageable pageable, CategoryStatus status);
 
     Category update(Long id, Category updates);
 

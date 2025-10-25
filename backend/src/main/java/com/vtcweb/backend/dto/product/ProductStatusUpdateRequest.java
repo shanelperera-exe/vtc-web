@@ -1,0 +1,14 @@
+package com.vtcweb.backend.dto.product;
+
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductStatusUpdateRequest {
+    @NotBlank
+    private String status; // "active|inactive" (case-insensitive)
+}

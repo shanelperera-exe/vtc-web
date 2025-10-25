@@ -5,6 +5,7 @@ import com.vtcweb.backend.dto.product.CreateProductRequest;
 import com.vtcweb.backend.dto.product.ProductDTO;
 import com.vtcweb.backend.dto.product.UpdateProductRequest;
 import com.vtcweb.backend.dto.product.ProductStatsDTO;
+import com.vtcweb.backend.dto.product.ProductStatusUpdateRequest;
 import com.vtcweb.backend.model.entity.product.Product;
 import com.vtcweb.backend.service.product.ProductService;
 import com.vtcweb.backend.util.Mapper;
@@ -84,7 +85,12 @@ public class ProductController {
     public ResponseEntity<Page<ProductDTO>> list(Pageable pageable,
                                                 @RequestParam(name = "status", required = false) String status,
                                                 @RequestParam(name = "stock", required = false) String stock) {
+        boolean provided = status != null;
         com.vtcweb.backend.model.entity.product.ProductStatus st = parseStatus(status);
+        if (!provided) {
+            // Default public listing to ACTIVE products only when status is not provided
+            st = com.vtcweb.backend.model.entity.product.ProductStatus.ACTIVE;
+        }
         StockFilter sf = parseStock(stock);
         Page<Product> products;
         if (sf == StockFilter.IN_STOCK) {
@@ -116,7 +122,11 @@ public class ProductController {
     public ResponseEntity<Page<ProductDTO>> listByCategory(@PathVariable("categoryId") Long categoryId, Pageable pageable,
                                                            @RequestParam(name = "status", required = false) String status,
                                                            @RequestParam(name = "stock", required = false) String stock) {
+        boolean provided = status != null;
         com.vtcweb.backend.model.entity.product.ProductStatus st = parseStatus(status);
+        if (!provided) {
+            st = com.vtcweb.backend.model.entity.product.ProductStatus.ACTIVE;
+        }
         StockFilter sf = parseStock(stock);
         Page<Product> products;
         if (sf == StockFilter.IN_STOCK) {
@@ -165,7 +175,11 @@ public class ProductController {
                 return ResponseEntity.ok(new org.springframework.data.domain.PageImpl<>(java.util.Objects.requireNonNull(java.util.List.of()), java.util.Objects.requireNonNull(pageable), 0));
             }
         }
+        boolean provided = status != null;
         com.vtcweb.backend.model.entity.product.ProductStatus st = parseStatus(status);
+        if (!provided) {
+            st = com.vtcweb.backend.model.entity.product.ProductStatus.ACTIVE;
+        }
         Page<Product> products = (st == null)
             ? productService.searchByName(name, pageable)
             : productService.searchByName(name, pageable, st);
@@ -283,6 +297,30 @@ public class ProductController {
     }
 
     /**
+     * Update product status only (admin/managers). Accepts {"status": "active|inactive|ACTIVE|INACTIVE"}.
+     */
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<ProductDTO> updateStatus(@PathVariable("id") Long id,
+                                                   @Valid @RequestBody ProductStatusUpdateRequest request) {
+        if (request == null || request.getStatus() == null || request.getStatus().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        String raw = request.getStatus().trim().toUpperCase();
+        com.vtcweb.backend.model.entity.product.ProductStatus st;
+        try {
+            st = com.vtcweb.backend.model.entity.product.ProductStatus.valueOf(raw);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().build();
+        }
+        // Build minimal updates entity
+        Product updates = new Product();
+        updates.setStatus(st);
+        Product updated = productService.update(id, updates, null);
+        return ResponseEntity.ok(Mapper.toDtoShallow(updated));
+    }
+
+    /**
      * Delete a product by id.
      */
     @DeleteMapping("/{id}")
@@ -322,11 +360,13 @@ public class ProductController {
     }
 
     private com.vtcweb.backend.model.entity.product.ProductStatus parseStatus(String status) {
-        if (status == null || status.isBlank()) return null;
+        if (status == null || status.isBlank()) return null; // caller decides default
+        String s = status.trim().toUpperCase();
+        if ("ALL".equals(s)) return null; // explicit no-filter
         try {
-            return com.vtcweb.backend.model.entity.product.ProductStatus.valueOf(status.trim().toUpperCase());
+            return com.vtcweb.backend.model.entity.product.ProductStatus.valueOf(s);
         } catch (IllegalArgumentException ex) {
-            return null;
+            return null; // invalid -> no filter
         }
     }
 

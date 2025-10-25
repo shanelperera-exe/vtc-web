@@ -61,7 +61,7 @@ public class Product {
     private BigDecimal basePrice;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = true, length = 16)
+    @Column(name = "status", nullable = false, length = 16)
     @Builder.Default
     private ProductStatus status = ProductStatus.ACTIVE;
 

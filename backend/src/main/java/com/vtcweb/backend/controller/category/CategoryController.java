@@ -47,11 +47,18 @@ public class CategoryController {
     }
 
     /**
-     * List categories with pagination.
+     * List categories with pagination. Defaults to showing only ACTIVE categories to customers.
+     * Pass status=all to retrieve all statuses. status=active|inactive to filter explicitly.
      */
     @GetMapping
-    public ResponseEntity<Page<CategoryDTO>> list(Pageable pageable) {
-        Page<CategoryDTO> page = categoryService.list(pageable).map(c -> {
+    public ResponseEntity<Page<CategoryDTO>> list(Pageable pageable,
+                                                  @RequestParam(name = "status", required = false) String status) {
+        com.vtcweb.backend.model.entity.category.CategoryStatus st = parseStatus(status);
+        boolean provided = status != null;
+        // Default to ACTIVE when not provided; treat "all" specially as no filter
+        if (!provided) st = com.vtcweb.backend.model.entity.category.CategoryStatus.ACTIVE;
+
+        Page<CategoryDTO> page = categoryService.list(pageable, st).map(c -> {
             CategoryDTO dto = Mapper.toDto(c);
             // Avoid touching lazy collection; use repository count instead.
             try {
@@ -63,6 +70,17 @@ public class CategoryController {
             return dto;
         });
         return ResponseEntity.ok(page);
+    }
+
+    private com.vtcweb.backend.model.entity.category.CategoryStatus parseStatus(String status) {
+        if (status == null || status.isBlank()) return null; // caller decides default
+        String s = status.trim().toUpperCase();
+        if ("ALL".equals(s)) return null; // explicit no-filter
+        try {
+            return com.vtcweb.backend.model.entity.category.CategoryStatus.valueOf(s);
+        } catch (IllegalArgumentException ex) {
+            return null; // invalid -> no filter
+        }
     }
 
     /**

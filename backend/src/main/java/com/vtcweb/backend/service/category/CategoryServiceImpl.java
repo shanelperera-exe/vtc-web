@@ -80,6 +80,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<Category> list(Pageable pageable, com.vtcweb.backend.model.entity.category.CategoryStatus status) {
+        if (pageable == null) throw new IllegalArgumentException("pageable must not be null");
+        if (status == null) return categoryRepository.findAll(pageable);
+        return categoryRepository.findByStatus(status, pageable);
+    }
+
+    @Override
     public Category update(Long id, Category updates) {
         if (updates == null) throw new IllegalArgumentException("updates must not be null");
         Category existing = getById(id);
