@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Checkbox from '../ui/Checkbox';
 import { FiInfo } from 'react-icons/fi';
 import { useCart } from '../../context/CartContext.jsx';
@@ -6,6 +7,7 @@ import { useCart } from '../../context/CartContext.jsx';
 export default function CartSummary() {
   const [agreed, setAgreed] = useState(false);
   const { cartItems } = useCart();
+  const navigate = useNavigate();
 
   const subtotal = useMemo(() => {
     return cartItems.reduce((sum, item) => {
@@ -59,6 +61,7 @@ export default function CartSummary() {
                 className={`w-full text-white py-2 ${agreed ? 'bg-black' : 'bg-gray-400 cursor-not-allowed'}`}
                 disabled={!agreed}
                 aria-disabled={!agreed}
+                onClick={() => { if (agreed) navigate('/checkout'); }}
               >
                 Proceed to checkout
               </button>

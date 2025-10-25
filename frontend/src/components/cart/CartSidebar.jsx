@@ -2,8 +2,11 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/re
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import CartItem from './CartItem'
 import { useCart } from '../../context/CartContext.jsx'
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 
 export default function CartSidebar({ open, onClose }) {
+    const navigate = useNavigate()
     const { cartItems, removeFromCart } = useCart()
     const subtotal = cartItems.reduce((sum, item) => sum + (Number(item.price) || 0) * (item.quantity || 1), 0)
     const subtotalLKR = new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(subtotal)
@@ -58,13 +61,27 @@ export default function CartSidebar({ open, onClose }) {
                                             <p>{subtotalLKR}</p>
                                         </div>
                                         <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
-                                        <div className="mt-6">
-                                            <a
-                                                href="#"
-                                                className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700"
-                                            >
-                                                Checkout
-                                            </a>
+                                        <div className="mt-6 space-y-3">
+                                            <StyledAction $variant="buy" $fullWidth $heightPx={48} $fontSizePx={16}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => { onClose(); navigate('/checkout'); }}
+                                                >
+                                                    <span className="btn-label">Checkout</span>
+                                                </button>
+                                            </StyledAction>
+
+                                            <StyledAction $variant="add" $fullWidth $heightPx={48} $fontSizePx={16}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        onClose()
+                                                        navigate('/cart')
+                                                    }}
+                                                >
+                                                    <span className="btn-label">View cart</span>
+                                                </button>
+                                            </StyledAction>
                                         </div>
                                         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                                             <p>
@@ -89,3 +106,59 @@ export default function CartSidebar({ open, onClose }) {
         </div>
     )
 }
+
+// Reusable styled action for cart sidebar buttons. Variant 'buy' => filled animated, 'add' => outlined animated
+const StyledAction = styled.div`
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0;
+    width: ${p => (p.$fullWidth ? '100%' : 'auto')};
+
+    --btn-color: ${p => (p.$variant === 'buy' ? '#0bd964' : 'transparent')};
+    --btn-border: ${p => (p.$variant === 'add' ? '#000' : 'transparent')};
+    --anim-color: #000;
+    --text-default: ${p => (p.$variant === 'buy' ? '#000' : '#000')};
+    --text-hover: #fff;
+
+    button {
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: ${p => (p.$fullWidth ? '100%' : 'auto')};
+        min-width: ${p => (p.$fullWidth ? '0' : (p.$minWidthEm ? `${p.$minWidthEm}em` : '8em'))};
+        height: ${p => (p.$heightPx ? `${p.$heightPx}px` : '40px')};
+        line-height: 1.2;
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+        border: 2px solid var(--btn-border);
+        transition: color 0.5s, transform 0.2s ease;
+        z-index: 1;
+        font-size: ${p => (p.$fontSizePx ? `${p.$fontSizePx}px` : '16px')};
+        font-weight: 600;
+        color: var(--text-default);
+        padding: 0 20px;
+        background: var(--btn-color);
+        border-radius: 0;
+    }
+
+    .btn-label { white-space: nowrap; }
+
+    button::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        background: var(--anim-color);
+        height: ${p => (p.$variant === 'buy' ? '450px' : '200px')};
+        width: ${p => (p.$variant === 'buy' ? '920px' : '700px')};
+        border-radius: 50%;
+    }
+
+    button:hover { color: var(--text-hover); }
+    button::before { top: 100%; left: 100%; transition: all ${p => (p.$variant === 'buy' ? '1s' : '0.7s')}; }
+    button:hover::before { top: ${p => (p.$variant === 'buy' ? '-100px' : '-50px')}; left: ${p => (p.$variant === 'buy' ? '-100px' : '-50px')}; }
+    button:active::before { background: var(--anim-color); transition: background 0s; }
+`
