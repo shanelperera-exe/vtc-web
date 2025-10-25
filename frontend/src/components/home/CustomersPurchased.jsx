@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import ProductCard from '../products/ProductCard';
-import { products as allProducts } from '../../assets/data';
+import { useProducts } from '../../api/hooks/useProducts';
 
 export default function CustomersPurchased() {
   // Carousel state
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Get top 5 highest rated products
-  const products = [...allProducts].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 5);
+  const { data: backendProducts } = useProducts({ size: 50, status: 'ACTIVE' });
+  const products = (backendProducts || []).slice().sort((a,b)=> ((b.rating||0) - (a.rating||0))); // backend may not provide rating yet
 
   // Show 2 products at a time on mobile, more on larger screens
-  // Responsive breakpoints: sm (2), md (3), lg (5)
+  // Responsive breakpoints: sm (2), md (3), lg (4)
   const getVisibleCount = () => {
     if (typeof window !== 'undefined') {
       if (window.innerWidth < 640) return 2; // mobile
       if (window.innerWidth < 1024) return 3; // tablet
-      return 5; // desktop
+      return 4; // desktop (show 4 products)
     }
     return 2;
   };
@@ -53,10 +52,11 @@ export default function CustomersPurchased() {
   const showButtons = isMobile && products.length > visibleCount;
 
   return (
-  <div className="w-full" style={{ width: '100%', marginBottom: '140px'}}>
-      <div className="px-4 py-4 sm:px-6 sm:py-6 flex flex-col w-full bg-green-200">
+  <div className="w-full" style={{ width: '100%', marginBottom: '20px'}}>
+  {/* add px-10 horizontally so section extends from both ends */}
+  <div className="px-10 py-8 flex flex-col w-full">
         <div className="flex items-center justify-between w-full mb-2">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Customers also purchased</h2>
+          <h2 className="text-5xl font-bold tracking-tight text-gray-800">Customers <span className='text-gray-400'>also Purchased</span></h2>
           {showButtons && (
             <div className="flex gap-2">
               {currentIndex > 0 && (
@@ -84,17 +84,25 @@ export default function CustomersPurchased() {
           className="mt-4 grid w-full"
           style={{
             width: '100%',
-            gridTemplateColumns: `repeat(${visibleCount}, minmax(0, 1fr))`,
+            // Slightly smaller min widths so cards sit with gaps between them
+            // mobile: 130px, tablet: 170px, desktop: 190px
+            gridTemplateColumns: (() => {
+              const w = typeof window !== 'undefined' ? window.innerWidth : 1024;
+              const min = w < 640 ? 130 : w < 1024 ? 170 : 190;
+              return `repeat(${visibleCount}, minmax(${min}px, 1fr))`;
+            })(),
             transition: 'grid-template-columns 0.3s',
-            gap: typeof window !== 'undefined' && window.innerWidth < 640 ? '0.7rem' : '2rem',
+            // increased gaps: mobile 0.75rem, desktop 1rem
+            gap: typeof window !== 'undefined' && window.innerWidth < 640 ? '0.75rem' : '1rem',
           }}
         >
           {visibleProducts.map((product) => (
             <ProductCard
               key={product.id}
               id={product.id}
+              sku={product.sku}
               name={product.name}
-              description={product.description}
+              description={product.shortDescription || product.short_desc || product.shortDesc || product.summary || product.description}
               image={product.image}
               price={product.price}
               category={product.category}

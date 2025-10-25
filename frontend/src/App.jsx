@@ -1,51 +1,67 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
+import Wishlist from './pages/Wishlist';
 import ProductDetails from './pages/ProductDetails';
 import ProductsByCategory from './pages/ProductsByCategory';
 import Checkout from './pages/Checkout';
+import ShoppingCart from './pages/ShoppingCart';
 import Account from './pages/Account';
+import About from './pages/About';
 import AccountDetails from './components/account/AccountDetails';
 import Orders from './components/account/Orders';
 import Addresses from './components/account/Addresses';
 import OrderDetails from './pages/OrderDetails';
-import AdminDashboard from './components/admin/dashboard/AdminDashboard';
-import RequireAdmin from './components/admin/RequireAdmin';
-import AdminPanel from './components/admin/AdminPanel';
-import PlaceholderSection from './components/admin/sections/PlaceholderSection';
-import AdminOrders from './components/admin/orders/AdminOrders';
-import AdminOrderDetails from './components/admin/orders/AdminOrderDetails';
+import OrderConfirmed from './pages/OrderConfirmed';
+import AdminRoutes from './admin/routes/AdminRoutes';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import AdminLogin from './pages/AdminLogin';
+import Contact from './pages/Contact';
+import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext.jsx'
+import { NotificationProvider } from './components/ui/Notification';
+import LoadingOverlay from './components/ui/LoadingOverlay';
+import PrivateRoute from './components/auth/PrivateRoute';
+import LegacyProductRedirect from './routes/LegacyProductRedirect.jsx';
+import SiteLayout from './components/layout/SiteLayout.jsx';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/category/:category" element={<ProductsByCategory />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/account" element={<Account />}>
-          <Route index element={<Navigate to="accountdetails" replace />} />
-          <Route path="accountdetails" element={<AccountDetails />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="addresses" element={<Addresses />} />
-        </Route>
-        <Route path="/order/:orderId" element={<OrderDetails />} />
-        {/* Admin protected, nested routes */}
-        <Route element={<RequireAdmin />}>
-          <Route path="/admin" element={<AdminPanel />}>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="sales" element={<PlaceholderSection title="Sales" />} />
-            <Route path="orders" element={<AdminOrders />} />
-            <Route path="orders/:orderId" element={<AdminOrderDetails />} />
-            <Route path="products" element={<PlaceholderSection title="Products" />} />
-            <Route path="tags" element={<PlaceholderSection title="Tags" />} />
-            <Route path="analytics" element={<PlaceholderSection title="Analytics" />} />
-            <Route path="members" element={<PlaceholderSection title="Members" />} />
-            <Route path="settings" element={<PlaceholderSection title="Settings" />} />
-          </Route>
-        </Route>
-      </Routes>
+      <NotificationProvider>
+        <AuthProvider>
+          <CartProvider>
+            <LoadingOverlay />
+            <Routes>
+              <Route element={<SiteLayout />}> 
+                <Route path="/" element={<Home />} />
+                {/* Product detail by SKU (also accepts numeric id as fallback) */}
+                <Route path="/product/:sku" element={<ProductDetails />} />
+                {/* Backward-compat: if any old links use numeric id path, redirect to SKU URL if possible */}
+                <Route path="/product-id/:id" element={<LegacyProductRedirect />} />
+                <Route path="/category/:category" element={<ProductsByCategory />} />
+                <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
+                <Route path="/cart" element={<ShoppingCart />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/account" element={<PrivateRoute><Account /></PrivateRoute>}>
+                  <Route index element={<Navigate to="accountdetails" replace />} />
+                  <Route path="accountdetails" element={<AccountDetails />} />
+                  <Route path="orders" element={<Orders />} />
+                  <Route path="addresses" element={<Addresses />} />
+                </Route>
+                <Route path="/orders/:orderNumber" element={<OrderDetails />} />
+                <Route path="/order-confirmed/:orderNumber" element={<OrderConfirmed />} />
+              </Route>
+              {/* Keep admin login route accessible from main site in case of cross-domain redirects */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+            </Routes>
+          </CartProvider>
+        </AuthProvider>
+      </NotificationProvider>
     </Router>
   );
 }

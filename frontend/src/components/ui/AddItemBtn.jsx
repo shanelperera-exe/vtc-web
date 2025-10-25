@@ -21,7 +21,7 @@ const AddItemButton = ({ product }) => {
   return (
     <StyledWrapper>
       <button className={`button ${added ? 'button--added' : ''}`} type="button" onClick={handleClick}>
-        <span className="button__text">{added ? 'Added!' : 'Add Cart'}</span>
+        <span className="button__text">{added ? 'Added!' : 'Add to cart'}</span>
         <span className="button__icon">
           {added ? (
             <svg className="svg" fill="none" height={24} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} viewBox="0 0 24 24" width={24} xmlns="http://www.w3.org/2000/svg">
@@ -47,11 +47,12 @@ const StyledWrapper = styled.div`
     --bg-color: #eee;
     --main-color: #323232;
     position: relative;
-    width: 110px;
-    height: 28px;
-    cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    min-width: 120px;
+    height: 28px;
+    padding: 0 12px 0 12px;
+    cursor: pointer;
     border: 2px solid var(--main-color);
     box-shadow: 3px 3px var(--main-color);
     background-color: var(--bg-color);
@@ -61,23 +62,24 @@ const StyledWrapper = styled.div`
 
   @media (max-width: 640px) {
     .button {
-      width: 110px;
+      min-width: 100px;
       height: 24px;
       // border-radius: 7px;
     }
     .button .button__text {
-      font-size: 0.5em;
-      transform: translateX(10px);
+      font-size: 0.8em;
+      margin-right: 8px;
+      transform: translateX(-4px);
     }
     .button .button__icon {
-      transform: translateX(65px);
-      width: 22px;
+      right: 0;
+      width: 32px;
     }
     .button .svg {
-      width: 16px;
+      width: 12px;
     }
     .button:hover .button__icon {
-      width: 88px;
+      width: 96px;
     }
   }
 
@@ -86,17 +88,19 @@ const StyledWrapper = styled.div`
   }
 
   .button .button__text {
-    transform: translateX(12px);
     color: var(--font-color);
     font-weight: 500;
     font-size: 0.85em;
+    margin-right: 12px;
+    transform: translateX(-6px);
   }
 
   .button .button__icon {
     position: absolute;
-    transform: translateX(80px);
+    right: 0;
+    top: 0;
     height: 100%;
-    width: 28px;
+    width: 25px;
     background-color: var(--bg-color-sub);
     display: flex;
     align-items: center;
@@ -104,7 +108,7 @@ const StyledWrapper = styled.div`
   }
 
   .button .svg {
-    width: 15px;
+    width: 14px;
     fill: var(--main-color);
   }
 
@@ -117,8 +121,7 @@ const StyledWrapper = styled.div`
   }
 
   .button:hover .button__icon {
-    width: 108px;
-    transform: translateX(0);
+    width: 120px;
   }
 
   /* Added state: only the expanded icon area turns green */

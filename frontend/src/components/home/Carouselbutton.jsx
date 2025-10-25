@@ -41,8 +41,7 @@ const StyledWrapper = styled.div`
    margin: 0;
    width: 3rem;
    height: 3rem;
-   background: #1d794c;
-   border-radius: 1.625rem;
+   background: #0bd964;
   }
 
   button.learn-more .circle .icon {
@@ -82,8 +81,8 @@ const StyledWrapper = styled.div`
    right: 0;
    bottom: 0;
    padding: 0.75rem 0;
-   margin: 0 0 0 1.85rem;
-   color: black;
+   margin: 0 0 0 2.5rem; /* Increased left margin for more space */
+   color: white;
    font-weight: 700;
    line-height: 1.6;
    text-align: center;
@@ -95,12 +94,17 @@ const StyledWrapper = styled.div`
   }
 
   button:hover .circle .icon.arrow {
-   background: #fff;
+  background: #000;
    transform: translate(1rem, 0);
   }
 
+  button:hover .circle .icon.arrow::before {
+  border-top: 0.125rem solid #000;
+  border-right: 0.125rem solid #000;
+  }
+
   button:hover .button-text {
-   color: #fff;
+   color: black;
   }`;
 
 export default Button;

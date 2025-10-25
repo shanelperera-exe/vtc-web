@@ -21,13 +21,13 @@ const NavLinks = () => {
     >
 
       <Tab setPosition={setPosition}>
-  <a href="/docs" className="text-white font-bold lowercase text-xl" style={{ fontFamily: 'Poppins, sans-serif' }}>about</a>
+  <a href="/about" className="text-white font-medium text-lg lowercase" style={{ fontFamily: 'Poppins, sans-serif' }}>About us</a>
       </Tab>
       <Tab setPosition={setPosition}>
-  <a href="/blog" className="text-white font-bold lowercase text-xl" style={{ fontFamily: 'Poppins, sans-serif' }}>contact</a>
+  <a href="/contact" className="text-white font-medium text-lg lowercase" style={{ fontFamily: 'Poppins, sans-serif' }}>Contact us</a>
       </Tab>
       <Tab setPosition={setPosition}>
-  <a href="/blog" className="text-white font-bold lowercase text-xl" style={{ fontFamily: 'Poppins, sans-serif' }}>help</a>
+  <a href="/help" className="text-white font-medium text-lg lowercase" style={{ fontFamily: 'Poppins, sans-serif' }}>help</a>
       </Tab>
 
 
@@ -55,7 +55,7 @@ const Tab = ({ children, setPosition, onMouseEnter, onMouseLeave }) => {
       ref={ref}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={onMouseLeave}
-      className="relative z-10 block cursor-pointer px-3 py-1.5 text-xs uppercase text-white mix-blend-difference md:px-5 md:py-3 md:text-base"
+      className="relative z-10 block cursor-pointer px-3 py-1.5 text-xs text-white mix-blend-difference md:px-5 md:py-3 md:text-base"
     >
       {children}
     </li>

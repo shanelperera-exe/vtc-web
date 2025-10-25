@@ -8,26 +8,26 @@ const ButtonBase = styled.button`
 	width: 40px;
 	height: 40px;
 	background: white;
-	border: 2px solid #0a0a0a;
-	box-shadow: 2px 2px 0px #000;
+	border: 3px solid #0a0a0a;
 	padding: 0;
 	margin: 0;
 	color: #111827; /* tailwind gray-800 */
 	cursor: pointer;
-	transition: transform 0.15s ease, box-shadow 0.15s ease;
 	-webkit-appearance: button;
 	appearance: button;
 	outline: none;
 	line-height: 1;
 
 	&:hover:not(:disabled) {
-		transform: translate(1px, 1px);
-		box-shadow: 1px 1px 0px #000;
+		background: #37df80ff;
+		color: black;
+		border-color: black;
 	}
 
 	&:active:not(:disabled) {
-		transform: translate(2px, 2px);
-		box-shadow: 0px 0px 0px #000;
+		background: #0bd964;
+		color: #ffffff;
+		border-color: black;
 	}
 
 	&:disabled {
