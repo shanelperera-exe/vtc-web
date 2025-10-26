@@ -1,4 +1,5 @@
 import { useEffect, useState, cloneElement } from 'react'
+import Navbar from '../components/layout/Navbar'
 import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail, Store, ExternalLink } from 'lucide-react'
 
@@ -23,7 +24,9 @@ export default function Contact() {
 	}, [mapLoaded])
 
 	return (
-		<section id="contact" className="min-h-[60vh] bg-gradient-to-b from-white to-slate-50/70">
+		<>
+			<Navbar />
+			<section id="contact" className="min-h-[60vh] bg-gradient-to-b from-white to-slate-50/70">
 			<div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
 				{/* Heading */}
 				<motion.div
@@ -105,6 +108,7 @@ export default function Contact() {
 				</div>
 			</div>
 		</section>
+			</>
 	)
 }
 
