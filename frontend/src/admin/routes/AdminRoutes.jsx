@@ -31,7 +31,7 @@ export default function AdminRoutes() {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="sales" element={<PlaceholderSection title="Sales" />} />
           <Route path="orders" element={<AdminOrders />} />
-          <Route path="orders/:orderId" element={<AdminOrderDetails />} />
+          <Route path="orders/:orderNumber" element={<AdminOrderDetails />} />
           <Route path="products" element={<AllProductsManager />} />
           <Route path="products/:sku/stats" element={<ProductStats />} />
           <Route path="products/:categorySlug" element={<CategoryProductManager />} />

@@ -220,7 +220,7 @@ const OrdersList = () => {
                   </td>
                   <td className="p-3">
                     <button
-                      onClick={() => navigate(`/admin/orders/${order.id}`)}
+                      onClick={() => navigate(`/admin/orders/${order.orderNumber || order.id}`)}
                       className="flex items-center gap-2 px-3 py-1 text-sm font-medium bg-[#00bf63] text-black border-2 border-black hover:bg-black hover:text-white"
                     >
                       <FiEye />

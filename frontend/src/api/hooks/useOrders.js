@@ -104,7 +104,7 @@ export function useOrders({ orderId, orderNumber, admin = false, initialData } =
     } finally {
       if (mounted.current) setLoading(false);
     }
-  }, [orderId, admin]);
+  }, [orderId, orderNumber, admin]);
 
   useEffect(() => {
     mounted.current = true;
