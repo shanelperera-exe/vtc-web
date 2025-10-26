@@ -370,7 +370,7 @@ export default function AdminUserDetails() {
 								<Td>
 									<Link
 										className="inline-flex items-center gap-2 px-3 py-1 border-2 border-emerald-700 text-emerald-800 hover:bg-emerald-600 hover:text-white text-xs font-semibold"
-										to={`/admin/orders/${o.id}`}
+										to={`/admin/orders/${o.orderNumber || o.id}`}
 									>
 										<span>View order</span>
 										<FiArrowRight className="w-4 h-4" />

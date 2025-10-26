@@ -12,10 +12,15 @@ import BackBtn from "../../components/ui/BackBtn";
 import BackToTopBtn from "../../components/ui/BackToTopBtn";
 
 const AdminOrderDetails = () => {
-	const { orderId } = useParams();
+	const params = useParams();
+	// Prefer friendly orderNumber param; fall back to legacy numeric id if present
+	const rawKey = params.orderNumber ?? params.orderId;
+	const isOrderNumber = typeof rawKey === 'string' && /^ORD\d{12}$/.test(rawKey);
+	const orderNumber = isOrderNumber ? rawKey : undefined;
+	const orderId = !isOrderNumber && rawKey != null ? rawKey : undefined;
 	const navigate = useNavigate();
-	// Request order in admin mode to ensure API endpoint /api/orders/:id is used
-	const { order: foundOrder, loading, error, reload } = useOrders({ orderId, admin: true });
+	// Request order in admin mode; use orderNumber when available
+	const { order: foundOrder, loading, error, reload } = useOrders({ orderId, orderNumber, admin: true });
 	const [order, setOrder] = useState(foundOrder);
 	const [productCache, setProductCache] = useState({});
 
@@ -254,14 +259,18 @@ const AdminOrderDetails = () => {
 			</div>
 			<main className="mx-auto w-full max-w-screen-2xl py-6 px-5 md:px-25 relative">
 				<div className="flex items-baseline justify-between mb-8 pb-2 px-0">
-					<div className="flex flex-col md:flex-row items-baseline gap-0 md:gap-4">
-						<h1 className="text-6xl font-semibold tracking-tight text-gray-900">Order #{order?.id ?? orderId}</h1>
-						<a
-							href="#"
-							className="text-sm font-medium text-[#09a84e] hover:underline hover:text-[#0bd964] flex items-center gap-1 mt-2 md:mt-0"
-						>
-							View invoice <FiArrowRight className="inline-block ml-1" aria-hidden="true" />
-						</a>
+					<div className="flex-1">
+						<div className="flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-4">
+							<div className="flex flex-col">
+								<h1 className="text-6xl font-semibold tracking-tight text-gray-900">Order #{order?.orderNumber ?? order?.id ?? rawKey}</h1>
+								<a
+									href="#"
+									className="mt-3 inline-flex items-center gap-2 px-3 py-2 bg-white border-2 border-gray-200 text-sm font-medium text-[#09a84e] hover:bg-gray-50"
+								>
+									View invoice <FiArrowRight className="inline-block" aria-hidden="true" />
+								</a>
+							</div>
+						</div>
 					</div>
 					<div className="flex items-baseline gap-4 justify-end">
 						<div className="text-md text-gray-500 text-right">
@@ -296,7 +305,7 @@ const AdminOrderDetails = () => {
 								<button
 									onClick={applyStatusUpdate}
 									disabled={saving || (selectedProgress === -1 && orderProgress >= 1)}
-									className={`text-white text-sm font-medium px-3 py-2 rounded-md ${saving ? 'bg-gray-300 cursor-wait' : (selectedProgress === -1 && orderProgress >= 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#09a84e] hover:bg-[#0bd964]')}`}
+									className={`text-white bg-black text-sm font-medium px-3 py-2 ${saving ? 'bg-gray-300 cursor-wait' : (selectedProgress === -1 && orderProgress >= 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#09a84e] hover:bg-[#0bd964]')}`}
 									title={saving ? 'Saving…' : (selectedProgress === -1 && orderProgress >= 1 ? 'Cannot cancel after processing has started' : 'Update order status')}
 								>
 									{saving ? 'Updating…' : 'Update'}
