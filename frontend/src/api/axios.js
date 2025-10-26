@@ -1,5 +1,5 @@
 // Central axios instance configuration
-// Uses Vite env variable VITE_API_BASE_URL or falls back to localhost:8080
+// Uses Vite env variable VITE_API_BASE_URL (no localhost fallback for deploys)
 // Adds basic request/response interceptors for logging and error normalization.
 
 import axios from 'axios';
@@ -51,7 +51,10 @@ function removeTokenInStorage(preferredKey) {
 	try { localStorage.removeItem(preferredKey); } catch {}
 }
 
-const baseURL = import.meta?.env?.VITE_API_BASE_URL?.replace(/\/$/, '') || 'http://localhost:8080';
+// Read base URL from Vite env; if not provided, axios will use relative URLs
+const baseURL = import.meta?.env?.VITE_API_BASE_URL
+	? import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '')
+	: undefined;
 
 export const apiClient = axios.create({
 	baseURL,
