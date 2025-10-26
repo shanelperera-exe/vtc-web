@@ -53,7 +53,6 @@ public class CategoryServiceImpl implements CategoryService {
         category.setCatMainImg(materializeImage(category.getCatMainImg(), folder, slug + "-main"));
         category.setCatTileImage1(materializeImage(category.getCatTileImage1(), folder, slug + "-tile1"));
         category.setCatTileImage2(materializeImage(category.getCatTileImage2(), folder, slug + "-tile2"));
-        category.setCarouselImg(materializeImage(category.getCarouselImg(), folder, slug + "-carousel"));
 
         // Ensure id is null so JPA treats it as new
         category.setId(null);
@@ -145,19 +144,7 @@ public class CategoryServiceImpl implements CategoryService {
                 existing.setCatTileImage2(resolved);
             }
         }
-        if (updates.getCarouselImg() != null) {
-            String resolved = materializeImage(updates.getCarouselImg(), folder, slug + "-carousel");
-            boolean clearRequested = updates.getCarouselImg().trim().isEmpty();
-            if (resolved == null && clearRequested) {
-                if (existing.getCarouselImg() != null) {
-                    imageStorageService.deleteByUrl(existing.getCarouselImg());
-                    existing.setCarouselImg(null);
-                }
-            } else if (resolved != null && !resolved.equals(existing.getCarouselImg())) {
-                imageStorageService.deleteByUrl(existing.getCarouselImg());
-                existing.setCarouselImg(resolved);
-            }
-        }
+        // carousel image support removed
         // Status
         if (updates.getStatus() != null) {
             existing.setStatus(updates.getStatus());
@@ -261,8 +248,7 @@ public class CategoryServiceImpl implements CategoryService {
         boolean mainDel = imageStorageService.deleteByUrl(existing.getCatMainImg());
         boolean iconDel = imageStorageService.deleteByUrl(existing.getCatTileImage1());
         boolean carDel = imageStorageService.deleteByUrl(existing.getCatTileImage2());
-        boolean carouselDel = imageStorageService.deleteByUrl(existing.getCarouselImg());
-        log.debug("Category {} image cleanup results: main={}, icon={}, tile2={}, carouselImg={}", id, mainDel, iconDel, carDel, carouselDel);
+        log.debug("Category {} image cleanup results: main={}, icon={}, tile2={}", id, mainDel, iconDel, carDel);
         categoryRepository.deleteById(id);
     }
 }

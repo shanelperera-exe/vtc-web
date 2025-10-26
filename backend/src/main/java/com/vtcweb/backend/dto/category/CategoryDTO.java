@@ -30,7 +30,6 @@ public class CategoryDTO {
     private String catMainImg;      // formerly categoryImage, camelCase normalized
     private String catTileImage1;   // formerly categoryIcon
     private String catTileImage2;   // formerly carouselImage
-    private String carouselImg;     // new dedicated carousel image
 
     // Optional convenience field for UI; not persisted
     private Integer productCount;

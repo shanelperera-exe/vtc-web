@@ -11,6 +11,9 @@ CREATE DATABASE vtcdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 -- FLUSH PRIVILEGES;
 
 -- After running this, start the Spring Boot app with ddl-auto=create or update.
+-- Remove deprecated carousel image column from categories (safe for local dev resets)
+ALTER TABLE categories
+	DROP COLUMN IF EXISTS carousel_img_url;
 
 -- NOTE: The Product entity long text field has been renamed in code to 'detailedDescription'
 -- but still maps to the physical column 'description' for backward compatibility.

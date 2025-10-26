@@ -51,9 +51,7 @@ public class Category {
     @Column(name = "cat_tile_2_url")
     private String catTileImage2;  // Category image tile 2 (formerly carouselImage)
 
-    // New dedicated carousel image separate from legacy catTileImage2 if needed by UI
-    @Column(name = "carousel_img_url")
-    private String carouselImg;    // Additional carousel image URL
+    // Removed dedicated carousel image: carousel is now static on frontend
 
     /**
      * Activity status for the category. ACTIVE categories are visible/selectable; INACTIVE are hidden/disabled.
