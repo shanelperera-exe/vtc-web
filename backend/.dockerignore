@@ -1,0 +1,17 @@
+# Reduce docker build context for backend
+.git
+.gitignore
+.idea
+*.iml
+*.ipr
+*.iws
+
+# Maven / build outputs
+/target
+
+# Local env/config
+.env
+.env.*
+Dockerfile
+README.md
+/db-reset.sql
