@@ -197,7 +197,7 @@ export default function CategoryForm({ initial, onCancel, onSubmit, existing = [
             <ImageGuidelines />
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <ImageField
               label="Main Image (1:1)"
               helper="Category thumbnail"
@@ -218,13 +218,6 @@ export default function CategoryForm({ initial, onCancel, onSubmit, existing = [
               value={form.tileImage2}
               onChange={(v) => setForm((f) => ({ ...f, tileImage2: v }))}
               previewSize="w-full aspect-square"
-            />
-            <ImageField
-              label="Carousel Image (16:9)"
-              helper="Large banner"
-              value={form.carouselImage}
-              onChange={(v) => setForm((f) => ({ ...f, carouselImage: v }))}
-              previewSize="w-full aspect-video"
             />
           </div>
         </div>
