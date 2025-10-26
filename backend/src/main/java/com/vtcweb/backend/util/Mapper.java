@@ -42,7 +42,6 @@ public final class Mapper {
                 .catMainImg(category.getCatMainImg())
                 .catTileImage1(category.getCatTileImage1())
                 .catTileImage2(category.getCatTileImage2())
-                .carouselImg(category.getCarouselImg())
                 .createdAt(category.getCreatedAt())
                 .updatedAt(category.getUpdatedAt() != null ? category.getUpdatedAt() : category.getCreatedAt())
                 // productCount intentionally omitted to avoid lazy init issues
@@ -67,7 +66,6 @@ public final class Mapper {
     category.setCatMainImg(dto.getCatMainImg());
     category.setCatTileImage1(dto.getCatTileImage1());
     category.setCatTileImage2(dto.getCatTileImage2());
-    category.setCarouselImg(dto.getCarouselImg());
         return category;
     }
 

@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.Map;
 
 /**
- * Endpoints for uploading category related images (main, icon, carousel).
+ * Endpoints for uploading category related images (main, tile1, tile2).
  * Uses the generic {@link ImageStorageService} (Cloudinary implementation) and persists
  * the resulting URL into the appropriate field on the Category entity.
  */
@@ -35,8 +35,7 @@ public class CategoryImageController {
      * Accepted values (new naming only):
      *  - main     -> catMainImg
      *  - tile1    -> catTileImage1
-     *  - tile2    -> catTileImage2
-     *  - carousel -> carouselImg (dedicated carousel / banner usage)
+    *  - tile2    -> catTileImage2
      * If omitted defaults to 'main'. Legacy slot names (icon, carousel2, carousel(alias for tile2)) are no longer accepted.
      */
     @PostMapping(value = "/{categoryId}/image/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -49,8 +48,8 @@ public class CategoryImageController {
             throw new IllegalArgumentException("file is required");
         }
         String normalizedSlot = (slot == null || slot.isBlank()) ? "main" : slot.trim().toLowerCase();
-        if (!(normalizedSlot.equals("main") || normalizedSlot.equals("tile1") || normalizedSlot.equals("tile2") || normalizedSlot.equals("carousel"))) {
-            throw new IllegalArgumentException("slot must be one of: main, tile1, tile2, carousel");
+        if (!(normalizedSlot.equals("main") || normalizedSlot.equals("tile1") || normalizedSlot.equals("tile2"))) {
+            throw new IllegalArgumentException("slot must be one of: main, tile1, tile2");
         }
 
         // Desired folder structure: categories/{category-name-slug}
@@ -68,7 +67,6 @@ public class CategoryImageController {
         switch (normalizedSlot) {
             case "tile1" -> existing.setCatTileImage1(uploaded.url());
             case "tile2" -> existing.setCatTileImage2(uploaded.url());
-            case "carousel" -> existing.setCarouselImg(uploaded.url());
             default -> existing.setCatMainImg(uploaded.url());
         }
         Category updated = categoryService.update(categoryId, existing); // reuse update logic
@@ -80,7 +78,6 @@ public class CategoryImageController {
                 "url", switch (normalizedSlot) {
                     case "tile1" -> updated.getCatTileImage1();
                     case "tile2" -> updated.getCatTileImage2();
-                    case "carousel" -> updated.getCarouselImg();
                     default -> updated.getCatMainImg();
                 },
                 "publicId", uploaded.publicId(),
