@@ -15,6 +15,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import orderApi from '../api/orderApi';
 import { useNavigate } from 'react-router-dom';
+import { FiShoppingCart } from 'react-icons/fi';
 import addressApi from '../api/addressApi';
 import userApi from '../api/userApi';
 
@@ -257,7 +258,7 @@ export default function Checkout() {
 				const res = await (await import('../api/couponApi')).default.applyCoupon({ code: couponCode, subtotal })
 				if (res && res.valid) {
 					setCouponDiscount(res.discountAmount || 0)
-					setCouponMessage(`Applied: LKR ${res.discountAmount}.`)
+					setCouponMessage(`Applied: ${new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR', minimumFractionDigits: 2 }).format(Number(res.discountAmount || 0))}.`)
 				} else {
 					setCouponDiscount(0)
 					setCouponMessage(res?.message || 'Invalid coupon')
@@ -275,7 +276,17 @@ export default function Checkout() {
 		<div className="min-h-screen bg-gray-50">
 			<Navbar />
 			<div className="mx-auto max-w-6xl px-4 py-6">
-				<h1 className="text-6xl md:text-6xl lg:text-6xl font-semibold text-gray-900 mb-3 md:mb-4 uppercase">Checkout</h1>
+				<div className="flex items-center justify-between mb-3 md:mb-4">
+					<h1 className="text-6xl md:text-6xl lg:text-6xl font-semibold text-gray-900">Checkout</h1>
+					<button
+						type="button"
+						onClick={() => navigate('/cart')}
+						className="inline-flex items-center gap-2 px-4 py-2.5 text-base font-medium text-white bg-black border-0 rounded-none hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800"
+					>
+						<FiShoppingCart className="w-4 h-4" aria-hidden="true" />
+						<span>View cart</span>
+					</button>
+				</div>
 
 				<Stepper active={active} onStepClick={(idx) => setActive(idx)} />
 
@@ -290,13 +301,13 @@ export default function Checkout() {
 						<div className="border-[3px] bg-white p-5 shadow-sm">
 							{active === 0 && (
 								<section>
-									<h2 className="text-lg font-semibold mb-4">Billing Details</h2>
+									<h2 className="text-2xl font-semibold mb-4">Billing Details</h2>
 									<BillingForm data={billing} onChange={setBilling} errors={errors} clearError={clearError} />
 								</section>
 							)}
 							{active === 1 && (
 								<section>
-									<h2 className="text-lg font-semibold mb-4">Delivery Details</h2>
+									<h2 className="text-2xl font-semibold mb-4">Delivery Details</h2>
 									<DeliveryForm
 										data={delivery}
 										onChange={setDelivery}
@@ -309,7 +320,7 @@ export default function Checkout() {
 							)}
 							{active === 2 && (
 								<section>
-									<h2 className="text-lg font-semibold mb-4">Payment</h2>
+									<h2 className="text-2xl font-semibold mb-4">Payment</h2>
 									<PaymentForm data={payment} onChange={setPayment} errors={errors} clearError={clearError}
 										couponCode={couponCode}
 										onApplyCoupon={doApplyCoupon}

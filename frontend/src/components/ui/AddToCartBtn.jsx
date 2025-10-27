@@ -9,6 +9,15 @@ const AddToCartBtn = ({ product, quantity = 1, className = '', fullWidth = false
   const { notify } = useNotifications()
 
   const handleAdd = () => {
+    // Basic client-side stock validation: prefer explicit `product.stock` if provided.
+    const stockVal = product?.stock ?? product?.unitsLeft ?? product?.availableStock ?? null
+    const parsedStock = stockVal != null ? Number(stockVal) : null
+    if (parsedStock != null && Number(quantity) > parsedStock) {
+      const name = product?.name ?? 'Item'
+      notify({ type: 'error', text: `Cannot add ${quantity} × ${name} — only ${parsedStock} available`, ttl: 4500 })
+      return
+    }
+
     addToCart(product, quantity)
     const name = product?.name ?? 'Item'
     notify({ type: 'cart', text: `Added ${quantity} × ${name} to cart`, ttl: 3500 })

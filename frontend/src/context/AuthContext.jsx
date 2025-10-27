@@ -132,9 +132,19 @@ export const AuthProvider = ({ children }) => {
       try { setTimeout(() => window.location.reload(), 200); } catch { }
       return res.user;
     } catch (e) {
-      const msg = e.message || 'Login failed';
-      setAuthError(msg);
-      notifier?.notify({ type: 'error', text: msg });
+      const rawMsg = (e && e.message) ? e.message : '';
+      // Map common technical errors to a user-friendly message for login failures
+      const isAuthFailure = (e && e.response && e.response.status === 401)
+        || /invalid refresh token/i.test(rawMsg)
+        || /invalid access token/i.test(rawMsg)
+        || /401/.test(rawMsg)
+        || /unauthorized/i.test(rawMsg);
+
+      const friendly = 'Unable to sign in. Please check your email and password.';
+      const msgToShow = isAuthFailure ? friendly : (rawMsg || 'Login failed');
+
+      setAuthError(msgToShow);
+      notifier?.notify({ type: 'error', text: msgToShow });
       throw e;
     }
   }, [notifier]);

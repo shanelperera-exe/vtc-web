@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { FiLogIn, FiUserPlus } from 'react-icons/fi';
+import { FiLogIn, FiUserPlus, FiAlertTriangle } from 'react-icons/fi';
 import { validateEmail, validatePassword } from '../../utils/validation';
 import AuthButton from "../ui/AuthBtn";
 import ForgotPasswordPopup from "./ForgotPasswordPopup";
@@ -32,7 +32,10 @@ const LoginForm = ({ onSubmit, onForgotPassword, onShowAllAuth, onCreateAccount,
             }
             onSubmit?.({ email, password });
         } catch (err) {
-            setLocalError(err.message || 'Login failed');
+                // AuthContext now maps technical errors to friendly messages and notifies.
+                // Avoid showing raw error messages here (like token errors) to users —
+                // prefer the authError from context (which is user-friendly) or notifications.
+                setLocalError(null);
         } finally { setSubmitting(false); }
     };
 
@@ -112,7 +115,10 @@ const LoginForm = ({ onSubmit, onForgotPassword, onShowAllAuth, onCreateAccount,
 
                 <div aria-live="assertive" className="min-h-[1rem]">
                     {(localError || authError) && (
-                        <div className="mb-3 text-sm text-red-600" role="alert">{localError || authError}</div>
+                        <div className="mb-3 flex items-start gap-2 text-sm text-red-600" role="alert">
+                            <FiAlertTriangle aria-hidden="true" className="mt-0.5" />
+                            <span>{localError || authError}</span>
+                        </div>
                     )}
                 </div>
                 <AuthButton type="submit" disabled={submitting || formInvalid} bgClass={primaryBtnClass ?? 'bg-emerald-600 text-white'}>

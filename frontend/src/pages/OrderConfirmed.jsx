@@ -16,11 +16,15 @@ import {
   ReceiptText,
   Truck,
   User,
+  Mail,
+  DollarSign,
 } from 'lucide-react';
 
 function formatCurrency(v) {
   if (v == null) return '—';
-  return `LKR ${Number(v).toLocaleString()}`;
+  // Always show two decimal places and use locale thousands separator
+  const n = Number(v) || 0;
+  return `LKR ${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function shortDate(d) {
@@ -35,15 +39,53 @@ function shortDate(d) {
 
 function formatAddress(addr) {
   if (!addr) return '—';
+  // Support multiple shapes returned by different APIs (line1 / address1 / street, state / province, postalCode / postal)
+  const line1 = addr.line1 || addr.address1 || addr.street || addr.address || addr.line || '';
+  const line2 = addr.line2 || addr.address2 || addr.address_2 || '';
+  const city = addr.city || addr.town || addr.village || '';
+  const state = addr.state || addr.province || '';
+  const district = addr.district || '';
+  const postal = addr.postalCode || addr.postal || addr.postcode || addr.zip || '';
+  const company = addr.company || addr.org || addr.organization || '';
+  const country = addr.country || '';
+
   const parts = [
-    addr.company,
-    addr.line1,
-    addr.line2,
-    [addr.city, addr.state].filter(Boolean).join(', '),
-    [addr.district, addr.postalCode].filter(Boolean).join(' '),
-    addr.country,
+    company,
+    line1,
+    line2,
+    [city, state].filter(Boolean).join(', '),
+    [district, postal].filter(Boolean).join(' '),
+    country,
   ].filter(Boolean);
   return parts.join('\n');
+}
+
+function getOrderName(o) {
+  if (!o) return null;
+  const fromFlat = [o.customerFirstName, o.customerLastName].filter(Boolean).join(' ');
+  if (fromFlat) return fromFlat;
+  if (o.customer && (o.customer.firstName || o.customer.lastName)) return [o.customer.firstName, o.customer.lastName].filter(Boolean).join(' ');
+  if (o.customer && o.customer.name) return o.customer.name;
+  if (o.name) return o.name;
+  return null;
+}
+
+function getOrderEmail(o) {
+  if (!o) return null;
+  return o.customerEmail || o.customer?.email || o.email || null;
+}
+
+function getOrderPhone(o) {
+  if (!o) return null;
+  return o.customerPhone || o.customer?.phone || o.phone || null;
+}
+
+function getAddress(o, which) {
+  if (!o) return null;
+  // prefer explicit DTO properties
+  if (which === 'billing') return o.billingAddress || o.billing || o.billing_address || o.billingAddressDTO || null;
+  if (which === 'shipping') return o.shippingAddress || o.shipping || o.shipping_address || o.shippingAddressDTO || null;
+  return null;
 }
 
 export default function OrderConfirmed() {
@@ -62,8 +104,11 @@ export default function OrderConfirmed() {
     let active = true;
     async function fetchOrder() {
       if (!id) return;
-      // if we already have full order with items, skip
-      if (order && Array.isArray(order.items) && order.items.length > 0) return;
+      // If we already have an order with items and contact/address info, skip fetch.
+      // But if items are present but billing/shipping/contact are missing (e.g. location.state from checkout may have partial data), fetch full order details.
+      const hasItems = order && Array.isArray(order.items) && order.items.length > 0;
+      const hasContactOrAddress = order && (order.billingAddress || order.shippingAddress || order.customerPhone || order.customerFirstName || order.customerEmail);
+      if (hasItems && hasContactOrAddress) return;
       setLoading(true);
       try {
         const o = await orderApi.getOrder(id, { withItems: true });
@@ -76,7 +121,7 @@ export default function OrderConfirmed() {
     }
     fetchOrder();
     return () => { active = false; };
-  }, [id]);
+  }, [id, order]);
 
   // When order items load, fetch primary product image for any items missing imageUrl
   useEffect(() => {
@@ -144,6 +189,15 @@ export default function OrderConfirmed() {
   const estimated = order?.estimatedDeliveryDate || null;
   const status = order?.status || 'PLACED';
   const orderNumber = order?.orderNumber || id || '—';
+  const displayName = getOrderName(order) || '—';
+  const displayEmail = getOrderEmail(order) || '—';
+  const displayPhone = getOrderPhone(order) || '—';
+  const displayBilling = formatAddress(getAddress(order, 'billing'));
+  const displayShipping = formatAddress(getAddress(order, 'shipping'));
+  const displayPaymentMethod = (order?.paymentInfo?.cardType ? order.paymentInfo.cardType : (order?.paymentMethod || '—')).replaceAll ? String(order?.paymentMethod || (order?.paymentInfo?.cardType || '—')).replaceAll('_',' ') : (order?.paymentMethod || order?.paymentInfo?.cardType || '—');
+  const displayCardLast4 = order?.paymentInfo?.cardLast4 ? `•••• ${order.paymentInfo.cardLast4}` : null;
+  const displayCardExpiry = (order?.paymentInfo?.cardExpMonth || order?.paymentInfo?.cardExpYear) ? `${order.paymentInfo.cardExpMonth || ''}/${order.paymentInfo.cardExpYear ? String(order.paymentInfo.cardExpYear).slice(-2) : ''}` : null;
+  const isCash = String(order?.paymentMethod || displayPaymentMethod || '').toUpperCase().includes('CASH');
 
   // compute totals fallback
   const itemCost = order?.subtotal != null
@@ -182,7 +236,7 @@ export default function OrderConfirmed() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+  <div className="bg-white rounded-2xl shadow-sm overflow-hidden border-2 border-gray-100">
           {/* Header */}
           <div className="bg-gradient-to-r from-emerald-800 to-emerald-700 text-white px-5 sm:px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="space-y-1">
@@ -207,10 +261,10 @@ export default function OrderConfirmed() {
               <button onClick={onDownloadInvoice} className="inline-flex items-center gap-2 bg-white/95 hover:bg-white text-emerald-800 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium shadow-sm">
                 <Download className="h-4 w-4" /> Invoice
               </button>
-              <button onClick={() => window.print()} className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium border border-white/20">
+              <button onClick={() => window.print()} className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium border-2 border-white/20">
                 <Printer className="h-4 w-4" /> Print
               </button>
-              <button onClick={onTrack} className="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-emerald-900 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold">
+              <button onClick={onTrack} className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold">
                 <Truck className="h-4 w-4" /> Track
               </button>
             </div>
@@ -221,10 +275,14 @@ export default function OrderConfirmed() {
             {/* Left: Items */}
             <div className="lg:col-span-2">
               <div className="space-y-4">
+                {/* Test Order Items header */}
+                <div className="px-2 sm:px-0">
+                  <div className="text-xl font-semibold text-gray-700 mb-2">Order Items</div>
+                </div>
                 {loading && (
                   <div className="space-y-3">
                     {[...Array(3)].map((_, i) => (
-                      <div key={i} className="flex items-center gap-4 p-4 border animate-pulse">
+                      <div key={i} className="flex items-center gap-4 p-4 border-2 rounded-md animate-pulse">
                         <div className="w-16 h-16 bg-gray-200 rounded-md" />
                         <div className="flex-1 space-y-2">
                           <div className="h-3 w-1/2 bg-gray-200 rounded" />
@@ -264,7 +322,7 @@ export default function OrderConfirmed() {
                     return null;
                   })();
                   return (
-                    <div key={it.id || idx} className="flex items-center gap-4 bg-white p-4 border">
+                    <div key={it.id || idx} className="flex items-center gap-4 bg-white p-4 border-2 rounded-lg">
                       <img src={image} alt={title} className="w-16 h-16 object-cover bg-gray-50" />
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-medium text-gray-900 truncate">{title}</div>
@@ -282,8 +340,8 @@ export default function OrderConfirmed() {
                 })}
 
                 {/* Info grid */}
-                <div className="mt-4 border-t pt-5 grid grid-cols-1 sm:grid-cols-2 gap-4 lg:hidden">
-                  <div className="border p-4">
+                <div className="mt-4 border-t-2 pt-5 grid grid-cols-1 sm:grid-cols-2 gap-4 lg:hidden">
+                  <div className="border-2 rounded-lg p-4">
                     <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Payment</div>
                     <div className="flex items-start gap-3 text-sm text-gray-700">
                       <CreditCard className="h-4 w-4 text-gray-400 mt-0.5" />
@@ -299,7 +357,7 @@ export default function OrderConfirmed() {
                       </div>
                     </div>
                   </div>
-                  <div className="border p-4">
+                  <div className="border-2 rounded-lg p-4">
                     <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Delivery</div>
                     <div className="flex items-start gap-3 text-sm text-gray-700">
                       <Truck className="h-4 w-4 text-gray-400 mt-0.5" />
@@ -312,55 +370,64 @@ export default function OrderConfirmed() {
 
             {/* Right: Summary + addresses */}
             <aside className="space-y-4">
-              <div className="border p-4 bg-gray-50">
-                <div className="text-sm text-gray-600">Items subtotal</div>
-                <div className="mt-1 text-right font-medium text-gray-900">{formatCurrency(itemCost)}</div>
+              <div className="border-2 rounded-lg p-4 bg-gray-50">
+                <div className="text-sm mt-0 flex justify-between items-center text-gray-600"><span>Items subtotal</span><span className="font-medium text-gray-900">{formatCurrency(itemCost)}</span></div>
 
                 <div className="mt-3 text-sm flex justify-between text-gray-600"><span>Shipping</span><span>{formatCurrency(shippingCost)}</span></div>
                 <div className="mt-1 text-sm flex justify-between text-gray-600"><span>Tax</span><span>{formatCurrency(tax)}</span></div>
                 <div className="mt-1 text-sm flex justify-between text-gray-600"><span>Discount</span><span className="text-emerald-700">-{formatCurrency(coupon)}</span></div>
 
-                <div className="mt-4 border-t pt-3 flex justify-between items-center">
+                <div className="mt-4 border-t-2 pt-3 flex justify-between items-center">
                   <div className="text-sm font-medium text-gray-700">Total</div>
                   <div className="text-lg font-semibold">{formatCurrency(totalCost)}</div>
                 </div>
 
                 <div className="mt-4 grid grid-cols-2 gap-2">
-                  <button onClick={onDownloadInvoice} className="inline-flex items-center justify-center gap-2 px-3 py-2 bg-white text-gray-800 text-xs font-medium border">
+                  <button onClick={onDownloadInvoice} className="inline-flex items-center justify-center gap-2 px-3 py-2 bg-white text-gray-800 text-xs font-medium border-2">
                     <Download className="h-4 w-4" /> Invoice
                   </button>
-                  <button onClick={onTrack} className="inline-flex items-center justify-center gap-2 px-3 py-2 bg-emerald-800 text-white text-xs font-semibold">
+                  <button onClick={onTrack} className="inline-flex items-center justify-center gap-2 px-3 py-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold">
                     <Truck className="h-4 w-4" /> Track
                   </button>
                 </div>
               </div>
 
-              <div className="border p-4">
+              <div className="border-2 rounded-lg p-4">
                 <div className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2"><User className="h-4 w-4 text-gray-500" /> Contact</div>
                 <div className="space-y-1 text-sm text-gray-700">
-                  <div className="flex items-center gap-2"><User className="h-4 w-4 text-gray-400" /><span>{[order?.customerFirstName, order?.customerLastName].filter(Boolean).join(' ') || '—'}</span></div>
-                  <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-gray-400" /><span>{order?.customerPhone || '—'}</span></div>
-                  <div className="flex items-center gap-2"><Home className="h-4 w-4 text-gray-400" /><span className="whitespace-pre-line">{formatAddress(order?.billingAddress)}</span></div>
+                  <div className="flex items-center gap-2"><User className="h-4 w-4 text-gray-400" /><span>{displayName}</span></div>
+                  <div className="flex items-center gap-2"><Mail className="h-4 w-4 text-gray-400" /><span>{displayEmail}</span></div>
+                  <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-gray-400" /><span>{displayPhone}</span></div>
+                  <div className="flex items-center gap-2"><Home className="h-4 w-4 text-gray-400" /><span className="whitespace-pre-line">{displayBilling}</span></div>
                 </div>
               </div>
 
-              <div className="border p-4">
+              <div className="border-2 rounded-lg p-4">
+                <div className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">{isCash ? <DollarSign className="h-4 w-4 text-gray-500" /> : <CreditCard className="h-4 w-4 text-gray-500" />} Payment details</div>
+                <div className="space-y-1 text-sm text-gray-700">
+                  <div className="flex items-center gap-2">{isCash ? <DollarSign className="h-4 w-4 text-gray-400" /> : <CreditCard className="h-4 w-4 text-gray-400" />}<span className="font-medium">{displayPaymentMethod}</span></div>
+                  {displayCardLast4 && <div className="flex items-center gap-2"><span className="text-sm text-gray-600">{displayCardLast4}</span>{displayCardExpiry && <span className="text-sm text-gray-500"> • Exp {displayCardExpiry}</span>}</div>}
+                  {order?.paymentInfo?.cardType && order?.paymentInfo?.cardLast4 == null && <div className="text-sm text-gray-600">{String(order.paymentMethod || '').replaceAll('_',' ')}</div>}
+                </div>
+              </div>
+
+              <div className="border-2 rounded-lg p-4">
                 <div className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2"><MapPin className="h-4 w-4 text-gray-500" /> Shipping Address</div>
-                <div className="text-sm text-gray-700 whitespace-pre-line">{formatAddress(order?.shippingAddress)}</div>
+                <div className="text-sm text-gray-700 whitespace-pre-line">{displayShipping}</div>
               </div>
             </aside>
           </div>
 
           {error && (
             <div className="px-5 sm:px-6 pb-6 -mt-3">
-              <div className="border border-rose-200 bg-rose-50 text-rose-800 px-4 py-3 text-sm">{String(error)}</div>
+              <div className="border-2 border-rose-200 rounded-lg bg-rose-50 text-rose-800 px-4 py-3 text-sm">{String(error)}</div>
             </div>
           )}
         </div>
 
         {/* Footer actions */}
         <div className="flex justify-center mt-8">
-          <button onClick={onContinueShopping} className="bg-white px-4 py-2 shadow-sm text-sm font-medium rounded-full border hover:bg-gray-50">Continue shopping</button>
+          <button onClick={onContinueShopping} className="bg-white px-4 py-2 shadow-sm text-sm font-medium rounded-full border-2 hover:bg-gray-50">Continue shopping</button>
         </div>
       </div>
     </div>

@@ -38,8 +38,7 @@ const StyledWrapper = styled.div`
 		width: 20px;
 		height: 20px;
 		position: relative;
-		border: 2px solid var(--main-color);
-		box-shadow: 3px 3px var(--main-color);
+	border: 2px solid var(--main-color);
 		background-color: var(--bg-color);
 		transition: all 0.3s;
 	}

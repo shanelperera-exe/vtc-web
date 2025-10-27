@@ -1,10 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion'
 
 const PlaceOrder = ({ onClick, disabled = false, children = 'Place Order' }) => {
   return (
     <StyledWrapper>
-      <button type="button" className="button pay-btn" onClick={onClick} disabled={disabled}>
+      <motion.button
+        type="button"
+        className="button pay-btn"
+        onClick={onClick}
+        disabled={disabled}
+        whileHover={disabled ? {} : { scale: 1.03, y: -2 }}
+        whileTap={disabled ? {} : { scale: 0.97 }}
+      >
         <span className="btn-text">{children}</span>
         <div className="icon-container">
           <svg viewBox="0 0 24 24" className="icon card-icon" aria-hidden="true">
@@ -23,7 +31,7 @@ const PlaceOrder = ({ onClick, disabled = false, children = 'Place Order' }) => 
             <path d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z" fill="currentColor" />
           </svg>
         </div>
-      </button>
+      </motion.button>
     </StyledWrapper>
   );
 }
@@ -31,11 +39,11 @@ const PlaceOrder = ({ onClick, disabled = false, children = 'Place Order' }) => 
 const StyledWrapper = styled.div`
   .button {
     font-family: "Poppins", sans-serif;
-    font-size: 0.9rem;
+    font-size: 1.125rem; /* match Prev/Next larger text */
     border: 2px solid black;
-    padding: 0.3rem 0.7rem;
+    padding: 0.45rem 0.75rem; /* match Prev/Next padding */
     background-color: #0bd964;
-    box-shadow: 5px 5px 0px black;
+    box-shadow: none;
     cursor: pointer;
     text-align: center;
     font-weight: 700;
@@ -45,16 +53,15 @@ const StyledWrapper = styled.div`
     gap: 0.5rem;
     transition: all 0.3s ease;
   }
-
   .button:not(:disabled):hover {
-    box-shadow: 0 0 0 black;
-    transform: translateY(3px) translateX(3px);
+    /* keep a subtle hover without transform */
+    filter: brightness(0.98);
   }
 
   .button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    box-shadow: 5px 5px 0px black;
+    box-shadow: none;
     transform: none;
   }
 

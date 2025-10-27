@@ -4,6 +4,7 @@ import CartItem from './CartItem'
 import { useCart } from '../../context/CartContext.jsx'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { FiShoppingCart, FiCreditCard } from 'react-icons/fi'
 
 export default function CartSidebar({ open, onClose }) {
     const navigate = useNavigate()
@@ -67,6 +68,7 @@ export default function CartSidebar({ open, onClose }) {
                                                     type="button"
                                                     onClick={() => { onClose(); navigate('/checkout'); }}
                                                 >
+                                                    <FiCreditCard className="size-5" aria-hidden="true" />
                                                     <span className="btn-label">Checkout</span>
                                                 </button>
                                             </StyledAction>
@@ -79,6 +81,7 @@ export default function CartSidebar({ open, onClose }) {
                                                         navigate('/cart')
                                                     }}
                                                 >
+                                                    <FiShoppingCart className="size-5" aria-hidden="true" />
                                                     <span className="btn-label">View cart</span>
                                                 </button>
                                             </StyledAction>
@@ -134,7 +137,7 @@ const StyledAction = styled.div`
         position: relative;
         cursor: pointer;
         overflow: hidden;
-        border: 2px solid var(--btn-border);
+    border: ${p => (p.$variant === 'add' ? '2px solid var(--btn-border)' : 'none')};
         transition: color 0.5s, transform 0.2s ease;
         z-index: 1;
         font-size: ${p => (p.$fontSizePx ? `${p.$fontSizePx}px` : '16px')};

@@ -18,5 +18,6 @@ public class CartItemResponseDTO {
 	private BigDecimal price;
 	private Integer quantity;
 	private BigDecimal itemTotal;
+	private Integer availableStock;
 	private Map<String, String> attributes;
 }
