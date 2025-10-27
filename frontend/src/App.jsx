@@ -17,6 +17,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminLogin from './pages/AdminLogin';
 import Contact from './pages/Contact';
+import Help from './pages/Help';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext.jsx'
 import { NotificationProvider } from './components/ui/Notification';
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/cart" element={<ShoppingCart />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/help" element={<Help />} />
                 <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />

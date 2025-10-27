@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "product_images", indexes = { // Indexes to optimize queries filtering by product_id and variation_id
+@Table(name = "product_images", indexes = {
         @Index(name = "idx_product_images_product_id", columnList = "product_id"),
         @Index(name = "idx_product_images_variation_id", columnList = "variation_id")
 })
@@ -17,7 +17,8 @@ import lombok.*;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ProductImage {
 
-    // Enum to define image types(Enum -> a special "class" that represents a group of constants (unchangeable variables, like final variables)
+    // Enum to define image types(Enum -> a special "class" that represents a group
+    // of constants (unchangeable variables, like final variables)
     public enum ImageType {
         PRIMARY,
         SECONDARY

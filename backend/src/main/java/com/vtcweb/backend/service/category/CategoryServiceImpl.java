@@ -21,11 +21,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
-    private final ImageStorageService imageStorageService; // for cloud cleanup & uploads
+    private final ImageStorageService imageStorageService;
 
     @Override
     public Category create(Category category) {
-        if (category == null) throw new IllegalArgumentException("category must not be null");
+        if (category == null)
+            throw new IllegalArgumentException("category must not be null");
         if (category.getName() == null || category.getName().isBlank()) {
             throw new IllegalArgumentException("category.name must not be blank");
         }
@@ -47,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
             // Auto-generate if not supplied
             category.setCode(generateCodeFromName(category.getName()));
         }
-        // Materialize any inline image payloads (data URIs) prior to initial persist
+
         String slug = slugify(category.getName());
         String folder = buildCategoryFolder(slug);
         category.setCatMainImg(materializeImage(category.getCatMainImg(), folder, slug + "-main"));
@@ -66,7 +67,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public Category getById(Long id) {
-        if (id == null) throw new IllegalArgumentException("id must not be null");
+        if (id == null)
+            throw new IllegalArgumentException("id must not be null");
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Category not found: id=" + id));
     }
@@ -74,21 +76,25 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public Page<Category> list(Pageable pageable) {
-        if (pageable == null) throw new IllegalArgumentException("pageable must not be null");
+        if (pageable == null)
+            throw new IllegalArgumentException("pageable must not be null");
         return categoryRepository.findAll(pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Category> list(Pageable pageable, com.vtcweb.backend.model.entity.category.CategoryStatus status) {
-        if (pageable == null) throw new IllegalArgumentException("pageable must not be null");
-        if (status == null) return categoryRepository.findAll(pageable);
+        if (pageable == null)
+            throw new IllegalArgumentException("pageable must not be null");
+        if (status == null)
+            return categoryRepository.findAll(pageable);
         return categoryRepository.findByStatus(status, pageable);
     }
 
     @Override
     public Category update(Long id, Category updates) {
-        if (updates == null) throw new IllegalArgumentException("updates must not be null");
+        if (updates == null)
+            throw new IllegalArgumentException("updates must not be null");
         Category existing = getById(id);
         // Name
         if (updates.getName() != null && !updates.getName().isBlank()) {
@@ -100,7 +106,8 @@ public class CategoryServiceImpl implements CategoryService {
             existing.setName(newName);
         }
         // Description and image fields
-        if (updates.getDescription() != null) existing.setDescription(updates.getDescription());
+        if (updates.getDescription() != null)
+            existing.setDescription(updates.getDescription());
 
         String slug = slugify(existing.getName());
         String folder = buildCategoryFolder(slug);
@@ -144,11 +151,11 @@ public class CategoryServiceImpl implements CategoryService {
                 existing.setCatTileImage2(resolved);
             }
         }
-        // carousel image support removed
         // Status
         if (updates.getStatus() != null) {
             existing.setStatus(updates.getStatus());
         }
+
         // Code (allow change; does NOT retroactively regenerate existing product SKUs)
         if (updates.getCode() != null) {
             String trimmed = updates.getCode().trim().toUpperCase();
@@ -168,13 +175,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * Build a 3-character code from a category name favoring consonants after the first letter.
-     * Example: Homeware -> HMW, Plastic -> PLS, Stationary -> STT (first + next consonants).
+     * Build a 3-character code from a category name favoring consonants after the
+     * first letter.
+     * Example: Homeware -> HMW, Plastic -> PLS, Stationary -> STT (first + next
+     * consonants).
      */
     private String generateCodeFromName(String name) {
-        if (name == null) return null;
+        if (name == null)
+            return null;
         String cleaned = name.replaceAll("[^A-Za-z0-9]", "").toUpperCase();
-        if (cleaned.isEmpty()) return null;
+        if (cleaned.isEmpty())
+            return null;
         StringBuilder code = new StringBuilder();
         code.append(cleaned.charAt(0));
         String vowels = "AEIOU";
@@ -195,12 +206,14 @@ public class CategoryServiceImpl implements CategoryService {
                 code.append(c);
             }
         }
-        while (code.length() < 3) code.append('X');
-        return code.substring(0,3);
+        while (code.length() < 3)
+            code.append('X');
+        return code.substring(0, 3);
     }
 
     private String materializeImage(String raw, String folder, String nameHint) {
-        if (raw == null) return null;
+        if (raw == null)
+            return null;
         String trimmed = raw.trim();
         if (trimmed.isEmpty()) {
             return null; // explicit clear
@@ -224,7 +237,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private String slugify(String name) {
-        if (name == null) return "category";
+        if (name == null)
+            return "category";
         String normalized = name.trim().toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
         if (normalized.isBlank()) {
             normalized = "category";
@@ -239,7 +253,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Long id) {
-        if (id == null) throw new IllegalArgumentException("id must not be null");
+        if (id == null)
+            throw new IllegalArgumentException("id must not be null");
         Category existing = getById(id);
         if (productRepository.existsByCategory_Id(existing.getId())) {
             throw new ConflictException("Cannot delete category with existing products: id=" + id);

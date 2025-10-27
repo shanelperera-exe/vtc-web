@@ -24,7 +24,8 @@ public class UserAddressServiceImpl implements UserAddressService {
     private final ShippingAddressRepository shippingRepo;
     private final UserRepository userRepository;
 
-    public UserAddressServiceImpl(BillingAddressRepository billingRepo, ShippingAddressRepository shippingRepo, UserRepository userRepository) {
+    public UserAddressServiceImpl(BillingAddressRepository billingRepo, ShippingAddressRepository shippingRepo,
+            UserRepository userRepository) {
         this.billingRepo = billingRepo;
         this.shippingRepo = shippingRepo;
         this.userRepository = userRepository;
@@ -32,12 +33,15 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     private User currentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth.getName() == null) throw new NotFoundException("User not authenticated");
-        return userRepository.findByEmailIgnoreCase(auth.getName()).orElseThrow(() -> new NotFoundException("User not found"));
+        if (auth == null || auth.getName() == null)
+            throw new NotFoundException("User not authenticated");
+        return userRepository.findByEmailIgnoreCase(auth.getName())
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     private BillingAddressDTO toDto(BillingAddress e) {
-        if (e == null) return null;
+        if (e == null)
+            return null;
         return BillingAddressDTO.builder()
                 .id(e.getId())
                 .name(e.getName())
@@ -54,7 +58,8 @@ public class UserAddressServiceImpl implements UserAddressService {
     }
 
     private BillingAddress toEntity(BillingAddressDTO d) {
-        if (d == null) return null;
+        if (d == null)
+            return null;
         return BillingAddress.builder()
                 .id(d.getId())
                 .name(d.getName())
@@ -71,7 +76,8 @@ public class UserAddressServiceImpl implements UserAddressService {
     }
 
     private ShippingAddressDTO toDto(ShippingAddress e) {
-        if (e == null) return null;
+        if (e == null)
+            return null;
         return ShippingAddressDTO.builder()
                 .id(e.getId())
                 .name(e.getName())
@@ -88,7 +94,8 @@ public class UserAddressServiceImpl implements UserAddressService {
     }
 
     private ShippingAddress toEntity(ShippingAddressDTO d) {
-        if (d == null) return null;
+        if (d == null)
+            return null;
         return ShippingAddress.builder()
                 .id(d.getId())
                 .name(d.getName())
@@ -119,7 +126,8 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     @Transactional(readOnly = true)
     public List<BillingAddressDTO> listBillingForUser(Long userId) {
-        if (userId == null) throw new IllegalArgumentException("userId required");
+        if (userId == null)
+            throw new IllegalArgumentException("userId required");
         User u = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
         return billingRepo.findByUser(u).stream().map(this::toDto).collect(Collectors.toList());
     }
@@ -127,7 +135,8 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     @Transactional(readOnly = true)
     public List<ShippingAddressDTO> listShippingForUser(Long userId) {
-        if (userId == null) throw new IllegalArgumentException("userId required");
+        if (userId == null)
+            throw new IllegalArgumentException("userId required");
         User u = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
         return shippingRepo.findByUser(u).stream().map(this::toDto).collect(Collectors.toList());
     }
@@ -153,8 +162,10 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     public BillingAddressDTO updateBilling(Long id, BillingAddressDTO dto) {
         User u = currentUser();
-        BillingAddress e = billingRepo.findById(id).orElseThrow(() -> new NotFoundException("Billing address not found"));
-        if (!e.getUser().getId().equals(u.getId())) throw new NotFoundException("Billing address not found");
+        BillingAddress e = billingRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Billing address not found"));
+        if (!e.getUser().getId().equals(u.getId()))
+            throw new NotFoundException("Billing address not found");
         e.setName(dto.getName());
         e.setPhone(dto.getPhone());
         e.setCompany(dto.getCompany());
@@ -172,8 +183,10 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     public ShippingAddressDTO updateShipping(Long id, ShippingAddressDTO dto) {
         User u = currentUser();
-        ShippingAddress e = shippingRepo.findById(id).orElseThrow(() -> new NotFoundException("Shipping address not found"));
-        if (!e.getUser().getId().equals(u.getId())) throw new NotFoundException("Shipping address not found");
+        ShippingAddress e = shippingRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Shipping address not found"));
+        if (!e.getUser().getId().equals(u.getId()))
+            throw new NotFoundException("Shipping address not found");
         e.setName(dto.getName());
         e.setPhone(dto.getPhone());
         e.setCompany(dto.getCompany());
@@ -191,16 +204,20 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     public void deleteBilling(Long id) {
         User u = currentUser();
-        BillingAddress e = billingRepo.findById(id).orElseThrow(() -> new NotFoundException("Billing address not found"));
-        if (!e.getUser().getId().equals(u.getId())) throw new NotFoundException("Billing address not found");
+        BillingAddress e = billingRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Billing address not found"));
+        if (!e.getUser().getId().equals(u.getId()))
+            throw new NotFoundException("Billing address not found");
         billingRepo.delete(e);
     }
 
     @Override
     public void deleteShipping(Long id) {
         User u = currentUser();
-        ShippingAddress e = shippingRepo.findById(id).orElseThrow(() -> new NotFoundException("Shipping address not found"));
-        if (!e.getUser().getId().equals(u.getId())) throw new NotFoundException("Shipping address not found");
+        ShippingAddress e = shippingRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Shipping address not found"));
+        if (!e.getUser().getId().equals(u.getId()))
+            throw new NotFoundException("Shipping address not found");
         shippingRepo.delete(e);
     }
 }

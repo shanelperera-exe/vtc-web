@@ -15,7 +15,9 @@ import java.util.List;
 public class UserAddressController {
     private final UserAddressService svc;
 
-    public UserAddressController(UserAddressService svc) { this.svc = svc; }
+    public UserAddressController(UserAddressService svc) {
+        this.svc = svc;
+    }
 
     @GetMapping("/billing")
     public ResponseEntity<List<BillingAddressDTO>> listBilling() {
@@ -28,7 +30,8 @@ public class UserAddressController {
     }
 
     @PutMapping("/billing/{id}")
-    public ResponseEntity<BillingAddressDTO> updateBilling(@PathVariable Long id, @Valid @RequestBody BillingAddressDTO dto) {
+    public ResponseEntity<BillingAddressDTO> updateBilling(@PathVariable Long id,
+            @Valid @RequestBody BillingAddressDTO dto) {
         return ResponseEntity.ok(svc.updateBilling(id, dto));
     }
 
@@ -49,7 +52,8 @@ public class UserAddressController {
     }
 
     @PutMapping("/shipping/{id}")
-    public ResponseEntity<ShippingAddressDTO> updateShipping(@PathVariable Long id, @Valid @RequestBody ShippingAddressDTO dto) {
+    public ResponseEntity<ShippingAddressDTO> updateShipping(@PathVariable Long id,
+            @Valid @RequestBody ShippingAddressDTO dto) {
         return ResponseEntity.ok(svc.updateShipping(id, dto));
     }
 

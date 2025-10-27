@@ -24,6 +24,7 @@ public class AuthController {
     }
 
     private static final String REFRESH_COOKIE = "vtc_refresh";
+
     private ResponseCookie buildRefreshCookie(String token) {
         return ResponseCookie.from(REFRESH_COOKIE, token == null ? "" : token)
                 .httpOnly(true)
@@ -35,7 +36,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest req, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest req,
+            HttpServletResponse response) {
         AuthResponse auth = authService.register(req);
         if (auth.getRefreshToken() != null) {
             response.addHeader(HttpHeaders.SET_COOKIE, buildRefreshCookie(auth.getRefreshToken()).toString());
@@ -44,7 +46,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest req, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest req, HttpServletRequest request,
+            HttpServletResponse response) {
         String userAgent = request.getHeader("User-Agent");
         String ip = request.getRemoteAddr();
         AuthResponse auth = authService.login(req, userAgent, ip);
@@ -55,9 +58,10 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<RefreshTokenResponse> refresh(@CookieValue(name = REFRESH_COOKIE, required = false) String refreshCookie,
-                                                        @RequestParam(name = "token", required = false) String tokenParam,
-                                                        HttpServletResponse response) {
+    public ResponseEntity<RefreshTokenResponse> refresh(
+            @CookieValue(name = REFRESH_COOKIE, required = false) String refreshCookie,
+            @RequestParam(name = "token", required = false) String tokenParam,
+            HttpServletResponse response) {
         String token = refreshCookie != null ? refreshCookie : tokenParam; // allow fallback param
         RefreshTokenResponse r = authService.refresh(token);
         if (token != null) {
@@ -66,7 +70,8 @@ public class AuthController {
                     .httpOnly(true)
                     .secure(securityProperties.getCookie().getRefresh().isSecure())
                     .path("/")
-                    .maxAge(r.getRefreshMaxAgeSeconds() > 0 ? r.getRefreshMaxAgeSeconds() : securityProperties.getJwt().getRefreshTtlSeconds())
+                    .maxAge(r.getRefreshMaxAgeSeconds() > 0 ? r.getRefreshMaxAgeSeconds()
+                            : securityProperties.getJwt().getRefreshTtlSeconds())
                     .sameSite(securityProperties.getCookie().getRefresh().getSameSite())
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -76,7 +81,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@CookieValue(name = REFRESH_COOKIE, required = false) String refreshCookie,
-                                       HttpServletResponse response) {
+            HttpServletResponse response) {
         if (refreshCookie != null) {
             authService.logout(refreshCookie);
         }
@@ -85,7 +90,9 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> me() { return ResponseEntity.ok(authService.me()); }
+    public ResponseEntity<?> me() {
+        return ResponseEntity.ok(authService.me());
+    }
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest req) {

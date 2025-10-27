@@ -12,8 +12,8 @@ import java.util.Set;
 @Entity
 @Table(name = "users", indexes = {
         @Index(name = "idx_users_email", columnList = "email", unique = true),
-    @Index(name = "idx_users_last_name", columnList = "last_name"),
-    @Index(name = "idx_users_user_code", columnList = "user_code", unique = true)
+        @Index(name = "idx_users_last_name", columnList = "last_name"),
+        @Index(name = "idx_users_user_code", columnList = "user_code", unique = true)
 })
 @Getter
 @Setter
@@ -26,7 +26,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Public facing stable identifier (e.g. displayed in UI) distinct from numeric PK
     @Column(name = "user_code", nullable = false, unique = true, length = 20, updatable = false)
     private String userCode;
 
@@ -71,12 +70,19 @@ public class User {
     @Column(name = "last_login")
     private Instant lastLogin;
 
-    // Convenience helpers
-    public void addRole(Role role) { if (role != null) roles.add(role); }
-    public boolean isAdmin() { return roles.contains(Role.ROLE_ADMIN); }
-    public boolean isManager() { return roles.contains(Role.ROLE_MANAGER); }
+    public void addRole(Role role) {
+        if (role != null)
+            roles.add(role);
+    }
 
-    // Ensure a stable, public-facing code exists even if created outside the service layer
+    public boolean isAdmin() {
+        return roles.contains(Role.ROLE_ADMIN);
+    }
+
+    public boolean isManager() {
+        return roles.contains(Role.ROLE_MANAGER);
+    }
+
     @PrePersist
     private void ensureUserCode() {
         if (this.userCode == null || this.userCode.isBlank()) {
@@ -91,7 +97,8 @@ public class User {
         byte[] bytes = new byte[6]; // 12 hex chars; we will take first 9
         rnd.nextBytes(bytes);
         StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) sb.append(String.format("%02x", b));
+        for (byte b : bytes)
+            sb.append(String.format("%02x", b));
         return "USR-" + sb.substring(0, hexLen);
     }
 }

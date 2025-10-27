@@ -45,7 +45,7 @@ public class CartController {
 	@PostMapping("/add")
 	@PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','MANAGER')")
 	public ResponseEntity<CartItemResponseDTO> addItem(@Valid @RequestBody CartItemRequestDTO requestBody,
-													   HttpServletRequest request) {
+			HttpServletRequest request) {
 		Long userId = resolveUserId(request);
 		CartItemResponseDTO response = cartService.addItem(userId, requestBody);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -54,8 +54,8 @@ public class CartController {
 	@PutMapping("/item/{id}")
 	@PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','MANAGER')")
 	public ResponseEntity<CartItemResponseDTO> updateItem(@PathVariable("id") Long cartItemId,
-														  @Valid @RequestBody CartItemRequestDTO requestBody,
-														  HttpServletRequest request) {
+			@Valid @RequestBody CartItemRequestDTO requestBody,
+			HttpServletRequest request) {
 		Long userId = resolveUserId(request);
 		CartItemResponseDTO response = cartService.updateItem(userId, cartItemId, requestBody);
 		return ResponseEntity.ok(response);
@@ -64,7 +64,7 @@ public class CartController {
 	@DeleteMapping("/item/{id}")
 	@PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','MANAGER')")
 	public ResponseEntity<Void> removeItem(@PathVariable("id") Long cartItemId,
-										   HttpServletRequest request) {
+			HttpServletRequest request) {
 		Long userId = resolveUserId(request);
 		cartService.removeItem(userId, cartItemId);
 		return ResponseEntity.noContent().build();
@@ -81,7 +81,7 @@ public class CartController {
 	@PostMapping("/merge-local")
 	@PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','MANAGER')")
 	public ResponseEntity<CartResponseDTO> mergeLocal(@Valid @RequestBody List<CartItemRequestDTO> localItems,
-													  HttpServletRequest request) {
+			HttpServletRequest request) {
 		Long userId = resolveUserId(request);
 		CartResponseDTO response = cartService.mergeLocalCart(userId, localItems);
 		return ResponseEntity.ok(response);

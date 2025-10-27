@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { FiLogIn, FiUserPlus } from 'react-icons/fi';
 import { validateEmail, validatePassword } from '../../utils/validation';
 import AuthButton from "../ui/AuthBtn";
 import ForgotPasswordPopup from "./ForgotPasswordPopup";
 import { useAuth } from '../../context/AuthContext';
 
-const LoginForm = ({ onSubmit, onForgotPassword, onShowAllAuth, onCreateAccount, primaryBtnClass, secondaryBtnClass = "bg-red-400 text-white", compact = false }) => {
+const LoginForm = ({ onSubmit, onForgotPassword, onShowAllAuth, onCreateAccount, primaryBtnClass, secondaryBtnClass = "bg-black text-white", compact = false }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [touched, setTouched] = useState({ email: false, password: false });
@@ -36,13 +37,18 @@ const LoginForm = ({ onSubmit, onForgotPassword, onShowAllAuth, onCreateAccount,
     };
 
     const containerCls = `mx-auto w-full max-w-xl sm:max-w-2xl md:max-w-3xl ${compact ? 'p-6' : 'p-8'}`;
-    const headingCls = `${compact ? 'mb-1 text-3xl' : 'mb-2 text-4xl'} text-center font-bold uppercase`;
+    const headingCls = `${compact ? 'mb-1 text-4xl' : 'mb-2 text-4xl'} text-center font-extrabold uppercase`;
     const subHeadingCls = `${compact ? 'mb-5' : 'mb-8'} text-center text-sm text-neutral-500`;
     const fieldBlockCls = compact ? 'mb-3' : 'mb-4';
 
     return (
         <div className={containerCls}>
-            <h3 className={headingCls} >Sign in</h3>
+            <h3 className={headingCls}>
+                <span className="inline-flex items-center justify-center gap-3">
+                    <FiLogIn className="text-3xl" />
+                    <span>Sign in</span>
+                </span>
+            </h3>
             <p className={subHeadingCls}>Sign in to your account</p>
 
             <form onSubmit={handleSubmit}>
@@ -93,7 +99,7 @@ const LoginForm = ({ onSubmit, onForgotPassword, onShowAllAuth, onCreateAccount,
                     {touched.password && passwordErr && <p className="mt-1 text-xs text-rose-600" role="alert">{passwordErr}</p>}
                     <button
                         type="button"
-                        className="text-xs italic text-[#0bd964] hover:underline mt-1"
+                        className="text-xs font-medium italic text-[#0d9b54] hover:underline mt-1"
                         onClick={() => {
                             // Prefer local popup; if parent passed handler, still call it
                             setForgotOpen(true)
@@ -109,16 +115,24 @@ const LoginForm = ({ onSubmit, onForgotPassword, onShowAllAuth, onCreateAccount,
                         <div className="mb-3 text-sm text-red-600" role="alert">{localError || authError}</div>
                     )}
                 </div>
-                <AuthButton type="submit" label={submitting ? 'Signing In...' : 'Sign In'} disabled={submitting || formInvalid} bgClass={primaryBtnClass}
-                />
+                <AuthButton type="submit" disabled={submitting || formInvalid} bgClass={primaryBtnClass ?? 'bg-emerald-600 text-white'}>
+                    <span className="inline-flex items-center justify-center gap-2">
+                        <FiLogIn className="text-lg" />
+                        <span>{submitting ? 'Signing In...' : 'Sign In'}</span>
+                    </span>
+                </AuthButton>
                 <div className={`${compact ? 'mt-5' : 'mt-6'} text-center text-sm text-neutral-600`}>Don't have an account?</div>
                 <AuthButton
                     type="button"
-                    label="Create an Account"
                     onClick={onCreateAccount ?? onShowAllAuth}
                     containerClassName="mt-1"
-                    bgClass={secondaryBtnClass}
-                />
+                    bgClass={secondaryBtnClass ?? 'bg-black text-white'}
+                >
+                    <span className="inline-flex items-center justify-center gap-2">
+                        <FiUserPlus className="text-lg" />
+                        <span>Create an Account</span>
+                    </span>
+                </AuthButton>
             </form>
 
             <ForgotPasswordPopup

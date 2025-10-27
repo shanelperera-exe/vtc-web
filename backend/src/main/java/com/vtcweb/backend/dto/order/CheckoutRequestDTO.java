@@ -16,7 +16,6 @@ import jakarta.validation.constraints.Size;
 @AllArgsConstructor
 @Builder
 public class CheckoutRequestDTO {
-    // Optional customer snapshot fields; if omitted, service will fallback to authenticated user
     private String customerFirstName;
     private String customerLastName;
     @Email
@@ -40,12 +39,11 @@ public class CheckoutRequestDTO {
     @Valid
     private PaymentInfoDTO paymentInfo; // required if CARD
 
-    private BigDecimal shippingFee; // optional override
-    private BigDecimal discountTotal; // optional
-    // Optional coupon code applied by customer
+    private BigDecimal shippingFee;
+    private BigDecimal discountTotal;
+
     private String couponCode;
 
-    // Optional free-text order notes from customer
     @Size(max = 5000)
     private String orderNotes;
 }

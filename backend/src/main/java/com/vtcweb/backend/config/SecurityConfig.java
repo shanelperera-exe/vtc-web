@@ -30,7 +30,9 @@ import java.util.stream.Stream;
 public class SecurityConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProvider provider) {
@@ -42,32 +44,37 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(c -> {})
+                .cors(c -> {
+                })
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> auth
-            // Permit unauthenticated access to root and common static resources.
-            // Note: Patterns like /**/*.css are invalid with PathPatternParser; use directory wildcards instead.
-            .requestMatchers(
-                "/", "/index.html", "/favicon.ico",
-                "/static/**", "/public/**", "/assets/**",
-                "/css/**", "/js/**", "/images/**"
-            ).permitAll()
-            // Open specific authentication endpoints and read-only product/category GETs
-                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh", "/api/auth/logout",
-                    "/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**").permitAll()
-            // Allow submitting product reviews without authentication
-            // Allow posting reviews for a specific product (single-level path).
-            // Note: patterns like "/**/reviews" are not supported by PathPatternParser
-            // and caused a PatternParseException (double wildcard followed by more data).
-            .requestMatchers(HttpMethod.POST, "/api/products/*/reviews").permitAll()
-            // Allow public email submissions for newsletter signup and contact auto-reply
-            .requestMatchers(HttpMethod.POST, "/api/email/newsletter-welcome", "/api/email/contact-reply").permitAll()
-            // Admin APIs by convention
-            .requestMatchers("/api/admin/**").hasAnyRole("ADMIN","MANAGER")
-            .anyRequest().authenticated()
-        )
-                .exceptionHandling(eh -> {});
+                .authorizeHttpRequests(auth -> auth
+                        // Permit unauthenticated access to root and common static resources.
+                        // Patterns like /**/*.css are invalid with PathPatternParser; use directory
+                        // wildcards instead.
+                        .requestMatchers(
+                                "/", "/index.html", "/favicon.ico",
+                                "/static/**", "/public/**", "/assets/**",
+                                "/css/**", "/js/**", "/images/**")
+                        .permitAll()
+                        // Open specific authentication endpoints and read-only product/category GETs
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh",
+                                "/api/auth/logout",
+                                "/api/auth/forgot-password", "/api/auth/reset-password")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**").permitAll()
+                        // Allow submitting product reviews without authentication
+                        // Allow posting reviews for a specific product (single-level path).
+                        // patterns like "/**/reviews" are not supported by PathPatternParser
+                        // and caused a PatternParseException (double wildcard followed by more data).
+                        .requestMatchers(HttpMethod.POST, "/api/products/*/reviews").permitAll()
+                        // Allow public email submissions for newsletter signup and contact auto-reply
+                        .requestMatchers(HttpMethod.POST, "/api/email/newsletter-welcome", "/api/email/contact-reply")
+                        .permitAll()
+                        // Admin APIs by convention
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "MANAGER")
+                        .anyRequest().authenticated())
+                .exceptionHandling(eh -> {
+                });
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -89,14 +96,13 @@ public class SecurityConfig {
                 Stream.of(
                         "http://localhost:*",
                         "http://127.0.0.1:*",
-                        "https://*.vercel.app"
-                )
-        ).distinct().toList();
+                        "https://*.vercel.app"))
+                .distinct().toList();
         cfg.setAllowedOriginPatterns(patterns);
-        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
-        cfg.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","X-Requested-With"));
+        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "X-Requested-With"));
         cfg.setAllowCredentials(true);
-        cfg.setExposedHeaders(List.of("Location","Authorization"));
+        cfg.setExposedHeaders(List.of("Location", "Authorization"));
         cfg.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);

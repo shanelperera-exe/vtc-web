@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { HiShoppingBag } from 'react-icons/hi2';
 
-const Button = ({ text = 'Hover me' }) => {
+const Button = ({ text = 'Hover me', icon }) => {
+  const IconEl = icon || <HiShoppingBag className="button-icon" />;
   return (
     <StyledWrapper>
       <button className="button button-item">
@@ -14,8 +15,8 @@ const Button = ({ text = 'Hover me' }) => {
           </span>
         </span>
         <span className="button-inner">
-          <span className="button-inner-static"><HiShoppingBag className="button-icon" />{text}</span>
-          <span className="button-inner-hover"><HiShoppingBag className="button-icon" />{text}</span>
+          <span className="button-inner-static">{IconEl}{text}</span>
+          <span className="button-inner-hover">{IconEl}{text}</span>
         </span>
       </button>
     </StyledWrapper>

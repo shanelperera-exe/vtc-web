@@ -1,7 +1,8 @@
 package com.vtcweb.backend.model.entity.user;
 
 /**
- * Application roles. Prefix 'ROLE_' is conventional in Spring Security when using hasRole().
+ * Application roles. Prefix 'ROLE_' is conventional in Spring Security when
+ * using hasRole().
  */
 public enum Role {
     ROLE_CUSTOMER,

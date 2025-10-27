@@ -6,6 +6,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties({AppCorsProperties.class, SecurityProperties.class})
+@EnableConfigurationProperties({ AppCorsProperties.class, SecurityProperties.class })
 public class PropertiesConfig {
 }

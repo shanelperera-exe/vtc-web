@@ -48,13 +48,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request) {
-        log.debug("Data integrity violation at {}: {}", request.getRequestURI(), ex.getMostSpecificCause().getMessage());
+    public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException ex,
+            HttpServletRequest request) {
+        log.debug("Data integrity violation at {}: {}", request.getRequestURI(),
+                ex.getMostSpecificCause().getMessage());
         return build(HttpStatus.CONFLICT, "Request conflicts with current state", request.getRequestURI());
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException ex,
+            HttpServletRequest request) {
         String param = ex.getName();
         String value = ex.getValue() == null ? "null" : String.valueOf(ex.getValue());
         Class<?> requiredType = ex.getRequiredType();
@@ -64,10 +67,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(@NonNull MissingServletRequestParameterException ex,
-                                                                          @NonNull HttpHeaders headers,
-                                                                          @NonNull HttpStatusCode status,
-                                                                          @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            @NonNull MissingServletRequestParameterException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
         String msg = String.format("Missing required parameter '%s'", ex.getParameterName());
         ApiError body = ApiError.builder()
                 .timestamp(Instant.now())
@@ -80,10 +84,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex,
+            HttpServletRequest request) {
         Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
         List<ApiError.FieldValidationError> fieldErrors = violations.stream()
-                .map(v -> new ApiError.FieldValidationError(v.getPropertyPath() == null ? "<unknown>" : v.getPropertyPath().toString(),
+                .map(v -> new ApiError.FieldValidationError(
+                        v.getPropertyPath() == null ? "<unknown>" : v.getPropertyPath().toString(),
                         v.getMessage()))
                 .collect(Collectors.toList());
         ApiError body = ApiError.builder()
@@ -102,29 +108,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
     }
 
-    @ExceptionHandler({InvalidCredentialsException.class})
+    @ExceptionHandler({ InvalidCredentialsException.class })
     public ResponseEntity<ApiError> handleInvalidCredentials(RuntimeException ex, HttpServletRequest request) {
         return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), request.getRequestURI());
     }
 
-    @ExceptionHandler({UnauthorizedException.class})
+    @ExceptionHandler({ UnauthorizedException.class })
     public ResponseEntity<ApiError> handleUnauthorized(RuntimeException ex, HttpServletRequest request) {
         return build(HttpStatus.FORBIDDEN, ex.getMessage(), request.getRequestURI());
     }
 
-    @ExceptionHandler({ForbiddenException.class})
+    @ExceptionHandler({ ForbiddenException.class })
     public ResponseEntity<ApiError> handleForbidden(RuntimeException ex, HttpServletRequest request) {
         return build(HttpStatus.FORBIDDEN, ex.getMessage(), request.getRequestURI());
     }
 
-    @ExceptionHandler({TokenRefreshException.class})
+    @ExceptionHandler({ TokenRefreshException.class })
     public ResponseEntity<ApiError> handleTokenRefresh(RuntimeException ex, HttpServletRequest request) {
         return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex, HttpServletRequest request) {
-        // Log full stack for diagnostics; return exception message to client (development only)
+        // Log full stack for diagnostics; return exception message to client
+        // (development only)
         log.error("Unhandled exception for path {}", request.getRequestURI(), ex);
         String debugMsg = "Unexpected error" + (ex.getMessage() != null ? ": " + ex.getMessage() : "");
         return build(HttpStatus.INTERNAL_SERVER_ERROR, debugMsg, request.getRequestURI());
@@ -132,9 +139,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(@NonNull MethodArgumentNotValidException ex,
-                                                                  @NonNull HttpHeaders headers,
-                                                                  @NonNull HttpStatusCode status,
-                                                                  @NonNull WebRequest request) {
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
         List<ApiError.FieldValidationError> fieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -153,9 +160,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(@NonNull HttpMessageNotReadableException ex,
-                                                                  @NonNull HttpHeaders headers,
-                                                                  @NonNull HttpStatusCode status,
-                                                                  @NonNull WebRequest request) {
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
         String message = "Malformed JSON request";
         ApiError body = ApiError.builder()
                 .timestamp(Instant.now())
@@ -179,7 +186,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String resolveFieldMessage(FieldError fe) {
-        if (fe.getDefaultMessage() != null) return fe.getDefaultMessage();
+        if (fe.getDefaultMessage() != null)
+            return fe.getDefaultMessage();
         return fe.toString();
     }
 

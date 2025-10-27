@@ -33,7 +33,8 @@ public class CacheConfig {
     }
 
     /**
-     * Create a CacheManager that prefers Redis, but gracefully falls back to an in-memory cache
+     * Create a CacheManager that prefers Redis, but gracefully falls back to an
+     * in-memory cache
      * if Redis is unavailable (e.g. not running in local dev).
      */
     @Bean
@@ -41,7 +42,6 @@ public class CacheConfig {
         RedisConnectionFactory connectionFactory = factoryProvider.getIfAvailable();
         try {
             if (connectionFactory != null) {
-                // Proactively test connectivity to avoid runtime failures on first cache access
                 connectionFactory.getConnection().ping();
             } else {
                 throw new IllegalStateException("No RedisConnectionFactory available");
@@ -49,7 +49,8 @@ public class CacheConfig {
 
             RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
                     .disableCachingNullValues()
-                    .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+                    .serializeValuesWith(RedisSerializationContext.SerializationPair
+                            .fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
             Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
             cacheConfigurations.put("cart", defaultConfig.entryTtl(cartTtl));
@@ -62,35 +63,43 @@ public class CacheConfig {
                     .build();
         } catch (Exception ex) {
             log.warn("Redis unavailable, falling back to in-memory cache. Reason: {}", ex.getMessage());
-            // Simple in-memory cache as a safe fallback for development
             return new ConcurrentMapCacheManager("cart");
         }
     }
 
     /**
-     * Swallow cache layer errors so that Redis outages never break primary request flows.
+     * Swallow cache layer errors so that Redis outages never break primary request
+     * flows.
      */
     @Bean
     public CacheErrorHandler cacheErrorHandler() {
         return new CacheErrorHandler() {
             @Override
-            public void handleCacheGetError(@NonNull RuntimeException exception, @NonNull org.springframework.cache.Cache cache, @NonNull Object key) {
-                log.debug("Cache GET error on {}:{} - {}", cache != null ? cache.getName() : "<null>", key, exception.toString());
+            public void handleCacheGetError(@NonNull RuntimeException exception,
+                    @NonNull org.springframework.cache.Cache cache, @NonNull Object key) {
+                log.debug("Cache GET error on {}:{} - {}", cache != null ? cache.getName() : "<null>", key,
+                        exception.toString());
             }
 
             @Override
-            public void handleCachePutError(@NonNull RuntimeException exception, @NonNull org.springframework.cache.Cache cache, @NonNull Object key, @Nullable Object value) {
-                log.debug("Cache PUT error on {}:{} - {}", cache != null ? cache.getName() : "<null>", key, exception.toString());
+            public void handleCachePutError(@NonNull RuntimeException exception,
+                    @NonNull org.springframework.cache.Cache cache, @NonNull Object key, @Nullable Object value) {
+                log.debug("Cache PUT error on {}:{} - {}", cache != null ? cache.getName() : "<null>", key,
+                        exception.toString());
             }
 
             @Override
-            public void handleCacheEvictError(@NonNull RuntimeException exception, @NonNull org.springframework.cache.Cache cache, @NonNull Object key) {
-                log.debug("Cache EVICT error on {}:{} - {}", cache != null ? cache.getName() : "<null>", key, exception.toString());
+            public void handleCacheEvictError(@NonNull RuntimeException exception,
+                    @NonNull org.springframework.cache.Cache cache, @NonNull Object key) {
+                log.debug("Cache EVICT error on {}:{} - {}", cache != null ? cache.getName() : "<null>", key,
+                        exception.toString());
             }
 
             @Override
-            public void handleCacheClearError(@NonNull RuntimeException exception, @NonNull org.springframework.cache.Cache cache) {
-                log.debug("Cache CLEAR error on {} - {}", cache != null ? cache.getName() : "<null>", exception.toString());
+            public void handleCacheClearError(@NonNull RuntimeException exception,
+                    @NonNull org.springframework.cache.Cache cache) {
+                log.debug("Cache CLEAR error on {} - {}", cache != null ? cache.getName() : "<null>",
+                        exception.toString());
             }
         };
     }

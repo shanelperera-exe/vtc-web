@@ -192,7 +192,8 @@ public class CartServiceImpl implements CartService {
 	private CartItem findItemForUser(Long userId, Long cartItemId) {
 		CartItem item = cartItemRepository.findById(cartItemId)
 				.orElseThrow(() -> new NotFoundException("Cart item not found"));
-		if (item.getCart() == null || item.getCart().getUser() == null || !Objects.equals(item.getCart().getUser().getId(), userId)) {
+		if (item.getCart() == null || item.getCart().getUser() == null
+				|| !Objects.equals(item.getCart().getUser().getId(), userId)) {
 			throw new NotFoundException("Cart item not found for user");
 		}
 		return item;
@@ -203,7 +204,8 @@ public class CartServiceImpl implements CartService {
 			return Optional.empty();
 		}
 		return cart.getItems().stream()
-				.filter(ci -> ci.getProductVariation() != null && Objects.equals(ci.getProductVariation().getId(), variationId))
+				.filter(ci -> ci.getProductVariation() != null
+						&& Objects.equals(ci.getProductVariation().getId(), variationId))
 				.findFirst();
 	}
 
@@ -216,7 +218,8 @@ public class CartServiceImpl implements CartService {
 		Integer stock = variation.getStock();
 		int available = stock != null ? stock : 0;
 		if (desiredQuantity > available) {
-			throw new OutOfStockException("Requested quantity " + desiredQuantity + " exceeds available stock " + available);
+			throw new OutOfStockException(
+					"Requested quantity " + desiredQuantity + " exceeds available stock " + available);
 		}
 	}
 
@@ -249,13 +252,13 @@ public class CartServiceImpl implements CartService {
 				? List.of()
 				: List.copyOf(failures);
 
-	return CartResponseDTO.builder()
-		.items(itemDtos)
-		.subtotal(subtotal)
-		.tax(tax)
-		.total(total)
-		.mergeFailures(immutableFailures)
-		.build();
+		return CartResponseDTO.builder()
+				.items(itemDtos)
+				.subtotal(subtotal)
+				.tax(tax)
+				.total(total)
+				.mergeFailures(immutableFailures)
+				.build();
 	}
 
 	private BigDecimal calculateTax(BigDecimal subtotal) {
@@ -285,13 +288,13 @@ public class CartServiceImpl implements CartService {
 		unitPrice = unitPrice.setScale(2, RoundingMode.HALF_UP);
 		BigDecimal itemTotal = unitPrice.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_UP);
 
-		// Detach attributes map to avoid lazy proxy issues during JSON serialization
 		java.util.Map<String, String> detachedAttrs = null;
 		if (variation.getAttributes() != null && !variation.getAttributes().isEmpty()) {
 			detachedAttrs = new java.util.HashMap<>(variation.getAttributes());
 		}
 
-		// Determine best image URL: variation image > product primary image > any product image > null
+		// Determine best image URL: variation image > product primary image > any
+		// product image > null
 		String imageUrl = null;
 		if (variation.getImageUrl() != null && !variation.getImageUrl().isBlank()) {
 			imageUrl = variation.getImageUrl();
@@ -299,11 +302,13 @@ public class CartServiceImpl implements CartService {
 			// try to find primary image
 			for (var img : product.getImages()) {
 				try {
-					if (img != null && img.getType() != null && img.getType().name().equals("PRIMARY") && img.getUrl() != null && !img.getUrl().isBlank()) {
+					if (img != null && img.getType() != null && img.getType().name().equals("PRIMARY")
+							&& img.getUrl() != null && !img.getUrl().isBlank()) {
 						imageUrl = img.getUrl();
 						break;
 					}
-				} catch (Exception ex) { /* ignore image access errors */ }
+				} catch (Exception ex) {
+					/* ignore image access errors */ }
 			}
 			if (imageUrl == null) {
 				// no primary found, pick any

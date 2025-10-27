@@ -21,9 +21,11 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public Review create(Review review) {
-        if (review == null) throw new IllegalArgumentException("review required");
+        if (review == null)
+            throw new IllegalArgumentException("review required");
         Long pid = review.getProduct() != null ? review.getProduct().getId() : null;
-        if (pid == null) throw new IllegalArgumentException("product id required");
+        if (pid == null)
+            throw new IllegalArgumentException("product id required");
         Product product = productRepository.findById(pid)
                 .orElseThrow(() -> new NotFoundException("Product not found: id=" + pid));
         review.setProduct(product);
@@ -33,14 +35,16 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional(readOnly = true)
     public List<Review> listByProduct(Long productId) {
-        if (productId == null) throw new IllegalArgumentException("productId required");
+        if (productId == null)
+            throw new IllegalArgumentException("productId required");
         return reviewRepository.findByProduct_IdOrderByCreatedAtDesc(productId);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        if (id == null) return;
+        if (id == null)
+            return;
         reviewRepository.deleteById(id);
     }
 }

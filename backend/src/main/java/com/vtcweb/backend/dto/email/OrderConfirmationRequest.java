@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class OrderConfirmationRequest {
-    @NotBlank @Email
+    @NotBlank
+    @Email
     private String to;
     @NotBlank
     private String orderId;
@@ -18,14 +19,43 @@ public class OrderConfirmationRequest {
     private BigDecimal total;
     private List<Map<String, Object>> items; // name, qty, price
 
-    public String getTo() { return to; }
-    public void setTo(String to) { this.to = to; }
-    public String getOrderId() { return orderId; }
-    public void setOrderId(String orderId) { this.orderId = orderId; }
-    public String getCustomerName() { return customerName; }
-    public void setCustomerName(String customerName) { this.customerName = customerName; }
-    public BigDecimal getTotal() { return total; }
-    public void setTotal(BigDecimal total) { this.total = total; }
-    public List<Map<String, Object>> getItems() { return items; }
-    public void setItems(List<Map<String, Object>> items) { this.items = items; }
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public List<Map<String, Object>> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Map<String, Object>> items) {
+        this.items = items;
+    }
 }

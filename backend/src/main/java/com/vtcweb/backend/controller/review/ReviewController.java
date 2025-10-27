@@ -42,8 +42,8 @@ public class ReviewController {
 
     @PostMapping("/api/products/{id}/reviews")
     public ResponseEntity<ReviewDTO> create(@PathVariable("id") Long id,
-                                            @Valid @RequestBody CreateReviewRequest req,
-                                            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+            @Valid @RequestBody CreateReviewRequest req,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         // Build entity
         Review r = Review.builder()
                 .rating(req.getRating())
@@ -67,15 +67,18 @@ public class ReviewController {
                         com.vtcweb.backend.model.entity.user.User u = new com.vtcweb.backend.model.entity.user.User();
                         u.setId(uid);
                         r.setReviewer(u);
-                        if (log.isDebugEnabled()) log.debug("Attached reviewer from SecurityContext: {}", uid);
+                        if (log.isDebugEnabled())
+                            log.debug("Attached reviewer from SecurityContext: {}", uid);
                     } catch (NumberFormatException nfe) {
                         // Not numeric — fall through to header parsing
-                        if (log.isDebugEnabled()) log.debug("SecurityContext name is not numeric: {}", name);
+                        if (log.isDebugEnabled())
+                            log.debug("SecurityContext name is not numeric: {}", name);
                     }
                 }
             }
         } catch (Exception ex) {
-            if (log.isDebugEnabled()) log.debug("Failed to read SecurityContext authentication: {}", ex.getMessage());
+            if (log.isDebugEnabled())
+                log.debug("Failed to read SecurityContext authentication: {}", ex.getMessage());
         }
 
         // If reviewer not set yet, try parsing Authorization header JWT subject
@@ -92,19 +95,23 @@ public class ReviewController {
                             com.vtcweb.backend.model.entity.user.User u = new com.vtcweb.backend.model.entity.user.User();
                             u.setId(uid);
                             r.setReviewer(u);
-                            if (log.isDebugEnabled()) log.debug("Attached reviewer from Authorization header: {}", uid);
+                            if (log.isDebugEnabled())
+                                log.debug("Attached reviewer from Authorization header: {}", uid);
                         } catch (NumberFormatException ignored) {
-                            if (log.isDebugEnabled()) log.debug("JWT subject not numeric: {}", sub);
+                            if (log.isDebugEnabled())
+                                log.debug("JWT subject not numeric: {}", sub);
                         }
                     }
                 }
             } catch (JwtException je) {
-                if (log.isDebugEnabled()) log.debug("Invalid JWT while parsing Authorization header: {}", je.getMessage());
+                if (log.isDebugEnabled())
+                    log.debug("Invalid JWT while parsing Authorization header: {}", je.getMessage());
             }
         }
 
         Review created = reviewService.create(r);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(created.getId()).toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(created.getId())
+                .toUri();
         return ResponseEntity.created(location).body(Mapper.toReviewDto(created));
     }
 

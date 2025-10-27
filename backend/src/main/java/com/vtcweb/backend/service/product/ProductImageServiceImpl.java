@@ -36,8 +36,10 @@ public class ProductImageServiceImpl implements ProductImageService {
 
     @Override
     public ProductImage addToProduct(Long productId, String url, ImageType type) {
-        if (url == null || url.isBlank()) throw new IllegalArgumentException("url must not be blank");
-        if (type == null) type = ImageType.SECONDARY;
+        if (url == null || url.isBlank())
+            throw new IllegalArgumentException("url must not be blank");
+        if (type == null)
+            type = ImageType.SECONDARY;
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Product not found: id=" + productId));
         ProductImage image = ProductImage.builder()
@@ -50,8 +52,10 @@ public class ProductImageServiceImpl implements ProductImageService {
 
     @Override
     public ProductImage addToVariation(Long productId, Long variationId, String url, ImageType type) {
-        if (url == null || url.isBlank()) throw new IllegalArgumentException("url must not be blank");
-        if (type == null) type = ImageType.SECONDARY;
+        if (url == null || url.isBlank())
+            throw new IllegalArgumentException("url must not be blank");
+        if (type == null)
+            type = ImageType.SECONDARY;
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Product not found: id=" + productId));
         ProductVariation variation = variationRepository.findById(variationId)
@@ -90,8 +94,10 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Override
     public ProductImage update(Long id, String url, ImageType type) {
         ProductImage existing = getById(id);
-        if (url != null && !url.isBlank()) existing.setUrl(url);
-        if (type != null) existing.setType(type);
+        if (url != null && !url.isBlank())
+            existing.setUrl(url);
+        if (type != null)
+            existing.setType(type);
         return imageRepository.save(existing);
     }
 
@@ -125,9 +131,11 @@ public class ProductImageServiceImpl implements ProductImageService {
             int index = 0;
             for (String raw : secondaryImages) {
                 String normalized = materialize(raw, folder, (sku != null ? sku : "product") + "-secondary-" + index++);
-                if (normalized == null || normalized.isBlank()) continue;
+                if (normalized == null || normalized.isBlank())
+                    continue;
                 if (!desiredImages.containsKey(normalized)) {
-                    desiredImages.put(normalized, desiredImages.containsValue(ImageType.PRIMARY) ? ImageType.SECONDARY : ImageType.PRIMARY);
+                    desiredImages.put(normalized,
+                            desiredImages.containsValue(ImageType.PRIMARY) ? ImageType.SECONDARY : ImageType.PRIMARY);
                 }
             }
         }
@@ -180,15 +188,18 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     private String materialize(String source, String folder, String nameHint) {
-        if (source == null) return null;
+        if (source == null)
+            return null;
         String trimmed = source.trim();
-        if (trimmed.isEmpty()) return null;
+        if (trimmed.isEmpty())
+            return null;
         try {
             if (ImageUploadUtils.isDataUri(trimmed)) {
                 var multipart = ImageUploadUtils.dataUriToMultipartFile(trimmed, nameHint);
                 return imageStorageService.upload(multipart, folder).url();
             }
-            // If already Cloudinary secure URL, keep as-is (enforces Cloudinary-only persistence)
+            // If already Cloudinary secure URL, keep as-is (enforces Cloudinary-only
+            // persistence)
             if (ImageUploadUtils.isCloudinaryUrl(trimmed)) {
                 return trimmed;
             }
@@ -203,4 +214,3 @@ public class ProductImageServiceImpl implements ProductImageService {
         }
     }
 }
-

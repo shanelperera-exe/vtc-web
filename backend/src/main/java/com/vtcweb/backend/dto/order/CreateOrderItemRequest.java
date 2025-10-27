@@ -14,13 +14,11 @@ import java.math.BigDecimal;
 public class CreateOrderItemRequest {
     @NotNull
     private Long productId;
-    private Long variationId; // optional
+    private Long variationId;
 
     @NotNull
     @Min(1)
     private Integer quantity;
 
-    // Optional client-suggested unit price (will be validated/overridden by server using product/variation price if null)
     private BigDecimal unitPrice;
 }
-

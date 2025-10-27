@@ -33,14 +33,15 @@ public class ProductVariationController {
 
     @GetMapping("/all")
     public ResponseEntity<List<ProductVariationDTO>> listAll(@PathVariable Long productId) {
-        List<ProductVariationDTO> list = variationService.listByProduct(productId).stream().map(Mapper::toVariationDto).toList();
+        List<ProductVariationDTO> list = variationService.listByProduct(productId).stream().map(Mapper::toVariationDto)
+                .toList();
         return ResponseEntity.ok(list);
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<ProductVariationDTO> create(@PathVariable Long productId,
-                                                      @Valid @RequestBody ProductVariationCreateRequest request) {
+            @Valid @RequestBody ProductVariationCreateRequest request) {
         ProductVariation v = new ProductVariation();
         v.setPrice(request.getPrice());
         v.setStock(request.getStock());
@@ -57,8 +58,8 @@ public class ProductVariationController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<ProductVariationDTO> update(@PathVariable Long productId,
-                                                      @PathVariable Long id,
-                                                      @Valid @RequestBody UpdateProductVariationRequest request) {
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateProductVariationRequest request) {
         ProductVariation patch = new ProductVariation();
         patch.setPrice(request.getPrice());
         patch.setStock(request.getStock());

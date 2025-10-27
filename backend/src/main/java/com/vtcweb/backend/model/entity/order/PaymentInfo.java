@@ -15,4 +15,3 @@ public class PaymentInfo {
     private Integer cardExpMonth; // 1-12
     private Integer cardExpYear; // YYYY
 }
-

@@ -25,14 +25,15 @@ import java.util.stream.Collectors;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final JwtTokenProvider tokenProvider;
+
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 
     @Override
     protected void doFilterInternal(@org.springframework.lang.NonNull HttpServletRequest request,
-                                    @org.springframework.lang.NonNull HttpServletResponse response,
-                                    @org.springframework.lang.NonNull FilterChain filterChain) throws ServletException, IOException {
+            @org.springframework.lang.NonNull HttpServletResponse response,
+            @org.springframework.lang.NonNull FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
@@ -40,12 +41,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Jws<Claims> jws = tokenProvider.parseAndValidate(token);
                 Claims claims = jws.getBody();
                 String rolesStr = claims.get("roles", String.class);
-                Set<String> roles = rolesStr == null ? Collections.emptySet() : Arrays.stream(rolesStr.split(",")).collect(Collectors.toSet());
-                var authorities = roles.stream().filter(StringUtils::hasText).map(r -> new org.springframework.security.core.authority.SimpleGrantedAuthority(r)).collect(Collectors.toSet());
+                Set<String> roles = rolesStr == null ? Collections.emptySet()
+                        : Arrays.stream(rolesStr.split(",")).collect(Collectors.toSet());
+                var authorities = roles.stream().filter(StringUtils::hasText)
+                        .map(r -> new org.springframework.security.core.authority.SimpleGrantedAuthority(r))
+                        .collect(Collectors.toSet());
                 String email = claims.get("email", String.class);
                 String subject = claims.getSubject();
                 if (subject != null) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, null, authorities);
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, null,
+                            authorities);
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }

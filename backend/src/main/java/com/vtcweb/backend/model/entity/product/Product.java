@@ -14,15 +14,12 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "products",
-       uniqueConstraints = {
-           @UniqueConstraint(name = "uk_products_sku", columnNames = {"sku"})
-       },
-       indexes = {
-           @Index(name = "idx_products_category_id", columnList = "category_id"),
-           @Index(name = "idx_products_status", columnList = "status")
-       }
-)
+@Table(name = "products", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_products_sku", columnNames = { "sku" })
+}, indexes = {
+        @Index(name = "idx_products_category_id", columnList = "category_id"),
+        @Index(name = "idx_products_status", columnList = "status")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -41,7 +38,7 @@ public class Product {
     @ToString.Include
     private String sku; // Immutable stock keeping unit
 
-    @Column(nullable=false, length=150)
+    @Column(nullable = false, length = 150)
     @ToString.Include
     private String name;
 
@@ -50,13 +47,13 @@ public class Product {
 
     @Lob // Large Object, suitable for large text or binary data
     @Column(name = "description", columnDefinition = "TEXT")
-    private String detailedDescription; // renamed from description
+    private String detailedDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(nullable=false, precision = 12, scale = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
     @ToString.Include
     private BigDecimal basePrice;
 
@@ -69,7 +66,6 @@ public class Product {
     @Builder.Default
     private List<ProductVariation> variations = new ArrayList<>();
 
-    // Use Set to avoid Hibernate multiple bag fetch issues when fetching several collections eagerly
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<ProductImage> images = new HashSet<>();

@@ -10,10 +10,10 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-	@EntityGraph(attributePaths = {"items"}, type = EntityGraph.EntityGraphType.LOAD)
+	@EntityGraph(attributePaths = { "items" }, type = EntityGraph.EntityGraphType.LOAD)
 	Optional<Cart> findByUser(User user);
 
-	@EntityGraph(attributePaths = {"items"}, type = EntityGraph.EntityGraphType.LOAD)
+	@EntityGraph(attributePaths = { "items" }, type = EntityGraph.EntityGraphType.LOAD)
 	Optional<Cart> findByUser_Id(Long userId);
 
 	// Hard-delete the cart (and its items via cascade) for a given user id

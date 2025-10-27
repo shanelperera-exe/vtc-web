@@ -32,7 +32,8 @@ public class BootstrapAdminRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        boolean anyAdmin = userRepository.findAll().stream().anyMatch(u -> u.getRoles() != null && u.getRoles().contains(Role.ROLE_ADMIN));
+        boolean anyAdmin = userRepository.findAll().stream()
+                .anyMatch(u -> u.getRoles() != null && u.getRoles().contains(Role.ROLE_ADMIN));
         if (anyAdmin) {
             return;
         }
@@ -51,17 +52,18 @@ public class BootstrapAdminRunner implements ApplicationRunner {
         Set<Role> roles = anyManager ? Set.of(Role.ROLE_ADMIN) : Set.of(Role.ROLE_ADMIN, Role.ROLE_MANAGER);
 
         User admin = User.builder()
-            .firstName(first)
-            .lastName(last)
-            .email(email.toLowerCase())
-            .passwordHash(passwordEncoder.encode(password))
-            .enabled(true)
-            .locked(false)
-            .roles(roles)
-            .build();
+                .firstName(first)
+                .lastName(last)
+                .email(email.toLowerCase())
+                .passwordHash(passwordEncoder.encode(password))
+                .enabled(true)
+                .locked(false)
+                .roles(roles)
+                .build();
         // Generate a random user code similar to AuthServiceImpl but simpler here
         admin.setUserCode("USR-" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 9));
         admin = userRepository.save(admin);
-        log.warn("Bootstrapped default admin account: {} (id={}). Please rotate credentials immediately.", admin.getEmail(), admin.getId());
+        log.warn("Bootstrapped default admin account: {} (id={}). Please rotate credentials immediately.",
+                admin.getEmail(), admin.getId());
     }
 }

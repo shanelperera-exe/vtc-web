@@ -4,7 +4,7 @@ import { FiShoppingCart } from 'react-icons/fi'
 import { useCart } from '../../context/CartContext.jsx'
 import { useNotifications } from './notificationsContext.js'
 
-const AddToCartBtn = ({ product, quantity = 1, className = '', fullWidth = false }) => {
+const AddToCartBtn = ({ product, quantity = 1, className = '', fullWidth = false, minWidthEm }) => {
   const { addToCart } = useCart()
   const { notify } = useNotifications()
 
@@ -15,7 +15,7 @@ const AddToCartBtn = ({ product, quantity = 1, className = '', fullWidth = false
   }
   return (
     <div className={`bg-white flex items-start ${fullWidth ? 'w-full' : ''} ${className}`}>
-      <StyledWrapper className={`${fullWidth ? 'w-full' : 'h-fit w-fit'}`} $heightPx={48} $fontSizePx={16} $minWidthEm={27} $fullWidth={fullWidth}>
+      <StyledWrapper className={`${fullWidth ? 'w-full' : 'h-fit w-fit'}`} $heightPx={48} $fontSizePx={16} $minWidthEm={minWidthEm ?? 27} $fullWidth={fullWidth}>
         <button type="button" onClick={handleAdd} aria-label="Add to cart">
           <span className="btn-icon" aria-hidden="true"><FiShoppingCart size={18} strokeWidth={2.4} /></span>
           <span className="btn-label">Add to Cart</span>

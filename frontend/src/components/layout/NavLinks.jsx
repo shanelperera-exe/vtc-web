@@ -20,15 +20,15 @@ const NavLinks = () => {
       className="relative mx-auto flex w-fit bg-white p-1"
     >
 
-      <Tab setPosition={setPosition}>
-  <a href="/about" className="text-white font-medium text-lg lowercase" style={{ fontFamily: 'Poppins, sans-serif' }}>About us</a>
-      </Tab>
-      <Tab setPosition={setPosition}>
-  <a href="/contact" className="text-white font-medium text-lg lowercase" style={{ fontFamily: 'Poppins, sans-serif' }}>Contact us</a>
-      </Tab>
-      <Tab setPosition={setPosition}>
-  <a href="/help" className="text-white font-medium text-lg lowercase" style={{ fontFamily: 'Poppins, sans-serif' }}>help</a>
-      </Tab>
+    <Tab setPosition={setPosition}>
+  <a href="/about" className="text-white font-medium text-lg" style={{ fontFamily: 'Poppins, sans-serif' }}>About Us</a>
+    </Tab>
+    <Tab setPosition={setPosition}>
+  <a href="/contact" className="text-white font-medium text-lg" style={{ fontFamily: 'Poppins, sans-serif' }}>Contact Us</a>
+    </Tab>
+    <Tab setPosition={setPosition}>
+  <a href="/help" className="text-white font-medium text-lg" style={{ fontFamily: 'Poppins, sans-serif' }}>Help</a>
+    </Tab>
 
 
       <Cursor position={position} />

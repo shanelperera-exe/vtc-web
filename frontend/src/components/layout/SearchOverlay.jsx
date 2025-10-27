@@ -159,7 +159,10 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                         {/* Decorative overlay text in bottom-right */}
                         <div className="pointer-events-none fixed right-3 bottom-3 md:right-6 md:bottom-4 z-40">
                             {/* use clamp to scale from ~6rem up to ~14rem depending on viewport */}
-                            <div className="font-extrabold text-black opacity-8 leading-none" style={{ fontSize: 'clamp(4rem, 12vw, 10rem)', lineHeight: 0.85 }}>search.</div>
+                            <div className="flex items-center gap-3">
+                                <Search className="text-black opacity-6" style={{ width: 'clamp(4rem, 10vw, 8rem)', height: 'auto' }} />
+                                <div className="font-bold text-black opacity-6 leading-none" style={{ fontSize: 'clamp(4rem, 10vw, 8rem)', lineHeight: 0.85 }}>search</div>
+                            </div>
                         </div>
                         {/* Close */}
                         <button
@@ -239,18 +242,18 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                                                     <a
                                                         key={p.id || p.sku}
                                                         href={href}
-                                                        className="block group text-left border border-gray-200 hover:border-gray-300 transition p-2"
+                                                        className="block group text-left border-2 border-black hover:border-neutral-900 transition p-2"
                                                     >
                                                         {img ? (
                                                             // show full 1:1 image without cropping
-                                                            <div className="w-full aspect-square bg-gray-50 flex items-center justify-center overflow-hidden">
+                                                            <div className="w-full aspect-square bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-black box-border">
                                                                 <img src={img} alt={p.name} className="max-w-full max-h-full object-contain" />
                                                             </div>
                                                         ) : (
-                                                            <div className="w-full aspect-square bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+                                                            <div className="w-full aspect-square bg-gray-200 flex items-center justify-center text-gray-500 border-2 border-black box-border">No Image</div>
                                                         )}
                                                         <div className="mt-2 text-sm font-semibold leading-snug line-clamp-2" title={p.name}>{p.name}</div>
-                                                        <span className="mt-1 block text-sm text-gray-700">LKR {price}</span>
+                                                        <span className="mt-1 block text-sm text-gray-700">{"LKR " + (Number(price) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                                     </a>
                                                 );
                                             })}
@@ -292,18 +295,18 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                                                     <a
                                                         key={p.id || p.sku}
                                                         href={href}
-                                                        className="block group text-left border border-gray-200 hover:border-gray-300 transition p-2"
+                                                        className="block group text-left border-2 border-black hover:border-neutral-900 transition p-2"
                                                     >
                                                         {img ? (
                                                             // show full 1:1 image without cropping
-                                                            <div className="w-full aspect-square bg-gray-50 flex items-center justify-center overflow-hidden">
+                                                            <div className="w-full aspect-square bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-black box-border">
                                                                 <img src={img} alt={p.name} className="max-w-full max-h-full object-contain" />
                                                             </div>
                                                         ) : (
-                                                            <div className="w-full aspect-square bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+                                                            <div className="w-full aspect-square bg-gray-200 flex items-center justify-center text-gray-500 border-2 border-black box-border">No Image</div>
                                                         )}
                                                         <div className="mt-2 text-sm font-semibold leading-snug line-clamp-2" title={p.name}>{p.name}</div>
-                                                        <span className="mt-1 block text-sm text-gray-700">LKR {price}</span>
+                                                        <span className="mt-1 block text-sm text-gray-700">{"LKR " + (Number(price) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                                     </a>
                                                 );
                                             })}

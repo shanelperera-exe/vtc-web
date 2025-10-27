@@ -58,17 +58,20 @@ public class CheckoutServiceImpl implements CheckoutService {
         Order order = new Order();
         order.setOrderNumber(generateOrderNumber());
         order.setStatus(OrderStatus.PLACED);
-    // Prefer snapshot values from the request when provided, otherwise fallback to authenticated user
-    order.setCustomerFirstName(request.getCustomerFirstName() != null ? request.getCustomerFirstName() : user.getFirstName());
-    order.setCustomerLastName(request.getCustomerLastName() != null ? request.getCustomerLastName() : user.getLastName());
-    order.setCustomerEmail(request.getCustomerEmail() != null ? request.getCustomerEmail() : user.getEmail());
-    order.setCustomerPhone(request.getCustomerPhone() != null ? request.getCustomerPhone() : user.getPhone());
-    // Link order to authenticated user so customerId is recorded in DB and DTOs
-    order.setUser(user);
+        // Prefer snapshot values from the request when provided, otherwise fallback to
+        // authenticated user
+        order.setCustomerFirstName(
+                request.getCustomerFirstName() != null ? request.getCustomerFirstName() : user.getFirstName());
+        order.setCustomerLastName(
+                request.getCustomerLastName() != null ? request.getCustomerLastName() : user.getLastName());
+        order.setCustomerEmail(request.getCustomerEmail() != null ? request.getCustomerEmail() : user.getEmail());
+        order.setCustomerPhone(request.getCustomerPhone() != null ? request.getCustomerPhone() : user.getPhone());
+        // Link order to authenticated user so customerId is recorded in DB and DTOs
+        order.setUser(user);
 
-    order.setBillingAddress(toAddressEntity(request.getBillingAddress()));
-    order.setShippingAddress(toAddressEntity(request.getShippingAddress()));
-    order.setOrderNotes(request.getOrderNotes());
+        order.setBillingAddress(toAddressEntity(request.getBillingAddress()));
+        order.setShippingAddress(toAddressEntity(request.getShippingAddress()));
+        order.setOrderNotes(request.getOrderNotes());
         order.setDeliveryMethod(request.getDeliveryMethod());
         order.setPaymentMethod(request.getPaymentMethod());
         if (request.getPaymentMethod() == PaymentMethod.CARD) {
@@ -86,7 +89,8 @@ public class CheckoutServiceImpl implements CheckoutService {
             int qty = ci.getQuantity();
             if (variationId == null || qty <= 0)
                 continue;
-            qtyByVariation.merge(variationId, qty, (a, b) -> Integer.valueOf((a == null ? 0 : a) + (b == null ? 0 : b)));
+            qtyByVariation.merge(variationId, qty,
+                    (a, b) -> Integer.valueOf((a == null ? 0 : a) + (b == null ? 0 : b)));
         }
 
         for (var entry : qtyByVariation.entrySet()) {
@@ -98,7 +102,6 @@ public class CheckoutServiceImpl implements CheckoutService {
                     .orElseThrow(() -> new NotFoundException("Product variation not found: " + variationId));
             Product product = variation.getProduct();
             if (product == null) {
-                // fallback fetch if relation not loaded
                 Long pid = (variation.getProduct() != null) ? variation.getProduct().getId() : null;
                 if (pid != null) {
                     product = productRepository.findById(pid).orElse(null);
@@ -127,11 +130,13 @@ public class CheckoutServiceImpl implements CheckoutService {
             } else if (product != null && product.getImages() != null && !product.getImages().isEmpty()) {
                 for (var img : product.getImages()) {
                     try {
-                        if (img != null && img.getType() != null && img.getType().name().equals("PRIMARY") && img.getUrl() != null && !img.getUrl().isBlank()) {
+                        if (img != null && img.getType() != null && img.getType().name().equals("PRIMARY")
+                                && img.getUrl() != null && !img.getUrl().isBlank()) {
                             imageUrl = img.getUrl();
                             break;
                         }
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
                 if (imageUrl == null) {
                     for (var img : product.getImages()) {
@@ -163,28 +168,30 @@ public class CheckoutServiceImpl implements CheckoutService {
         }
 
         // Allow optional overrides from the request for discount and shipping fee
-    BigDecimal discount = request.getDiscountTotal() != null ? request.getDiscountTotal() : BigDecimal.ZERO;
+        BigDecimal discount = request.getDiscountTotal() != null ? request.getDiscountTotal() : BigDecimal.ZERO;
 
-    // If couponCode provided and no explicit discountTotal override, evaluate coupon
-    if ((discount == null || BigDecimal.ZERO.compareTo(discount) == 0) && request.getCouponCode() != null && !request.getCouponCode().trim().isEmpty()) {
-        try {
-            com.vtcweb.backend.dto.coupon.CouponApplyRequestDTO creq = new com.vtcweb.backend.dto.coupon.CouponApplyRequestDTO();
-            creq.setCode(request.getCouponCode());
-            creq.setSubtotal(subtotal);
-            com.vtcweb.backend.dto.coupon.CouponApplyResponseDTO cresp = couponService.applyCoupon(creq);
-            if (cresp != null && cresp.isValid()) {
-                discount = cresp.getDiscountAmount() != null ? cresp.getDiscountAmount() : BigDecimal.ZERO;
+        // If couponCode provided and no explicit discountTotal override, evaluate
+        // coupon
+        if ((discount == null || BigDecimal.ZERO.compareTo(discount) == 0) && request.getCouponCode() != null
+                && !request.getCouponCode().trim().isEmpty()) {
+            try {
+                com.vtcweb.backend.dto.coupon.CouponApplyRequestDTO creq = new com.vtcweb.backend.dto.coupon.CouponApplyRequestDTO();
+                creq.setCode(request.getCouponCode());
+                creq.setSubtotal(subtotal);
+                com.vtcweb.backend.dto.coupon.CouponApplyResponseDTO cresp = couponService.applyCoupon(creq);
+                if (cresp != null && cresp.isValid()) {
+                    discount = cresp.getDiscountAmount() != null ? cresp.getDiscountAmount() : BigDecimal.ZERO;
+                }
+            } catch (Exception ex) {
+                // swallow coupon evaluation errors and proceed without discount
+                discount = BigDecimal.ZERO;
             }
-        } catch (Exception ex) {
-            // swallow coupon evaluation errors and proceed without discount
-            discount = BigDecimal.ZERO;
         }
-    }
-    BigDecimal tax = (subtotal.compareTo(BigDecimal.ZERO) > 0
-        ? subtotal.multiply((taxRate != null ? taxRate : BigDecimal.ZERO))
-        : BigDecimal.ZERO)
-        .setScale(2, RoundingMode.HALF_UP);
-    BigDecimal shipping = request.getShippingFee() != null ? request.getShippingFee() : calculateShipping(subtotal);
+        BigDecimal tax = (subtotal.compareTo(BigDecimal.ZERO) > 0
+                ? subtotal.multiply((taxRate != null ? taxRate : BigDecimal.ZERO))
+                : BigDecimal.ZERO)
+                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal shipping = request.getShippingFee() != null ? request.getShippingFee() : calculateShipping(subtotal);
         BigDecimal total = subtotal.subtract(discount).add(tax).add(shipping);
 
         order.setSubtotal(subtotal);
@@ -212,7 +219,8 @@ public class CheckoutServiceImpl implements CheckoutService {
                 java.util.List<java.util.Map<String, Object>> items = new java.util.ArrayList<>();
                 if (saved.getItems() != null) {
                     for (OrderItem it : saved.getItems()) {
-                        if (it == null) continue;
+                        if (it == null)
+                            continue;
                         java.util.Map<String, Object> m = new java.util.HashMap<>();
                         m.put("name", it.getProductName());
                         m.put("qty", it.getQuantity());
@@ -247,16 +255,16 @@ public class CheckoutServiceImpl implements CheckoutService {
     private Address toAddressEntity(AddressDTO dto) {
         if (dto == null)
             return null;
-    return Address.builder()
-        .company(dto.getCompany())
-        .line1(dto.getLine1())
-        .line2(dto.getLine2())
-        .city(dto.getCity())
-        .district(dto.getDistrict())
-        .province(dto.getProvince())
-        .postalCode(dto.getPostalCode())
-        .country(dto.getCountry())
-        .build();
+        return Address.builder()
+                .company(dto.getCompany())
+                .line1(dto.getLine1())
+                .line2(dto.getLine2())
+                .city(dto.getCity())
+                .district(dto.getDistrict())
+                .province(dto.getProvince())
+                .postalCode(dto.getPostalCode())
+                .country(dto.getCountry())
+                .build();
     }
 
     private PaymentInfo toPaymentInfoEntity(PaymentInfoDTO dto) {
@@ -290,7 +298,8 @@ public class CheckoutServiceImpl implements CheckoutService {
             String seqStr = String.format("%04d", seq);
             candidate = "ORD" + date + seqStr;
             attempts++;
-            if (attempts > 50) throw new IllegalStateException("Unable to generate unique order number");
+            if (attempts > 50)
+                throw new IllegalStateException("Unable to generate unique order number");
         } while (orderRepository.existsByOrderNumber(candidate));
         return candidate;
     }

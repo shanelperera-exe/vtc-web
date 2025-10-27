@@ -111,6 +111,7 @@ export default function Footer() {
             <FooterColumn title="Information">
               <FooterLink to="/about">About us</FooterLink>
               <FooterLink to="/contact">Contact us</FooterLink>
+              <FooterLink to="/help">Help</FooterLink>
               <FooterLink to="/terms">Terms & conditions</FooterLink>
               <FooterLink to="/privacy">Privacy policy</FooterLink>
             </FooterColumn>

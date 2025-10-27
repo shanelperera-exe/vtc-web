@@ -1,4 +1,9 @@
 import React, { useMemo } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import ProductCard from './ProductCard';
 import { useProducts } from '../../api/hooks/useProducts';
 import { useCategories } from '../../api/hooks/useCategories';
@@ -41,37 +46,68 @@ export default function YouMayAlsoLike({ categoryId = null, categoryName = '', e
 
   // Always render the section header so the user sees the area even when no matches exist
   return (
-    <div className="mt-12 max-w-5xl pl-6 sm:pl-10 lg:max-w-[800px] lg:pl-16">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-5xl font-bold tracking-tight text-gray-900">{title}</h2>
-      </div>
-
-      {loading && (!items || items.length === 0) && (
-        <div className="p-6 text-sm text-gray-500">Loading recommendations…</div>
-      )}
-
-      {!loading && (!items || items.length === 0) && (
-        <div className="p-6 text-sm text-gray-500">No recommendations found.</div>
-      )}
-
-      {items && items.length > 0 && (
-        <div className="flex flex-wrap gap-8 justify-start">
-          {items.slice(0, 8).map(product => (
-            <ProductCard
-              key={product.id}
-              id={product.id}
-              sku={product.sku}
-              name={product.name}
-              description={product.shortDescription || product.description}
-              image={(product.primaryImageUrl || (product.imageUrls && product.imageUrls[0]) || product.image)}
-              price={product.basePrice || product.price || 0}
-              category={product.categoryName || product.category}
-              rating={product.rating}
-              numOfReviews={product.numOfReviews}
-            />
-          ))}
+    <section className="py-12 sm:py-16 bg-neutral-50">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+        <div className="text-center mb-8">
+          <p className="text-xs tracking-[0.1em] text-neutral-600 font-semibold uppercase">Top recommendations</p>
+          <h2 className="mt-2 text-3xl md:text-4xl font-bold tracking-tight text-neutral-900">{title}</h2>
+          <p className="mt-2 text-neutral-600">Tailored recommendations to match the product you’re viewing.</p>
         </div>
-      )}
-    </div>
+
+        {loading && (!items || items.length === 0) && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-[460px] border-2 border-neutral-900 bg-neutral-200 animate-pulse rounded" />
+            ))}
+          </div>
+        )}
+
+        {!loading && (!items || items.length === 0) && (
+          <div className="p-6 text-sm text-gray-500">No recommendations found.</div>
+        )}
+
+        {items && items.length > 0 && (
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            navigation
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 4500, disableOnInteraction: false }}
+            loop={false}
+            spaceBetween={16}
+            slidesPerView={1}
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              768: { slidesPerView: 3 },
+              1024: { slidesPerView: 4 }
+            }}
+            className="py-4"
+          >
+            {items.slice(0, 10).map((p) => (
+              <SwiperSlide key={p.id} className="!flex !justify-center">
+                <div style={{ width: '100%', maxWidth: 320 }}>
+                  <ProductCard
+                    id={p.id}
+                    sku={p.sku}
+                    name={p.name}
+                    description={p.shortDescription || p.description}
+                    image={(p.primaryImageUrl || (p.imageUrls && p.imageUrls[0]) || p.image)}
+                    price={p.basePrice || p.price || 0}
+                    category={p.categoryName || p.category}
+                    rating={p.rating}
+                    numOfReviews={p.numOfReviews}
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
+
+        <div className="text-center mt-8">
+          <a href="/category/all" className="inline-flex items-center justify-center px-5 py-3 font-semibold border border-neutral-300 hover:bg-white transition rounded-full" style={{ textDecoration: 'none' }}>
+            View all products
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }

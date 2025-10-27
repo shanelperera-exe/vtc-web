@@ -1,29 +1,22 @@
 import React from 'react';
 
 const placeholderLogos = [
-  'https://images.squarespace-cdn.com/content/v1/66ad47450527ea3ca863ff9a/1728989278540-7O1L35J19I6UN90FV9V8/Dettol-logo-1990s.png',
-  'https://cdn.freebiesupply.com/logos/large/2x/panasonic-logo-png-transparent.png',
-  'https://cdn.freebiesupply.com/images/large/2x/philips-logo-png-transparent.png',
-  'https://www.atlas.lk/wp-content/uploads/2020/10/atlas-logo-min.png',
-  'https://cdn.freebiesupply.com/images/large/2x/lg-logo-png-transparent.png',
   'https://static.wikia.nocookie.net/logopedia/images/5/5d/Harpic.png',
-  'https://cdn.freebiesupply.com/logos/large/2x/singer-3-logo-png-transparent.png',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Philips_logo.svg/1024px-Philips_logo.svg.png',
   'https://vectorseek.com/wp-content/uploads/2023/09/Milton-Logo-Vector.svg-.png',
   'https://upload.wikimedia.org/wikipedia/commons/2/2f/Dyson_logo.svg',
-  'https://via.placeholder.com/220x80?text=Brand+10',
   'https://upload.wikimedia.org/wikipedia/commons/2/22/Maped_logo_fr.png?20191123110904',
-  'https://bigbrands.lk/wp-content/uploads/2023/02/innovex.png',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Samsung_wordmark.svg/1200px-Samsung_wordmark.svg.png',
 ];
 
 // Small tile for a single logo (keeps 1:1 square and padding)
 const LogoTile = ({ src, alt, imgLoading = 'lazy' }) => (
-  <div className="w-24 h-24 p-2 flex items-center justify-center mx-2 hover:bg-gray-200 transition-colors" aria-hidden>
+  <div className="w-24 h-24 p-2 flex items-center justify-center mx-4" aria-hidden>
     <div className="w-full h-full flex items-center justify-center">
       <img
         src={src}
         alt={alt}
-        className="max-w-full max-h-full object-contain"
+          className="max-w-full max-h-full object-contain"
+          style={{ filter: 'grayscale(1) brightness(0)' }}
         loading={imgLoading}
         onError={(e) => {
           e.currentTarget.onerror = null;
@@ -39,19 +32,12 @@ const Brands = () => {
   // so the total marquee content is at least 2x the visible container width (prevents empty gaps).
   const containerRef = React.useRef(null);
   const seqRef = React.useRef(null); // measures one sequence block (one A group)
-  // We'll shuffle logos once at parent so both duplicated halves are identical
-  const shuffledLogos = React.useMemo(() => {
-    const arr = [...placeholderLogos];
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }, []);
+  // Use a fixed, defined order for logos (no randomization)
+  const logos = placeholderLogos;
 
   const [repeats, setRepeats] = React.useState(2);
-  // number of tiles to include in one group A (we'll build A by cycling shuffledLogos)
-  const [tilesPerGroup, setTilesPerGroup] = React.useState(shuffledLogos.length);
+  // number of tiles to include in one group A (we'll build A by cycling logos)
+  const [tilesPerGroup, setTilesPerGroup] = React.useState(logos.length);
 
   React.useEffect(() => {
     let mounted = true;
@@ -61,13 +47,14 @@ const Brands = () => {
       if (!containerW) return;
 
       // Try to measure step between two adjacent tiles (includes tile width + margin/gap)
-      const imgs = seqRef.current ? Array.from(seqRef.current.querySelectorAll('img')) : [];
+  const imgs = seqRef.current ? Array.from(seqRef.current.querySelectorAll('img')) : [];
       if (imgs.length >= 2) {
         const r0 = imgs[0].getBoundingClientRect();
         const r1 = imgs[1].getBoundingClientRect();
         const step = Math.abs(r1.left - r0.left) || Math.abs(r1.right - r0.left);
         if (step > 0) {
-          const neededTiles = Math.max(1, Math.ceil(containerW / step) + 1);
+          // ensure the sequence A is at least as wide as the container (plus a small buffer)
+          const neededTiles = Math.max(1, Math.ceil(containerW / step) + 2);
           // set both tilesPerGroup and repeats so visible rendering uses this count
           if (mounted) {
             setTilesPerGroup(neededTiles);
@@ -77,7 +64,19 @@ const Brands = () => {
         }
       }
 
-      // Fallback: measure the whole seqRef width (if present) and decide how many full shuffled lists fit
+      // If we couldn't measure two adjacent images, try using a single image width as fallback.
+      if (imgs.length === 1) {
+        const r0 = imgs[0].getBoundingClientRect();
+        const tileW = r0.width || 1;
+        const neededTiles = Math.max(1, Math.ceil(containerW / tileW) + 2);
+        if (mounted) {
+          setTilesPerGroup(neededTiles);
+          setRepeats(1);
+        }
+        return;
+      }
+
+      // Fallback: measure the whole seqRef width (if present) and decide how many full lists fit
       const seqW = seqRef.current ? seqRef.current.offsetWidth : 0;
       if (!seqW) return;
       const listsNeeded = Math.max(1, Math.ceil(containerW / seqW) + 1);
@@ -131,7 +130,7 @@ const Brands = () => {
   const buildGroupSrcs = (count) => {
     const out = [];
     for (let i = 0; i < count; i++) {
-      out.push(shuffledLogos[i % shuffledLogos.length]);
+      out.push(logos[i % logos.length]);
     }
     return out;
   };
@@ -159,7 +158,7 @@ const Brands = () => {
         <div className="overflow-hidden px-2">
           <div
             className="marquee-track animate-train"
-            style={{ whiteSpace: 'nowrap', display: 'inline-flex', gap: '0.75rem' }}
+            style={{ whiteSpace: 'nowrap', display: 'inline-flex', gap: '1.5rem' }}
           >
             {/* Render a hidden measured sequence (A) using the shuffled logos */}
             <div ref={seqRef} style={{ display: 'inline-block', visibility: 'hidden', position: 'absolute', pointerEvents: 'none' }}>
@@ -167,9 +166,11 @@ const Brands = () => {
               <div style={{ display: 'inline-flex' }}>{renderFromSrcs(buildGroupSrcs(tilesPerGroup), 'eager')}</div>
             </div>
 
-            {/* Render visible flattened group A (tilesPerGroup tiles) and duplicate it immediately to produce A A */}
-            <div style={{ display: 'inline-flex' }}>{renderFromSrcs(buildGroupSrcs(tilesPerGroup))}</div>
-            <div style={{ display: 'inline-flex' }}>{renderFromSrcs(buildGroupSrcs(tilesPerGroup))}</div>
+      {/* Render visible flattened group A (tilesPerGroup tiles) and duplicate it multiple times (A A A)
+        Using three copies and animating by -33.333% produces a seamless circular train without gaps. */}
+      <div style={{ display: 'inline-flex' }}>{renderFromSrcs(buildGroupSrcs(tilesPerGroup))}</div>
+      <div style={{ display: 'inline-flex' }}>{renderFromSrcs(buildGroupSrcs(tilesPerGroup))}</div>
+      <div style={{ display: 'inline-flex' }}>{renderFromSrcs(buildGroupSrcs(tilesPerGroup))}</div>
           </div>
         </div>
 
@@ -177,9 +178,10 @@ const Brands = () => {
         <div className="overflow-hidden px-2 mt-4">
           <div
             className="marquee-track animate-train-ltr"
-            style={{ whiteSpace: 'nowrap', display: 'inline-flex', gap: '0.75rem' }}
+            style={{ whiteSpace: 'nowrap', display: 'inline-flex', gap: '1.5rem' }}
           >
-            {/* LTR train uses the same duplicated flattened A A sequence */}
+            {/* LTR train uses the same duplicated flattened A A A sequence */}
+            <div style={{ display: 'inline-flex' }}>{renderFromSrcs(buildGroupSrcs(tilesPerGroup))}</div>
             <div style={{ display: 'inline-flex' }}>{renderFromSrcs(buildGroupSrcs(tilesPerGroup))}</div>
             <div style={{ display: 'inline-flex' }}>{renderFromSrcs(buildGroupSrcs(tilesPerGroup))}</div>
           </div>
@@ -190,10 +192,10 @@ const Brands = () => {
         {`
           @keyframes train {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            100% { transform: translateX(-33.3333%); }
           }
           @keyframes train-ltr {
-            0% { transform: translateX(-50%); }
+            0% { transform: translateX(-33.3333%); }
             100% { transform: translateX(0); }
           }
           .animate-train {

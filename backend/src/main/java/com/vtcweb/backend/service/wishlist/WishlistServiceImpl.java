@@ -46,7 +46,8 @@ public class WishlistServiceImpl implements WishlistService {
                 return toDto(wi);
             }
         }
-        Product product = productRepository.findById(Objects.requireNonNull(productId, "productId")).orElseThrow(() -> new NotFoundException("Product not found"));
+        Product product = productRepository.findById(Objects.requireNonNull(productId, "productId"))
+                .orElseThrow(() -> new NotFoundException("Product not found"));
         WishlistItem item = WishlistItem.builder().wishlist(ensuredWishlist).product(product).build();
         ensuredWishlist.getItems().add(item);
         wishlistRepository.save(ensuredWishlist);
@@ -57,8 +58,10 @@ public class WishlistServiceImpl implements WishlistService {
     @Transactional
     public void removeProduct(Long userId, Long productId) {
         Wishlist wishlist = wishlistRepository.findByUser_Id(userId).orElse(null);
-        if (wishlist == null || wishlist.getItems() == null) return;
-        wishlist.getItems().removeIf(wi -> wi.getProduct() != null && Objects.equals(wi.getProduct().getId(), productId));
+        if (wishlist == null || wishlist.getItems() == null)
+            return;
+        wishlist.getItems()
+                .removeIf(wi -> wi.getProduct() != null && Objects.equals(wi.getProduct().getId(), productId));
         wishlistRepository.save(wishlist);
     }
 
@@ -66,7 +69,8 @@ public class WishlistServiceImpl implements WishlistService {
     @Transactional
     public void clear(Long userId) {
         Wishlist wishlist = wishlistRepository.findByUser_Id(userId).orElse(null);
-        if (wishlist == null) return;
+        if (wishlist == null)
+            return;
         wishlist.getItems().clear();
         wishlistRepository.save(wishlist);
     }
@@ -74,7 +78,8 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     @Transactional
     public WishlistResponseDTO mergeLocal(Long userId, List<Long> productIds) {
-        if (productIds == null || productIds.isEmpty()) return getWishlist(userId);
+        if (productIds == null || productIds.isEmpty())
+            return getWishlist(userId);
         Wishlist wishlist = loadOrCreate(userId);
         final Wishlist ensuredWishlist2 = (wishlist.getId() == null) ? wishlistRepository.save(wishlist) : wishlist;
         java.util.Set<Long> existing = ensuredWishlist2.getItems().stream()
@@ -82,8 +87,10 @@ public class WishlistServiceImpl implements WishlistService {
                 .map(it -> it.getProduct().getId())
                 .collect(java.util.stream.Collectors.toSet());
         for (Long pid : productIds) {
-            if (pid == null || existing.contains(pid)) continue;
-            productRepository.findById(pid).ifPresent(p -> ensuredWishlist2.getItems().add(WishlistItem.builder().wishlist(ensuredWishlist2).product(p).build()));
+            if (pid == null || existing.contains(pid))
+                continue;
+            productRepository.findById(pid).ifPresent(p -> ensuredWishlist2.getItems()
+                    .add(WishlistItem.builder().wishlist(ensuredWishlist2).product(p).build()));
         }
         wishlistRepository.save(ensuredWishlist2);
         return WishlistResponseDTO.builder().items(toDtoList(ensuredWishlist2)).build();
@@ -91,13 +98,15 @@ public class WishlistServiceImpl implements WishlistService {
 
     private Wishlist loadOrCreate(Long userId) {
         return wishlistRepository.findByUser_Id(Objects.requireNonNull(userId, "userId")).orElseGet(() -> {
-            User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found for id=" + userId));
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new NotFoundException("User not found for id=" + userId));
             return Wishlist.builder().user(user).items(new java.util.LinkedHashSet<>()).build();
         });
     }
 
     private List<WishlistItemDTO> toDtoList(Wishlist wishlist) {
-        if (wishlist == null || wishlist.getItems() == null) return List.of();
+        if (wishlist == null || wishlist.getItems() == null)
+            return List.of();
         List<WishlistItemDTO> list = new ArrayList<>();
         for (WishlistItem wi : wishlist.getItems()) {
             list.add(toDto(wi));
@@ -107,7 +116,8 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     private WishlistItemDTO toDto(WishlistItem wi) {
-        if (wi == null) return null;
+        if (wi == null)
+            return null;
         Product p = wi.getProduct();
         String image = null;
         if (p != null && p.getImages() != null) {
@@ -116,7 +126,8 @@ public class WishlistServiceImpl implements WishlistService {
                     .filter(img -> img.getType() == ProductImage.ImageType.PRIMARY)
                     .map(ProductImage::getUrl)
                     .findFirst()
-                    .orElseGet(() -> p.getImages().stream().filter(java.util.Objects::nonNull).map(ProductImage::getUrl).findFirst().orElse(null));
+                    .orElseGet(() -> p.getImages().stream().filter(java.util.Objects::nonNull).map(ProductImage::getUrl)
+                            .findFirst().orElse(null));
         }
         java.math.BigDecimal price = p != null ? p.getBasePrice() : null;
         return WishlistItemDTO.builder()

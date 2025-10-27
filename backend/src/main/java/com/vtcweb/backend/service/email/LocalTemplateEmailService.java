@@ -18,8 +18,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Local template-based email service using Thymeleaf templates under classpath:templates/email/*.
- * Marked as @Primary to prefer local templates over Brevo API when both are present.
+ * Local template-based email service using Thymeleaf templates under
+ * classpath:templates/email/*.
+ * Marked as @Primary to prefer local templates over Brevo API when both are
+ * present.
  */
 @Service
 @Primary
@@ -30,7 +32,8 @@ public class LocalTemplateEmailService implements EmailService {
     private final TemplateEngine templateEngine;
     private final EmailProperties emailProperties;
 
-    public LocalTemplateEmailService(JavaMailSender mailSender, TemplateEngine templateEngine, EmailProperties emailProperties) {
+    public LocalTemplateEmailService(JavaMailSender mailSender, TemplateEngine templateEngine,
+            EmailProperties emailProperties) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.emailProperties = emailProperties;
@@ -80,12 +83,19 @@ public class LocalTemplateEmailService implements EmailService {
     public void sendTemplate(EmailTemplateKey key, String to, String subject, Map<String, Object> params) {
         // Build Thymeleaf context
         Context context = new Context();
-        if (params != null) params.forEach(context::setVariable);
+        if (params != null)
+            params.forEach(context::setVariable);
         // Add common branding variables
-        context.setVariable("brandName", StringUtils.hasText(emailProperties.getBrandName()) ? emailProperties.getBrandName() : emailProperties.getFromName());
-        context.setVariable("brandPrimaryColor", StringUtils.hasText(emailProperties.getBrandPrimaryColor()) ? emailProperties.getBrandPrimaryColor() : "#0e7490");
-        context.setVariable("logoUrl", StringUtils.hasText(emailProperties.getLogoUrl()) ? emailProperties.getLogoUrl() : "");
-        context.setVariable("siteUrl", StringUtils.hasText(emailProperties.getSiteUrl()) ? emailProperties.getSiteUrl() : "");
+        context.setVariable("brandName",
+                StringUtils.hasText(emailProperties.getBrandName()) ? emailProperties.getBrandName()
+                        : emailProperties.getFromName());
+        context.setVariable("brandPrimaryColor",
+                StringUtils.hasText(emailProperties.getBrandPrimaryColor()) ? emailProperties.getBrandPrimaryColor()
+                        : "#0e7490");
+        context.setVariable("logoUrl",
+                StringUtils.hasText(emailProperties.getLogoUrl()) ? emailProperties.getLogoUrl() : "");
+        context.setVariable("siteUrl",
+                StringUtils.hasText(emailProperties.getSiteUrl()) ? emailProperties.getSiteUrl() : "");
         // Render and send
         try {
             String templateName = mapKeyToTemplate(key);
@@ -122,13 +132,19 @@ public class LocalTemplateEmailService implements EmailService {
 
     @Override
     @Async("emailExecutor")
-    public void sendPlainTextAsync(String to, String subject, String text) { sendPlainText(to, subject, text); }
+    public void sendPlainTextAsync(String to, String subject, String text) {
+        sendPlainText(to, subject, text);
+    }
 
     @Override
     @Async("emailExecutor")
-    public void sendHtmlAsync(String to, String subject, String html) { sendHtml(to, subject, html); }
+    public void sendHtmlAsync(String to, String subject, String html) {
+        sendHtml(to, subject, html);
+    }
 
     @Override
     @Async("emailExecutor")
-    public void sendTemplateAsync(EmailTemplateKey key, String to, String subject, Map<String, Object> params) { sendTemplate(key, to, subject, params); }
+    public void sendTemplateAsync(EmailTemplateKey key, String to, String subject, Map<String, Object> params) {
+        sendTemplate(key, to, subject, params);
+    }
 }

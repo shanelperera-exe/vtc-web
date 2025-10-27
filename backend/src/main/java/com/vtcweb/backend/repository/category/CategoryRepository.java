@@ -17,6 +17,7 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     /**
      * Find a category by name, case-insensitive.
+     * 
      * @param name the category name
      * @return Optional containing the found category, if any
      */
@@ -24,6 +25,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     /**
      * Check if a category exists by name, case-insensitive.
+     * 
      * @param name the category name
      * @return true if exists, false otherwise
      */

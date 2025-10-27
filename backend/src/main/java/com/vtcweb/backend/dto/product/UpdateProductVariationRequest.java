@@ -26,6 +26,5 @@ public class UpdateProductVariationRequest {
 
     private String imageUrl;
 
-    /** Optional: replace attributes; when provided must be non-empty. */
     private Map<String, String> attributes;
 }

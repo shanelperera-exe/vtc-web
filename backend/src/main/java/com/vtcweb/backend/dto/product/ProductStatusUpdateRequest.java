@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductStatusUpdateRequest {
     @NotBlank
-    private String status; // "active|inactive" (case-insensitive)
+    private String status;
 }

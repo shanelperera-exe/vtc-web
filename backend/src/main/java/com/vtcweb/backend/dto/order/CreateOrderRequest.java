@@ -52,4 +52,3 @@ public class CreateOrderRequest {
     private BigDecimal shippingFee; // optional default 0
     private BigDecimal discountTotal; // optional default 0
 }
-

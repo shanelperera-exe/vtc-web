@@ -12,7 +12,7 @@ public class RefreshTokenResponse {
     private String accessToken;
     private String tokenType;
     private long expiresInSeconds;
-    // internal use only to set cookie max-age in controller
+
     @JsonIgnore
     private long refreshMaxAgeSeconds;
 }
