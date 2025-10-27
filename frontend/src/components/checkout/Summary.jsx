@@ -1,8 +1,17 @@
 import React, { useMemo } from 'react'
 import { useCart } from '../../context/CartContext'
+import { FiClipboard } from 'react-icons/fi'
 
 export default function Summary({ couponCode, couponDiscount, onApplyCoupon, couponApplying, couponMessage, setCouponCode }) {
   const { cartItems } = useCart()
+  const formatLKR = (amount) => {
+    try {
+      const n = Number(amount) || 0
+      return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)
+    } catch (e) {
+      return `LKR ${Number(amount || 0).toFixed(2)}`
+    }
+  }
   // Group identical variant items so quantities combine instead of repeated rows
   const { grouped, subtotal, shipping, total, count } = useMemo(() => {
     const map = new Map();
@@ -30,7 +39,7 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
 
   return (
     <aside className="border-3 p-4 shadow-sm bg-white">
-      <h3 className="text-lg font-semibold mb-3">Order Summary</h3>
+      <h3 className="text-2xl font-semibold mb-3 flex items-center gap-2">Order Summary</h3>
       <div className="divide-y">
         <div className="space-y-2 pb-3">
           {grouped.length === 0 && <p className="text-sm text-gray-500">Your cart is empty.</p>}
@@ -58,7 +67,7 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
                   <p className="text-gray-700 font-medium text-sm">Qty: {item.quantity || 1}</p>
                 </div>
               </div>
-              <p className="font-medium">LKR {(item.price || 0) * (item.quantity || 1)}</p>
+                  <p className="font-medium">{formatLKR((item.price || 0) * (item.quantity || 1))}</p>
             </div>
           ))}
         </div>
@@ -72,13 +81,13 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
                 value={couponCode || ''}
                 onChange={(e) => setCouponCode && setCouponCode(e.target.value)}
                 placeholder="Enter coupon code"
-                className="flex-1 px-3 py-2 border rounded-md"
+                className="flex-1 px-3 py-2 border-2 border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-emerald-400"
               />
               <button
                 type="button"
                 onClick={() => onApplyCoupon && onApplyCoupon('apply')}
                 disabled={couponApplying}
-                className="px-4 py-2 bg-[#0bd964] text-white rounded-md disabled:opacity-60"
+                className="px-4 py-2 text-white bg-emerald-600 hover:bg-black rounded-none border-0 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
               >
                 {couponApplying ? 'Applying...' : 'Apply'}
               </button>
@@ -87,12 +96,12 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
           </div>
         </div>
         <div className="py-3 text-sm space-y-1">
-          <div className="flex justify-between"><span>Items ({count})</span><span>LKR {subtotal}</span></div>
-          <div className="flex justify-between"><span>Shipping</span><span>{shipping ? `LKR ${shipping}` : 'Free'}</span></div>
+          <div className="flex justify-between"><span>Items ({count})</span><span>{formatLKR(subtotal)}</span></div>
+          <div className="flex justify-between"><span>Shipping</span><span>{shipping ? formatLKR(shipping) : 'Free'}</span></div>
           {discount > 0 && (
-            <div className="flex justify-between text-green-700"><span>Discount {couponCode ? `(${couponCode})` : ''}</span><span>- LKR {discount}</span></div>
+            <div className="flex justify-between text-green-700"><span>Discount {couponCode ? `(${couponCode})` : ''}</span><span>- {formatLKR(discount)}</span></div>
           )}
-          <div className="flex justify-between font-semibold text-gray-900 pt-2"><span>Total</span><span>LKR {Math.max(0, subtotal + shipping - discount)}</span></div>
+          <div className="flex justify-between font-semibold text-xl text-gray-900 pt-2"><span>Total</span><span>{formatLKR(Math.max(0, subtotal + shipping - discount))}</span></div>
         </div>
       </div>
     </aside>

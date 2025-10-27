@@ -496,7 +496,7 @@ export default function ProductDetails() {
                       {/* First row: quantity + add to cart + add to wishlist */}
                       <div className="flex flex-row items-center gap-4">
                         <QuantityInput value={qty} onChange={setQty} min={1} max={15} />
-                        <AddToCartBtn product={{ ...product, selectedVariationId: selectedVariation?.id, price: effectivePrice, color: selectedColor, size: selectedSize }} quantity={qty} />
+                        <AddToCartBtn product={{ ...product, selectedVariationId: selectedVariation?.id, price: effectivePrice, color: selectedColor, size: selectedSize, stock: unitsLeft ?? effectiveStock }} quantity={qty} />
                         <AddToWishlistBtn product={{ ...product, selectedVariationId: selectedVariation?.id, color: selectedColor, size: selectedSize }} />
                       </div>
                       {/* Second row: buy now spanning same width area */}

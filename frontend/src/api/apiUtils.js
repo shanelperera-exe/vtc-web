@@ -10,6 +10,7 @@ export function normalizeError(err) {
 		return {
 			status: axiosRes.status,
 			message: data.message || data.error || data.title || err.message || 'Request failed',
+			availableStock: data.availableStock != null ? data.availableStock : null,
 			details: data.errors || data.fieldErrors || data.details || data,
 		};
 	}

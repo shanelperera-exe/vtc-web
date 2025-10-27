@@ -88,7 +88,7 @@ const Carousel = () => {
     {
       type: 'service',
       key: 'why_choose_us',
-      src: assets.carouselImgs.cleaning,
+      src: assets.carouselImgs.why_choose,
       name: 'Why Choose Us',
       features: [
         { icon: 'truck', title: 'Fast Delivery', desc: 'Island-wide shipping' },
@@ -102,17 +102,19 @@ const Carousel = () => {
     {
       type: 'bundle',
       key: 'bundle_and_save',
-      src: assets.carouselImgs.stationary,
+      // use dedicated bundle image
+      src: assets.carouselImgs.bundle_save,
       name: 'Bundle & Save',
-      offer: 'Buy 2 Get 1 Free',
-      desc: 'Perfect combos for home & office',
-      link: '/collections/bundles',
+      offer: 'Buy 1 Get 1 Free',
+      desc: 'Stylish lampshades to brighten any room',
+      link: '/collections/homeware',
       cta: 'View Bundles'
     },
     {
       type: 'new',
       key: 'new_arrivals',
-      src: assets.carouselImgs.cleaning,
+      // use the dedicated new_arrivals carousel image
+      src: assets.carouselImgs.new_arrivals,
       name: 'New Arrivals',
       desc: 'Fresh picks this week — limited stock',
       link: '/collections/new',
@@ -121,7 +123,7 @@ const Carousel = () => {
     {
       type: 'loyalty',
       key: 'member_rewards',
-      src: assets.carouselImgs.cleaning,
+      src: assets.carouselImgs.member_rewards,
       name: 'Member Rewards',
       desc: 'Earn points on every order. Redeem for discounts.',
       link: '/rewards',
@@ -187,7 +189,7 @@ const Carousel = () => {
         return (
           <div className="max-w-5xl">
             <motion.h3
-              className="font-semibold leading-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              className="font-semibold leading-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -231,7 +233,7 @@ const Carousel = () => {
         return (
           <div className="max-w-5xl">
             <motion.h3
-              className="font-semibold leading-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              className="font-semibold leading-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -242,7 +244,7 @@ const Carousel = () => {
               initial="hidden" animate="show" variants={fadeUp} custom={0.12}
             >
               {(slide.features || []).map((f, i) => (
-                <li key={i} className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-3 py-3 text-white/95 max-w-sm">
+                <li key={i} className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-3 py-3 text-white/95 w-full">
                   <div className="flex items-start gap-3">
                     <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 text-white">
                       {renderIcon(f.icon)}
@@ -272,7 +274,7 @@ const Carousel = () => {
               <FiGift size={16} /> <span className="text-xs">Special Offer</span>
             </motion.div>
             <motion.h3
-              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0.12}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -295,7 +297,7 @@ const Carousel = () => {
         return (
           <div className="max-w-3xl">
             <motion.h3
-              className="font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              className="font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -318,7 +320,7 @@ const Carousel = () => {
               <FiStar size={22} /> <span className="text-sm">Member Rewards</span>
             </motion.div>
             <motion.h3
-              className="mt-2 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              className="mt-2 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0.12}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >

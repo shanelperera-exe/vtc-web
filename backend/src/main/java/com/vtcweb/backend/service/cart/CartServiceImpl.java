@@ -330,6 +330,7 @@ public class CartServiceImpl implements CartService {
 				.attributes(detachedAttrs)
 				.price(unitPrice)
 				.quantity(quantity)
+				.availableStock(variation.getStock() != null ? variation.getStock() : 0)
 				.itemTotal(itemTotal)
 				.build();
 	}

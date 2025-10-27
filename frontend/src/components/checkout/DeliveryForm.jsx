@@ -1,4 +1,5 @@
 import React from 'react'
+import { FiUser, FiHome, FiTruck } from 'react-icons/fi'
 import Field from './Field'
 import { inputCls } from './formUtils'
 import Dropdown from '../ui/Dropdown'
@@ -114,7 +115,7 @@ export default function DeliveryForm({ data, onChange, errors, billing, onEditBi
 
       <section className="space-y-2">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-semibold">Contact</h4>
+          <h4 className="text-md font-semibold flex items-center gap-2"><FiUser className="w-4 h-4" />Contact</h4>
           <button type="button" onClick={onEditBilling} className="text-xs font-semibold text-[#0bd964] hover:underline">Change</button>
         </div>
         <div className="text-sm text-gray-700">
@@ -126,7 +127,7 @@ export default function DeliveryForm({ data, onChange, errors, billing, onEditBi
 
       <section className="space-y-2">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-semibold">Address</h4>
+          <h4 className="text-md font-semibold flex items-center gap-2"><FiHome className="w-4 h-4" />Address</h4>
           <button type="button" onClick={onEditBilling} className="text-xs font-semibold text-[#0bd964] hover:underline">Change</button>
         </div>
         <div className="text-sm text-gray-700">
@@ -138,14 +139,14 @@ export default function DeliveryForm({ data, onChange, errors, billing, onEditBi
       </section>
 
       <section className="space-y-3">
-        <h4 className="text-sm font-semibold">Delivery Method</h4>
+  <h4 className="text-md font-semibold flex items-center gap-2"><FiTruck className="w-4 h-4" />Delivery Method</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <label className={`flex items-center justify-between border-3 p-3 cursor-pointer ${data.deliveryMethod === 'delivery' ? 'border-black' : 'border-gray-300'}`}>
-            <span className="text-sm"><span className='font-bold'>Standard Delivery </span><br /><span className='font-sm'>Charge: LKR 350.00</span></span>
+            <span className="text-sm"><span className='font-semibold'>Standard Delivery </span><br /><span className='font-sm'>Charge: LKR 350.00</span></span>
             <RadioBtn name="delivery-method" value="delivery" checked={data.deliveryMethod === 'delivery'} onChange={() => setDeliveryMethod('delivery')} ariaLabel="Delivery" />
           </label>
           <label className={`flex items-center justify-between border-3 p-3 cursor-pointer ${data.deliveryMethod === 'pickup' ? 'border-black' : 'border-gray-300'}`}>
-            <span className="text-sm font-bold">Local pickup</span>
+            <span className="text-sm font-semibold">Local pickup</span>
             <RadioBtn name="delivery-method" value="pickup" checked={data.deliveryMethod === 'pickup'} onChange={() => setDeliveryMethod('pickup')} ariaLabel="Local pickup" />
           </label>
         </div>

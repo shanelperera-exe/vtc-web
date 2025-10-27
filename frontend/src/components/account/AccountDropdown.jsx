@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { FiLogOut, FiUser, FiSettings, FiPackage, FiLogIn, FiUserPlus } from 'react-icons/fi'
 import { RiAccountCircleLine } from 'react-icons/ri'
 import AuthButton from '../ui/AuthBtn'
-import CommonBtn from '../ui/CommonBtn'
+import { AvatarImg } from '../../services/AvatarImg'
 
 export default function AccountDropdown({
     open,
@@ -42,25 +42,30 @@ export default function AccountDropdown({
             >
                 {isLoggedIn ? (
                     <>
-                        <motion.p variants={itemVariants} className="whitespace-nowrap font-bold">{userName}</motion.p>
-                        <motion.p variants={itemVariants} className="mb-2 text-xs text-neutral-600">{email}</motion.p>
+                        <motion.div variants={itemVariants} className="mb-3 flex items-center gap-3">
+                            <AvatarImg seed={email || userName} className="w-10 h-10 border-2 object-cover" alt={`Avatar for ${userName}`} />
+                            <div className="flex flex-col">
+                                <p className="whitespace-nowrap font-bold">{userName}</p>
+                                <p className="text-xs text-neutral-600">{email}</p>
+                            </div>
+                        </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <CommonBtn onClick={onVisitProfile} bgClass="bg-white text-black">
+                            <AuthButton onClick={onVisitProfile} bgClass="bg-emerald-600 text-white">
                                 <span className="inline-flex items-center gap-2">
                                     <FiUser className="text-lg"/>
                                     <span>Account</span>
                                 </span>
-                            </CommonBtn>
+                            </AuthButton>
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <CommonBtn onClick={onAccountSettings} bgClass="bg-gray-400 text-black">
+                            <AuthButton onClick={onAccountSettings} bgClass="bg-black text-white">
                                 <span className="inline-flex items-center gap-2">
                                     <FiPackage className="text-lg" />
                                     <span>My Orders</span>
                                 </span>
-                            </CommonBtn>
+                            </AuthButton>
                         </motion.div>
 
                         <motion.button variants={itemVariants} type="button" onClick={onSignOut} className="flex w-full items-center justify-center gap-2 whitespace-nowrap bg-white p-1.5 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-200 hover:text-neutral-800">

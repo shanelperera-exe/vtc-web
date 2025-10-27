@@ -20,6 +20,7 @@ public class ApiError {
     private int status;
     private String error;
     private String message;
+    private Integer availableStock;
     private List<FieldValidationError> fieldErrors;
 
     @Data

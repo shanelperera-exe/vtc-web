@@ -72,6 +72,11 @@ export function CartProvider({ children }) {
       cartItemId: it.id, // server cart item id
       color,
       size,
+      // include any server-provided stock information if present (preserve 0)
+      availableStock: (() => {
+        const v = it.stock ?? it.availableStock ?? it.quantityAvailable ?? it.maxAvailable
+        return v != null ? Number(v) : null
+      })(),
     }
   }
 
@@ -153,12 +158,23 @@ export function CartProvider({ children }) {
     if (!product) return
     const variationId = product.selectedVariationId || product.variationId || product.productVariationId || product.id
     if (!variationId) return
+    // If product provides stock information, and requested quantity exceeds it, notify and abort
+    const availableStock = product?.stock ?? product?.unitsLeft ?? product?.availableStock ?? null
+    if (availableStock != null && Number(quantity) > Number(availableStock)) {
+      notifier?.notify?.({ type: 'error', text: `Cannot add ${quantity} — only ${availableStock} available` })
+      return
+    }
     // optimistic local update
     setItems(prev => {
       const idx = prev.findIndex(p => (p.id === variationId))
       if (idx !== -1) {
         const next = [...prev]
         const currentQty = next[idx].quantity || 1
+        // if item already exists, and there's an availableStock guard, prevent exceeding it locally
+        if (availableStock != null && (currentQty + quantity) > Number(availableStock)) {
+          notifier?.notify?.({ type: 'error', text: `Cannot update quantity — only ${availableStock} available` })
+          return prev
+        }
         next[idx] = { ...next[idx], quantity: currentQty + quantity }
         return next
       }
@@ -168,6 +184,8 @@ export function CartProvider({ children }) {
         image: product.imageUrl || product.image,
         price: Number(product.price) || 0,
         quantity,
+        // store available stock on the cart item for later validation in the UI
+        availableStock: availableStock != null ? Number(availableStock) : null,
         color: product.color,
         size: product.size,
       }]
@@ -191,6 +209,14 @@ export function CartProvider({ children }) {
         const idx = next.findIndex(p => (p.productVariationId ?? p.id) === variationId)
         if (idx !== -1) {
           const currentQty = next[idx].quantity || 1
+          // If availableStock provided in local saved item, guard against exceeding it
+          const localAvailable = next[idx].availableStock ?? next[idx].stock ?? null
+          if (localAvailable != null && (currentQty + quantity) > Number(localAvailable)) {
+            notifier?.notify?.({ type: 'error', text: `Cannot update quantity — only ${localAvailable} available` })
+            // Persist unchanged
+            setLocalCart(next)
+            return
+          }
           next[idx] = { ...next[idx], quantity: currentQty + quantity }
         } else {
           next.push({
@@ -202,11 +228,36 @@ export function CartProvider({ children }) {
             price: Number(product.price) || 0,
             color: product.color,
             size: product.size,
+            availableStock: availableStock != null ? Number(availableStock) : null,
           })
         }
         setLocalCart(next)
       }
     } catch (e) {
+      // If server responded with stock info (409), show that and refresh cart state
+      const err = e || {}
+      if (err.status === 409 || err.availableStock != null) {
+        const avail = err.availableStock != null ? err.availableStock : null
+        const text = err.message || 'Insufficient stock'
+        notifier?.notify?.({ type: 'error', text: avail != null ? `${text} — only ${avail} available` : text })
+        try {
+          if (isAuthenticated) {
+            const res = await cartApi.getCart()
+            const apiItems = Array.isArray(res?.items) ? res.items : []
+            setItems(apiItems.map(mapApiItemToUI))
+            setServerSummary({
+              subtotal: Number(res?.subtotal) || 0,
+              tax: Number(res?.tax) || 0,
+              total: Number(res?.total) || 0,
+            })
+          } else {
+            // For guests, reload local cart representation
+            const local = getLocalCart()
+            setItems(Array.isArray(local) ? local : [])
+          }
+        } catch (_ignore) {}
+        return
+      }
       notifier?.notify?.({ type: 'error', text: e?.message || 'Failed to add to cart' })
     }
   }
@@ -239,6 +290,13 @@ export function CartProvider({ children }) {
 
   const updateQuantity = async (id, quantity) => {
     const qty = Math.max(1, Number(quantity) || 1)
+    // Validate against availableStock stored on item (if present)
+    const current = items.find(p => p.id === id)
+    const avail = current?.availableStock ?? current?.stock ?? null
+    if (avail != null && qty > Number(avail)) {
+      notifier?.notify?.({ type: 'error', text: `Only ${avail} available for ${current?.name || 'this item'}` })
+      return
+    }
     setItems(prev => prev.map(p => (p.id === id ? { ...p, quantity: qty } : p)))
     try {
       if (isAuthenticated) {
@@ -267,6 +325,28 @@ export function CartProvider({ children }) {
         setLocalCart(next)
       }
     } catch (e) {
+      const err = e || {}
+      if (err.status === 409 || err.availableStock != null) {
+        const avail = err.availableStock != null ? err.availableStock : null
+        const text = err.message || 'Insufficient stock'
+        notifier?.notify?.({ type: 'error', text: avail != null ? `${text} — only ${avail} available` : text })
+        try {
+          if (isAuthenticated) {
+            const res = await cartApi.getCart()
+            const apiItems = Array.isArray(res?.items) ? res.items : []
+            setItems(apiItems.map(mapApiItemToUI))
+            setServerSummary({
+              subtotal: Number(res?.subtotal) || 0,
+              tax: Number(res?.tax) || 0,
+              total: Number(res?.total) || 0,
+            })
+          } else {
+            const local = getLocalCart()
+            setItems(Array.isArray(local) ? local : [])
+          }
+        } catch (_ignore) {}
+        return
+      }
       notifier?.notify?.({ type: 'error', text: e?.message || 'Failed to update quantity' })
     }
   }

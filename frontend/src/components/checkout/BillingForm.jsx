@@ -1,4 +1,5 @@
 import React from 'react'
+import { FiUser, FiHome, FiFileText } from 'react-icons/fi'
 import Field from './Field'
 import { inputCls } from './formUtils'
 import Dropdown from '../ui/Dropdown'
@@ -8,7 +9,7 @@ export default function BillingForm({ data, onChange, errors, clearError }) {
   return (
     <div className="space-y-6">
       <section>
-        <h3 className="text-base font-semibold mb-3">Contact</h3>
+        <h3 className="text-base font-semibold mb-3 flex items-center gap-2"><FiUser className="w-5 h-5" />Contact</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="First Name" id="billing-firstName" required error={errors.firstName ? 'Billing First name is a required field.' : ''}>
             <input
@@ -80,7 +81,7 @@ export default function BillingForm({ data, onChange, errors, clearError }) {
       </section>
 
       <section>
-        <h3 className="text-base font-semibold mb-3">Address</h3>
+        <h3 className="text-base font-semibold mb-3 flex items-center gap-2"><FiHome className="w-5 h-5" />Address</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Address line 1" id="billing-address1" required className="md:col-span-2" error={errors.address1 ? 'Billing Address line 1 is a required field.' : ''}>
             <input
@@ -165,7 +166,7 @@ export default function BillingForm({ data, onChange, errors, clearError }) {
       </section>
 
       <section>
-        <h3 className="text-base font-semibold mb-3">Order Notes</h3>
+        <h3 className="text-base font-semibold mb-3 flex items-center gap-2"><FiFileText className="w-5 h-5" />Order Notes</h3>
         <Field label="Notes" id="billing-order-notes" className="md:col-span-2">
           <textarea
             id="billing-order-notes"

@@ -1,12 +1,5 @@
 import React from 'react';
-
-const placeholderLogos = [
-  'https://static.wikia.nocookie.net/logopedia/images/5/5d/Harpic.png',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Philips_logo.svg/1024px-Philips_logo.svg.png',
-  'https://vectorseek.com/wp-content/uploads/2023/09/Milton-Logo-Vector.svg-.png',
-  'https://upload.wikimedia.org/wikipedia/commons/2/2f/Dyson_logo.svg',
-  'https://upload.wikimedia.org/wikipedia/commons/2/22/Maped_logo_fr.png?20191123110904',
-];
+import placeholderLogos from '../../assets/brands';
 
 // Small tile for a single logo (keeps 1:1 square and padding)
 const LogoTile = ({ src, alt, imgLoading = 'lazy' }) => (
@@ -16,7 +9,6 @@ const LogoTile = ({ src, alt, imgLoading = 'lazy' }) => (
         src={src}
         alt={alt}
           className="max-w-full max-h-full object-contain"
-          style={{ filter: 'grayscale(1) brightness(0)' }}
         loading={imgLoading}
         onError={(e) => {
           e.currentTarget.onerror = null;
