@@ -26,7 +26,8 @@ public class ProductVariationServiceImpl implements ProductVariationService {
 
     @Override
     public ProductVariation create(Long productId, ProductVariation variation) {
-        if (variation == null) throw new IllegalArgumentException("variation must not be null");
+        if (variation == null)
+            throw new IllegalArgumentException("variation must not be null");
         if (variation.getPrice() != null && variation.getPrice().signum() < 0) {
             throw new IllegalArgumentException("variation.price must be >= 0");
         }
@@ -78,10 +79,11 @@ public class ProductVariationServiceImpl implements ProductVariationService {
 
     @Override
     public ProductVariation update(Long id, ProductVariation updates) {
-        if (updates == null) throw new IllegalArgumentException("updates must not be null");
+        if (updates == null)
+            throw new IllegalArgumentException("updates must not be null");
         ProductVariation existing = getById(id);
         boolean attributesUpdated = false;
-        // attributes replacement (if provided)
+        // attributes replacement
         if (updates.getAttributes() != null) {
             if (updates.getAttributes().isEmpty()) {
                 throw new IllegalArgumentException("variation.attributes must not be empty");
@@ -103,16 +105,19 @@ public class ProductVariationServiceImpl implements ProductVariationService {
         }
         // price
         if (updates.getPrice() != null) {
-            if (updates.getPrice().signum() < 0) throw new IllegalArgumentException("price must be >= 0");
+            if (updates.getPrice().signum() < 0)
+                throw new IllegalArgumentException("price must be >= 0");
             existing.setPrice(updates.getPrice());
         }
         // stock
         if (updates.getStock() != null) {
-            if (updates.getStock() < 0) throw new IllegalArgumentException("stock must be >= 0");
+            if (updates.getStock() < 0)
+                throw new IllegalArgumentException("stock must be >= 0");
             existing.setStock(updates.getStock());
         }
         // image url
-        if (updates.getImageUrl() != null) existing.setImageUrl(updates.getImageUrl());
+        if (updates.getImageUrl() != null)
+            existing.setImageUrl(updates.getImageUrl());
         // ignore updates.getVariationKey(); key is derived from attributes
         return variationRepository.save(existing);
     }

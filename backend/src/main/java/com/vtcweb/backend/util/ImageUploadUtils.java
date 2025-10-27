@@ -19,31 +19,42 @@ import java.util.regex.Pattern;
  */
 public final class ImageUploadUtils {
 
-    private static final Pattern DATA_URI_PATTERN = Pattern.compile("^data:(?<mime>[^;]+);base64,(?<data>.+)$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern CLOUDINARY_HOST_PATTERN = Pattern.compile("^https://res\\.cloudinary\\.com/[^/]+/image/upload/.*$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern DATA_URI_PATTERN = Pattern.compile("^data:(?<mime>[^;]+);base64,(?<data>.+)$",
+            Pattern.CASE_INSENSITIVE);
+    private static final Pattern CLOUDINARY_HOST_PATTERN = Pattern
+            .compile("^https://res\\.cloudinary\\.com/[^/]+/image/upload/.*$", Pattern.CASE_INSENSITIVE);
 
-    private ImageUploadUtils() {}
+    private ImageUploadUtils() {
+    }
 
     /**
-     * Returns {@code true} if the provided value looks like a data URI (data:image/...;base64,...).
+     * Returns {@code true} if the provided value looks like a data URI
+     * (data:image/...;base64,...).
      */
     public static boolean isDataUri(String value) {
-        if (value == null) return false;
+        if (value == null)
+            return false;
         return DATA_URI_PATTERN.matcher(value.trim()).matches();
     }
 
-    /** Returns true if the URL already points to a Cloudinary image upload resource (secure). */
+    /**
+     * Returns true if the URL already points to a Cloudinary image upload resource
+     * (secure).
+     */
     public static boolean isCloudinaryUrl(String value) {
-        if (value == null) return false;
+        if (value == null)
+            return false;
         return CLOUDINARY_HOST_PATTERN.matcher(value.trim()).matches();
     }
 
     /**
-     * Download a remote HTTP(S) image (non-Cloudinary) and wrap it as a MultipartFile for re-upload.
+     * Download a remote HTTP(S) image (non-Cloudinary) and wrap it as a
+     * MultipartFile for re-upload.
      * Enforces a basic 5MB size cap to avoid large transfers.
      */
     public static MultipartFile remoteImageToMultipart(String urlString, String nameHint) {
-        if (urlString == null || urlString.isBlank()) throw new IllegalArgumentException("url required");
+        if (urlString == null || urlString.isBlank())
+            throw new IllegalArgumentException("url required");
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -58,7 +69,8 @@ public final class ImageUploadUtils {
                     return remoteImageToMultipart(loc, nameHint);
                 }
             }
-            if (code != 200) throw new IllegalArgumentException("Remote image fetch failed HTTP " + code);
+            if (code != 200)
+                throw new IllegalArgumentException("Remote image fetch failed HTTP " + code);
             String contentType = conn.getContentType();
             if (contentType == null || !contentType.toLowerCase(Locale.ROOT).startsWith("image/")) {
                 throw new IllegalArgumentException("URL does not point to an image");
@@ -71,7 +83,8 @@ public final class ImageUploadUtils {
             try (InputStream in = conn.getInputStream()) {
                 data = in.readAllBytes();
             }
-            if (data.length == 0) throw new IllegalArgumentException("Empty remote image");
+            if (data.length == 0)
+                throw new IllegalArgumentException("Empty remote image");
             String extension = determineExtension(contentType);
             String fileName = buildFileName(nameHint, extension);
             return new InMemoryMultipartFile(fileName, fileName, contentType, data);
@@ -81,9 +94,12 @@ public final class ImageUploadUtils {
     }
 
     /**
-     * Convert a data URI into an in-memory {@link MultipartFile} so it can be passed to storage services.
-     * @param dataUri   the data URI string
-     * @param nameHint  optional name hint used to build the filename (without extension)
+     * Convert a data URI into an in-memory {@link MultipartFile} so it can be
+     * passed to storage services.
+     * 
+     * @param dataUri  the data URI string
+     * @param nameHint optional name hint used to build the filename (without
+     *                 extension)
      * @return multipart file containing the decoded bytes
      */
     public static MultipartFile dataUriToMultipartFile(String dataUri, String nameHint) {
@@ -111,7 +127,8 @@ public final class ImageUploadUtils {
     }
 
     private static String determineExtension(String mime) {
-        if (mime == null) return "png";
+        if (mime == null)
+            return "png";
         String normalized = mime.toLowerCase(Locale.ROOT);
         return switch (normalized) {
             case "image/png" -> "png";

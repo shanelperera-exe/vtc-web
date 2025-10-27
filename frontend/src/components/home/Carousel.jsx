@@ -1,11 +1,33 @@
 import React, { useRef, useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 // Static carousel: no backend categories
 import assets from "../../assets/assets";
 import CarouselButton from "./Carouselbutton";
-import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiArrowRight,
+  FiTruck,
+  FiShield,
+  FiTag,
+  FiGift,
+  FiStar,
+  FiHeadphones,
+  FiRefreshCcw,
+  FiClock,
+  FiShoppingBag,
+  FiGrid,
+  FiInfo,
+  FiUserPlus,
+} from "react-icons/fi";
+import { TbSparkles } from "react-icons/tb";
+import { RiDiscountPercentFill } from "react-icons/ri";
+import { FaKitchenSet } from "react-icons/fa6";
+import { BsLamp } from "react-icons/bs";
+import { PiSprayBottleFill, PiPencilRulerFill } from "react-icons/pi";
+import { GiPlasticDuck } from "react-icons/gi";
+import { FaPlug } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -17,43 +39,305 @@ const Carousel = () => {
   const nextRef = useRef(null);
   const paginationRef = useRef(null);
   const [swiperInstance, setSwiperInstance] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
 
-  // Static slides developers can edit freely
-  // Tip: replace images/text/links below to customize the carousel
+  const getCtaIcon = (text = "") => {
+    const t = text.toLowerCase();
+    if (t.includes("shop")) return <FiShoppingBag className="button-icon" />;
+    if (t.includes("browse") || t.includes("all")) return <FiGrid className="button-icon" />;
+    if (t.includes("learn") || t.includes("more")) return <FiInfo className="button-icon" />;
+    if (t.includes("bundle")) return <FiGift className="button-icon" />;
+  if (t.includes("deal") || t.includes("offer") || t.includes("save") || t.includes("off")) return <RiDiscountPercentFill className="button-icon" />;
+    if (t.includes("join") || t.includes("sign")) return <FiUserPlus className="button-icon" />;
+    if (t.includes("reward") || t.includes("star")) return <FiStar className="button-icon" />;
+    return <FiShoppingBag className="button-icon" />;
+  };
+
+  // Highly-styled non-hero slides (edit freely)
+  // Tip: replace src/images later; content/types drive the unique layouts below
+  const staticCategories = [
+    { label: "Cleaning Items", link: "/category/cleaning-items", icon: PiSprayBottleFill },
+    { label: "Electric Items", link: "/category/electric", icon: FaPlug },
+    { label: "Plastic Items", link: "/category/plastic", icon: GiPlasticDuck },
+    { label: "Stationary Items", link: "/category/stationary", icon: PiPencilRulerFill },
+    { label: "Homeware", link: "/category/homeware", icon: BsLamp },
+    { label: "Kitchen Items", link: "/category/kitchen", icon: FaKitchenSet },
+  ];
   const slides = [
     {
-      key: 'cleaning',
+      type: 'promo',
+      key: 'mega_sale',
+      src: assets.carouselImgs.mega_sale,
+      name: 'Mega Sale',
+      desc: 'Limited time savings on bestsellers',
+      percent: 50,
+      link: '/collections/all',
+      cta: 'Shop Deals',
+      badge: 'Limited Time'
+    },
+    {
+      type: 'categories',
+      key: 'shop_by_category',
+      src: assets.carouselImgs.categories,
+      name: 'Shop by Category',
+      categories: staticCategories.map(({ label, link, icon }) => ({ label, href: link, icon })),
+      link: '/collections/all',
+      cta: 'Browse All'
+    },
+    {
+      type: 'service',
+      key: 'why_choose_us',
       src: assets.carouselImgs.cleaning,
-      name: 'Cleaning Essentials',
-      desc: 'Keep every corner spotless with durable tools and supplies.',
-      link: '/collections/cleaning',
-      cta: 'Shop Cleaning'
+      name: 'Why Choose Us',
+      features: [
+        { icon: 'truck', title: 'Fast Delivery', desc: 'Island-wide shipping' },
+        { icon: 'shield', title: 'Quality Guaranteed', desc: 'Durable, trusted products' },
+        { icon: 'refresh', title: 'Easy Returns', desc: 'Hassle-free exchanges' },
+        { icon: 'headphones', title: 'Friendly Support', desc: 'We’re here to help' },
+      ],
+      link: '/contact',
+      cta: 'Contact Us'
     },
     {
-      key: 'kitchen',
-      src: assets.carouselImgs.kitchen,
-      name: 'Kitchen Must-Haves',
-      desc: 'Smart, practical kitchenware for daily use.',
-      link: '/collections/kitchen',
-      cta: 'Shop Kitchen'
-    },
-    {
-      key: 'plastic',
-      src: assets.carouselImgs.plastic,
-      name: 'Plastic Storage',
-      desc: 'Organize better with sturdy storage options.',
-      link: '/collections/storage',
-      cta: 'Shop Storage'
-    },
-    {
-      key: 'stationary',
+      type: 'bundle',
+      key: 'bundle_and_save',
       src: assets.carouselImgs.stationary,
-      name: 'Stationery & Office',
-      desc: 'Pens, books, and office essentials for productivity.',
-      link: '/collections/stationery',
-      cta: 'Shop Stationery'
+      name: 'Bundle & Save',
+      offer: 'Buy 2 Get 1 Free',
+      desc: 'Perfect combos for home & office',
+      link: '/collections/bundles',
+      cta: 'View Bundles'
+    },
+    {
+      type: 'new',
+      key: 'new_arrivals',
+      src: assets.carouselImgs.cleaning,
+      name: 'New Arrivals',
+      desc: 'Fresh picks this week — limited stock',
+      link: '/collections/new',
+      cta: 'Shop New'
+    },
+    {
+      type: 'loyalty',
+      key: 'member_rewards',
+      src: assets.carouselImgs.cleaning,
+      name: 'Member Rewards',
+      desc: 'Earn points on every order. Redeem for discounts.',
+      link: '/rewards',
+      cta: 'Join Free'
     }
   ];
+
+  const renderIcon = (name) => {
+    const common = { size: 18 };
+    switch (name) {
+      case 'truck':
+        return <FiTruck {...common} />;
+      case 'shield':
+        return <FiShield {...common} />;
+      case 'refresh':
+        return <FiRefreshCcw {...common} />;
+      case 'headphones':
+        return <FiHeadphones {...common} />;
+      default:
+        return null;
+    }
+  };
+
+  const renderSlideContent = (slide) => {
+    switch (slide.type) {
+      case 'promo':
+        return (
+          <div className="max-w-3xl">
+            <motion.div
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur px-3 py-1 text-white/90"
+              initial="hidden" animate="show" variants={fadeUp} custom={0}
+            >
+              <FiClock size={16} />
+              <span className="text-xs">{slide.badge || 'Limited Time'}</span>
+            </motion.div>
+            <motion.h3
+              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
+              initial="hidden" animate="show" variants={fadeUp} custom={0.12}
+              style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
+            >
+              {slide.name}
+            </motion.h3>
+            <motion.p
+              className="mt-2 text-white/90 text-xl sm:text-2xl flex items-center gap-2"
+              initial="hidden" animate="show" variants={fadeUp} custom={0.22}
+            >
+              <RiDiscountPercentFill size={24} /> Up to {slide.percent || 50}% OFF
+            </motion.p>
+            <motion.p
+              className="mt-2 max-w-xl text-white/90"
+              initial="hidden" animate="show" variants={fadeUp} custom={0.32}
+            >
+              {slide.desc}
+            </motion.p>
+            <motion.div className="mt-6" initial="hidden" animate="show" variants={fadeUp} custom={0.42}>
+              <a href={slide.link} style={{ textDecoration: 'none' }}>
+                <CarouselButton text={slide.cta || 'Shop Now'} icon={getCtaIcon(slide.cta || 'Shop Now')} />
+              </a>
+            </motion.div>
+          </div>
+        );
+      case 'categories':
+        return (
+          <div className="max-w-5xl">
+            <motion.h3
+              className="font-semibold leading-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              initial="hidden" animate="show" variants={fadeUp} custom={0}
+              style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
+            >
+              {slide.name}
+            </motion.h3>
+            <motion.p className="mt-3 text-white/90 text-base sm:text-lg" initial="hidden" animate="show" variants={fadeUp} custom={0.12}>
+              Explore essentials across every department
+            </motion.p>
+            <motion.ul
+              className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-x-1 gap-y-2 max-w-xl"
+              initial="hidden" animate="show" variants={fadeUp} custom={0.2}
+            >
+              {(slide.categories || []).map((c, i) => {
+                const Icon = c.icon;
+                return (
+                <li key={i} className="flex justify-start">
+                  <a
+                    href={c.href}
+                    className="category-pill group inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/5 px-3 py-2 text-white/95 hover:bg-white/10 transition-transform transform hover:-translate-y-1 shadow-sm"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/30 flex-shrink-0">
+                      {Icon ? <Icon size={16} className="text-white" /> : <FiShoppingBag size={16} className="text-white" />}
+                    </span>
+                    <div className="flex flex-col leading-tight">
+                      <span className="text-sm font-medium">{c.label}</span>
+                      <span className="text-[11px] text-white/70">Shop now</span>
+                    </div>
+                  </a>
+                </li>
+              )})}
+            </motion.ul>
+            <motion.div className="mt-5" initial="hidden" animate="show" variants={fadeUp} custom={0.32}>
+              <a href={slide.link} style={{ textDecoration: 'none' }}>
+                <CarouselButton text={slide.cta || 'Browse All'} icon={getCtaIcon(slide.cta || 'Browse All')} />
+              </a>
+            </motion.div>
+          </div>
+        );
+      case 'service':
+        return (
+          <div className="max-w-5xl">
+            <motion.h3
+              className="font-semibold leading-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              initial="hidden" animate="show" variants={fadeUp} custom={0}
+              style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
+            >
+              {slide.name}
+            </motion.h3>
+            <motion.ul
+              className="mt-6 grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 gap-3 w-full sm:w-1/2 justify-start justify-items-start"
+              initial="hidden" animate="show" variants={fadeUp} custom={0.12}
+            >
+              {(slide.features || []).map((f, i) => (
+                <li key={i} className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-3 py-3 text-white/95 max-w-sm">
+                  <div className="flex items-start gap-3">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 text-white">
+                      {renderIcon(f.icon)}
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold">{f.title}</p>
+                      <p className="text-xs text-white/85">{f.desc}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </motion.ul>
+            <motion.div className="mt-6" initial="hidden" animate="show" variants={fadeUp} custom={0.26}>
+              <a href={slide.link} style={{ textDecoration: 'none' }}>
+                <CarouselButton text={slide.cta || 'Learn More'} icon={getCtaIcon(slide.cta || 'Learn More')} />
+              </a>
+            </motion.div>
+          </div>
+        );
+      case 'bundle':
+        return (
+          <div className="max-w-3xl">
+            <motion.div
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur px-3 py-1 text-white/90"
+              initial="hidden" animate="show" variants={fadeUp} custom={0}
+            >
+              <FiGift size={16} /> <span className="text-xs">Special Offer</span>
+            </motion.div>
+            <motion.h3
+              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              initial="hidden" animate="show" variants={fadeUp} custom={0.12}
+              style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
+            >
+              {slide.name}
+            </motion.h3>
+            <motion.p className="mt-2 text-2xl sm:text-3xl text-emerald-200" initial="hidden" animate="show" variants={fadeUp} custom={0.22}>
+              {slide.offer}
+            </motion.p>
+            <motion.p className="mt-2 max-w-xl text-white/90" initial="hidden" animate="show" variants={fadeUp} custom={0.32}>
+              {slide.desc}
+            </motion.p>
+            <motion.div className="mt-6" initial="hidden" animate="show" variants={fadeUp} custom={0.42}>
+              <a href={slide.link} style={{ textDecoration: 'none' }}>
+                <CarouselButton text={slide.cta || 'Shop Bundles'} icon={getCtaIcon(slide.cta || 'Shop Bundles')} />
+              </a>
+            </motion.div>
+          </div>
+        );
+      case 'new':
+        return (
+          <div className="max-w-3xl">
+            <motion.h3
+              className="font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              initial="hidden" animate="show" variants={fadeUp} custom={0}
+              style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
+            >
+              {slide.name}
+            </motion.h3>
+            <motion.p className="mt-2 max-w-xl text-white/90" initial="hidden" animate="show" variants={fadeUp} custom={0.12}>
+              {slide.desc}
+            </motion.p>
+            <motion.div className="mt-6" initial="hidden" animate="show" variants={fadeUp} custom={0.22}>
+              <a href={slide.link} style={{ textDecoration: 'none' }}>
+                <CarouselButton text={slide.cta || 'Explore New'} icon={getCtaIcon(slide.cta || 'Explore New')} />
+              </a>
+            </motion.div>
+          </div>
+        );
+      case 'loyalty':
+        return (
+          <div className="max-w-3xl">
+            <motion.div className="flex items-center gap-2 text-yellow-200" initial="hidden" animate="show" variants={fadeUp} custom={0}>
+              <FiStar size={22} /> <span className="text-sm">Member Rewards</span>
+            </motion.div>
+            <motion.h3
+              className="mt-2 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-5xl sm:text-6xl md:text-7xl"
+              initial="hidden" animate="show" variants={fadeUp} custom={0.12}
+              style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
+            >
+              {slide.name}
+            </motion.h3>
+            <motion.p className="mt-2 max-w-xl text-white/90" initial="hidden" animate="show" variants={fadeUp} custom={0.22}>
+              {slide.desc}
+            </motion.p>
+            <motion.div className="mt-6" initial="hidden" animate="show" variants={fadeUp} custom={0.32}>
+              <a href={slide.link} style={{ textDecoration: 'none' }}>
+                <CarouselButton text={slide.cta || 'Join Now'} icon={getCtaIcon(slide.cta || 'Join Now')} />
+              </a>
+            </motion.div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     if (
@@ -81,6 +365,32 @@ const Carousel = () => {
     }
   }, [swiperInstance]);
 
+  // Ensure all category pills share the same width (width of the largest pill).
+  useEffect(() => {
+    const setUniformPillWidth = () => {
+      const pills = Array.from(document.querySelectorAll('.category-pill'));
+      if (!pills.length) return;
+      // reset widths to let them measure naturally
+      pills.forEach((p) => (p.style.width = 'auto'));
+      // measure
+      let max = 0;
+      pills.forEach((p) => {
+        const w = p.getBoundingClientRect().width;
+        if (w > max) max = w;
+      });
+      // apply max width (use Math.ceil to avoid subpixel issues)
+      if (max > 0) pills.forEach((p) => (p.style.width = Math.ceil(max) + 'px'));
+    };
+
+    // run after a tick so DOM is settled (Swiper may lazy-render)
+    const t = setTimeout(setUniformPillWidth, 50);
+    window.addEventListener('resize', setUniformPillWidth);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('resize', setUniformPillWidth);
+    };
+  }, [activeIndex]);
+
   // Simple motion presets
   const fadeUp = {
     hidden: { opacity: 0, y: 28 },
@@ -89,6 +399,10 @@ const Carousel = () => {
       y: 0,
       transition: { delay: 0.15 + d, duration: 0.8, ease: [0.19, 1, 0.22, 1] }
     })
+  };
+  const captionVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.19, 1, 0.22, 1] } },
   };
 
   return (
@@ -101,23 +415,78 @@ const Carousel = () => {
         speed={3000}
         loop
         slidesPerView={1}
-        style={{ width: "100%", height: "90vh" }}
+  style={{ width: "100%", height: "92vh" }}
         onSwiper={setSwiperInstance}
+        onSlideChange={(s) => setActiveIndex(s.realIndex || 0)}
       >
         {/* Hero slide (always first) */}
         <SwiperSlide>
-          <div className="relative w-full h-full overflow-hidden">
-            {/* Background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-800 via-emerald-700 to-green-600" />
-            {/* Decorative radial highlights */}
-            <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
-            <div className="pointer-events-none absolute bottom-[-6rem] right-[-6rem] h-[28rem] w-[28rem] rounded-full bg-emerald-300/20 blur-3xl" />
+          <div
+            className="relative w-full h-full overflow-hidden"
+            style={{ contain: "paint" }}
+          >
+            {/* Animated aurora + conic gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-700 to-green-600" />
+
+            {/* Slow rotating conic sheen */}
+            <motion.div
+              aria-hidden
+              className="absolute inset-0 transform-gpu will-change-transform"
+              style={{
+                background:
+                  "conic-gradient(from 0deg at 50% 50%, rgba(16,185,129,0.18), rgba(59,130,246,0.16), rgba(236,72,153,0.12), rgba(16,185,129,0.18))",
+                mixBlendMode: "overlay",
+              }}
+              animate={activeIndex === 0 && !prefersReducedMotion ? { rotate: 360 } : { rotate: 0 }}
+              transition={{ duration: 80, ease: "linear", repeat: Infinity }}
+            />
+
+            {/* Aurora blobs */}
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute -top-24 -left-24 w-[55vw] h-[55vw] rounded-full blur-2xl transform-gpu will-change-transform"
+              style={{
+                background:
+                  "radial-gradient(closest-side, rgba(16,185,129,0.42), rgba(16,185,129,0.0) 70%)",
+              }}
+              animate={activeIndex === 0 && !prefersReducedMotion ? { x: [0, 36, -18, 0], y: [0, -18, 26, 0] } : { x: 0, y: 0 }}
+              transition={{ duration: 28, ease: "easeInOut", repeat: Infinity }}
+            />
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute bottom-[-10rem] right-[-10rem] w-[50vw] h-[50vw] rounded-full blur-2xl transform-gpu will-change-transform"
+              style={{
+                background:
+                  "radial-gradient(closest-side, rgba(59,130,246,0.34), rgba(59,130,246,0.0) 70%)",
+              }}
+              animate={activeIndex === 0 && !prefersReducedMotion ? { x: [0, -26, 9, 0], y: [0, 18, -22, 0] } : { x: 0, y: 0 }}
+              transition={{ duration: 30, ease: "easeInOut", repeat: Infinity }}
+            />
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 w-[36vw] h-[36vw] rounded-full blur-2xl transform-gpu will-change-transform"
+              style={{
+                background:
+                  "radial-gradient(closest-side, rgba(236,72,153,0.22), rgba(236,72,153,0.0) 70%)",
+              }}
+              animate={activeIndex === 0 && !prefersReducedMotion ? { x: [0, 9, -12, 0], y: [0, -12, 4, 0], scale: [1, 1.05, 0.99, 1] } : { x: 0, y: 0, scale: 1 }}
+              transition={{ duration: 26, ease: "easeInOut", repeat: Infinity }}
+            />
 
             {/* Content */}
             <div className="relative z-10 h-full w-full flex items-center">
               <div className="px-6 sm:px-10 md:px-16 lg:px-24 xl:px-28 w-full">
+                <motion.div
+                  className="mb-3 flex items-center gap-2 text-emerald-200/90 drop-shadow"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05, duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
+                >
+                  <TbSparkles size={26} />
+                  <span className="text-sm sm:text-base tracking-wide">Discover everyday essentials</span>
+                </motion.div>
                 <motion.h1
-                  className="uppercase font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-lg text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
+                  className="font-medium leading-[1.05] tracking-tight text-white drop-shadow-lg text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
                   initial="hidden"
                   animate="show"
                   variants={fadeUp}
@@ -145,9 +514,46 @@ const Carousel = () => {
                   custom={0.3}
                 >
                   <a href="/collections/all" style={{ textDecoration: "none" }}>
-                    <CarouselButton text="Shop Now" />
+                    <CarouselButton text="Shop Now" icon={getCtaIcon("Shop Now")} />
                   </a>
                 </motion.div>
+
+                {/* Trust badges / features */}
+                <motion.ul
+                  className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl"
+                  initial="hidden"
+                  animate="show"
+                  variants={fadeUp}
+                  custom={0.45}
+                >
+                  <li className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 backdrop-blur-sm px-4 py-3 text-white/95 shadow-sm">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/20 text-emerald-200">
+                      <FiTruck size={18} />
+                    </span>
+                    <div>
+                      <p className="text-sm font-medium">Fast Delivery</p>
+                      <p className="text-xs text-white/80">Island-wide shipping</p>
+                    </div>
+                  </li>
+                  <li className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 backdrop-blur-sm px-4 py-3 text-white/95 shadow-sm">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/20 text-emerald-200">
+                      <FiShield size={18} />
+                    </span>
+                    <div>
+                      <p className="text-sm font-medium">Quality Assured</p>
+                      <p className="text-xs text-white/80">Trusted by customers</p>
+                    </div>
+                  </li>
+                  <li className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 backdrop-blur-sm px-4 py-3 text-white/95 shadow-sm">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/20 text-emerald-200">
+                      <FiTag size={18} />
+                    </span>
+                    <div>
+                      <p className="text-sm font-medium">Great Value</p>
+                      <p className="text-xs text-white/80">Everyday low prices</p>
+                    </div>
+                  </li>
+                </motion.ul>
               </div>
             </div>
           </div>
@@ -160,7 +566,7 @@ const Carousel = () => {
                 alt={img.name}
                 style={{
                   width: "100%",
-                  height: "90vh",
+                  height: "95vh",
                   objectFit: "cover",
                   /* image will be clipped by parent rounded corners */
                   borderBottomLeftRadius: '0',
@@ -188,38 +594,13 @@ const Carousel = () => {
                   zIndex: 20
                 }}
               >
-                <motion.h3
-                  className="uppercase font-extrabold leading-[1.05] tracking-tight drop-shadow-lg text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
-                  initial="hidden"
-                  animate="show"
-                  variants={fadeUp}
-                  custom={0}
-                  style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
-                >
-                  {img.name?.split(' ').map((word, i) => (
-                    <span key={i} style={{ fontWeight: i === 0 ? 900 : 300, display: 'block' }}>{word}</span>
-                  ))}
-                </motion.h3>
-                <motion.p
-                  className="text-base sm:text-lg md:text-xl mt-4 max-w-2xl drop-shadow"
-                  initial="hidden"
-                  animate="show"
-                  variants={fadeUp}
-                  custom={0.15}
-                  style={{ textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
-                >
-                  {img.desc}
-                </motion.p>
                 <motion.div
-                  className="mt-6"
+                  key={`${img.key}-${activeIndex === (idx + 1)}`}
+                  variants={captionVariants}
                   initial="hidden"
-                  animate="show"
-                  variants={fadeUp}
-                  custom={0.3}
+                  animate={activeIndex === (idx + 1) ? 'show' : 'hidden'}
                 >
-                  <a href={img.link} style={{ textDecoration: "none" }}>
-                    <CarouselButton text={img.cta || 'Shop Now'} />
-                  </a>
+                  {renderSlideContent(img)}
                 </motion.div>
               </figcaption>
             </div>

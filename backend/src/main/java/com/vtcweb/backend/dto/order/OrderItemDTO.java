@@ -21,6 +21,5 @@ public class OrderItemDTO {
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
     private Map<String, String> variationAttributes;
-        private String imageUrl; // Added imageUrl field
+    private String imageUrl;
 }
-

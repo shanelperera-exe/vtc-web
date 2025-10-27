@@ -22,8 +22,9 @@ public class JwtTokenProvider {
     private final long accessTokenTtlSeconds;
     private final long adminAccessTokenTtlSeconds;
 
-    public JwtTokenProvider(@Value("${security.jwt.secret:changemechangemechangemechangemechangeme1234567890}") String base64Secret,
-                            SecurityProperties securityProperties) {
+    public JwtTokenProvider(
+            @Value("${security.jwt.secret:changemechangemechangemechangemechangeme1234567890}") String base64Secret,
+            SecurityProperties securityProperties) {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(base64Secret));
         this.accessTokenTtlSeconds = securityProperties.getJwt().getAccessTtlSeconds();
         this.adminAccessTokenTtlSeconds = securityProperties.getJwt().getAdminAccessTtlSeconds();
@@ -40,10 +41,9 @@ public class JwtTokenProvider {
                 .setSubject(user.getId().toString())
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(exp))
-        .addClaims(Map.of(
+                .addClaims(Map.of(
                         "email", user.getEmail(),
-                        "roles", roles
-                ))
+                        "roles", roles))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -52,6 +52,11 @@ public class JwtTokenProvider {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
     }
 
-    public long getAccessTokenTtlSeconds() { return accessTokenTtlSeconds; }
-    public long getAdminAccessTokenTtlSeconds() { return adminAccessTokenTtlSeconds; }
+    public long getAccessTokenTtlSeconds() {
+        return accessTokenTtlSeconds;
+    }
+
+    public long getAdminAccessTokenTtlSeconds() {
+        return adminAccessTokenTtlSeconds;
+    }
 }

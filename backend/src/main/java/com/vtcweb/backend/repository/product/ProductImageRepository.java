@@ -20,6 +20,7 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     /**
      * Find images by product ID.
      * Use with caution for large datasets.
+     * 
      * @param productId the product ID
      * @return list of images
      */
@@ -28,31 +29,35 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     /**
      * Find images by product ID, paged.
      * Recommended for large datasets.
+     * 
      * @param productId the product ID
-     * @param pageable paging information
+     * @param pageable  paging information
      * @return page of images
      */
     Page<ProductImage> findByProductId(Long productId, Pageable pageable);
 
     /**
      * Find images by product ID and type.
+     * 
      * @param productId the product ID
-     * @param type the image type
+     * @param type      the image type
      * @return list of images
      */
     List<ProductImage> findByProductIdAndType(Long productId, ImageType type);
 
     /**
      * Find images by product ID and type, paged.
+     * 
      * @param productId the product ID
-     * @param type the image type
-     * @param pageable paging information
+     * @param type      the image type
+     * @param pageable  paging information
      * @return page of images
      */
     Page<ProductImage> findByProductIdAndType(Long productId, ImageType type, Pageable pageable);
 
     /**
      * Find images by variation ID.
+     * 
      * @param variationId the variation ID
      * @return list of images
      */
@@ -60,15 +65,18 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
 
     /**
      * Find images by variation ID, paged.
+     * 
      * @param variationId the variation ID
-     * @param pageable paging information
+     * @param pageable    paging information
      * @return page of images
      */
     Page<ProductImage> findByVariationId(Long variationId, Pageable pageable);
 
     /**
      * Delete images by product ID.
-     * This method modifies data and therefore must be annotated with @Modifying and @Transactional.
+     * This method modifies data and therefore must be annotated with @Modifying
+     * and @Transactional.
+     * 
      * @param productId the product ID
      * @return number of images deleted
      */
@@ -77,7 +85,8 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     int deleteByProductId(Long productId);
 
     /**
-     * Fetch all images for a set of product IDs. Caller can reduce to primary/first images.
+     * Fetch all images for a set of product IDs. Caller can reduce to primary/first
+     * images.
      */
     java.util.List<ProductImage> findByProduct_IdIn(java.util.Collection<Long> productIds);
 }

@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     Optional<Wishlist> findByUser(User user);
+
     Optional<Wishlist> findByUser_Id(Long userId);
 
     // Hard-delete the wishlist (and items via cascade) for a given user id

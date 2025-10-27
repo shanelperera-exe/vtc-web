@@ -22,4 +22,3 @@ public class ProductImageCreateRequest {
     // Defaults to SECONDARY if not provided
     private ImageType type;
 }
-

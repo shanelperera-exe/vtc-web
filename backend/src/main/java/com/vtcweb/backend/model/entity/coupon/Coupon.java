@@ -22,10 +22,8 @@ public class Coupon {
     @Column(nullable = false, unique = true)
     private String code;
 
-    // percentage discount (0-100) if set
     private Integer percentOff;
 
-    // fixed amount discount in smallest currency unit (e.g., LKR)
     private BigDecimal amountOff;
 
     private LocalDate startsAt;
@@ -33,6 +31,5 @@ public class Coupon {
 
     private Boolean active = true;
 
-    // minimum subtotal to apply coupon
     private BigDecimal minSubtotal;
 }

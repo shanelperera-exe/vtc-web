@@ -46,7 +46,6 @@ public class OrderItem {
     @Column(name = "variation_id")
     private Long variationId; // optional
 
-
     @Column(nullable = false)
     private Integer quantity;
 
@@ -56,7 +55,8 @@ public class OrderItem {
     @Column(name = "total_price", precision = 14, scale = 2, nullable = false)
     private BigDecimal totalPrice;
 
-    // Snapshot of the best-known image URL at time of ordering (variation image > product primary > any)
+    // Snapshot of the best-known image URL at time of ordering (variation image >
+    // product primary > any)
     @Column(name = "image_url", length = 1024)
     private String imageUrl;
 

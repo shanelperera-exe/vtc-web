@@ -45,7 +45,7 @@ public class ProductStatsDTO {
     @Builder
     public static class TopVariant {
         private Long variationId;
-        private String label; // e.g., "Color=Red | Size=M"
+        private String label; // ex:, "Color=Red | Size=M"
         private long units;
     }
 }

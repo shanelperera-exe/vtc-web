@@ -13,4 +13,3 @@ public class PaymentInfoDTO {
     private Integer cardExpMonth;
     private Integer cardExpYear;
 }
-

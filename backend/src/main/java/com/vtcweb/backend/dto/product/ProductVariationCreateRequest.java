@@ -24,12 +24,13 @@ public class ProductVariationCreateRequest {
     @Min(0)
     private Integer stock;
 
-    // Single representative image URL for this variation (optional)
     private String imageUrl;
 
     /**
-     * Required: free-form attributes for this variation. Example: {"Color": "Red", "Size": "M"}
-     * The server derives a deterministic internal key from these attributes and uses it for uniqueness per product.
+     * Required: free-form attributes for this variation. Example: {"Color": "Red",
+     * "Size": "M"}
+     * The server derives a deterministic internal key from these attributes and
+     * uses it for uniqueness per product.
      */
     private Map<String, String> attributes;
 }

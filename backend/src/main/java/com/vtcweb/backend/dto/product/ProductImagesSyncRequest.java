@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Payload used to synchronise product images (primary + gallery) in one request.
+ * Payload used to synchronise product images (primary + gallery) in one
+ * request.
  */
 @Data
 @NoArgsConstructor
@@ -17,7 +18,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductImagesSyncRequest {
     /**
-     * Primary product image. May be a secure URL or a data URI (data:image/...;base64,...).
+     * Primary product image. May be a secure URL or a data URI
      */
     private String primaryImage;
 

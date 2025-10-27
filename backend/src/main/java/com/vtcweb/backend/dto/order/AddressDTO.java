@@ -19,4 +19,3 @@ public class AddressDTO {
     private String postalCode;
     private String country;
 }
-

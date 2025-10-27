@@ -41,11 +41,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product create(Product product, Long categoryId) {
-        if (product == null) throw new IllegalArgumentException("product must not be null");
-        if (categoryId == null) throw new IllegalArgumentException("categoryId must not be null");
+        if (product == null)
+            throw new IllegalArgumentException("product must not be null");
+        if (categoryId == null)
+            throw new IllegalArgumentException("categoryId must not be null");
         if (log.isDebugEnabled()) {
             String dd = product.getDetailedDescription();
-            log.debug("Creating product name='{}' detailedDescriptionPreview='{}'", product.getName(), dd == null ? "<null>" : dd.substring(0, Math.min(40, dd.length())).replaceAll("\n", " "));
+            log.debug("Creating product name='{}' detailedDescriptionPreview='{}'", product.getName(),
+                    dd == null ? "<null>" : dd.substring(0, Math.min(40, dd.length())).replaceAll("\n", " "));
         }
         validateProductFields(product);
         if (productRepository.existsByNameIgnoreCase(product.getName())) {
@@ -59,7 +62,8 @@ public class ProductServiceImpl implements ProductService {
         if (product.getStatus() == null) {
             product.setStatus(com.vtcweb.backend.model.entity.product.ProductStatus.ACTIVE);
         }
-        // SKU generation is always derived from category prefix + per-category sequence (CAT-001)
+        // SKU generation is always derived from category prefix + per-category sequence
+        // (CAT-001)
         if (product.getSku() != null && !product.getSku().isBlank()) {
             log.debug("Ignoring client-supplied SKU '{}' in favor of generated value", product.getSku());
         }
@@ -79,29 +83,32 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createFull(CreateProductFullRequest request) {
-        if (request == null) throw new IllegalArgumentException("request must not be null");
+        if (request == null)
+            throw new IllegalArgumentException("request must not be null");
         // Create base product first
         Product base = new Product();
         base.setName(request.getName());
         base.setShortDescription(request.getShortDescription());
-    base.setDetailedDescription(request.getDetailedDescription()); // legacy field name handled at DTO level
+        base.setDetailedDescription(request.getDetailedDescription()); // legacy field name handled at DTO level
         base.setBasePrice(request.getBasePrice());
-    if (log.isDebugEnabled()) {
-        String dd = base.getDetailedDescription();
-        log.debug("createFull long description preview='{}'", dd == null ? "<null>" : dd.substring(0, Math.min(60, dd.length())).replaceAll("\n", " "));
-    }
-    if (request.getHighlights() != null) {
-        base.setHighlights(request.getHighlights().stream()
-            .filter(java.util.Objects::nonNull)
-            .map(String::trim)
-            .filter(s -> !s.isEmpty())
-            .limit(25)
-            .collect(java.util.stream.Collectors.toCollection(java.util.ArrayList::new)));
-    }
+        if (log.isDebugEnabled()) {
+            String dd = base.getDetailedDescription();
+            log.debug("createFull long description preview='{}'",
+                    dd == null ? "<null>" : dd.substring(0, Math.min(60, dd.length())).replaceAll("\n", " "));
+        }
+        if (request.getHighlights() != null) {
+            base.setHighlights(request.getHighlights().stream()
+                    .filter(java.util.Objects::nonNull)
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .limit(25)
+                    .collect(java.util.stream.Collectors.toCollection(java.util.ArrayList::new)));
+        }
         // Optional status from request
         if (request.getStatus() != null) {
             try {
-                base.setStatus(com.vtcweb.backend.model.entity.product.ProductStatus.valueOf(request.getStatus().trim().toUpperCase()));
+                base.setStatus(com.vtcweb.backend.model.entity.product.ProductStatus
+                        .valueOf(request.getStatus().trim().toUpperCase()));
             } catch (IllegalArgumentException ignored) {
                 // default in create()
             }
@@ -111,7 +118,8 @@ public class ProductServiceImpl implements ProductService {
         // Attach images
         if (request.getImages() != null) {
             for (ProductImageCreateRequest img : request.getImages()) {
-                if (img == null) continue;
+                if (img == null)
+                    continue;
                 String url = img.getUrl();
                 ProductImage.ImageType type = img.getType();
                 String sku = created.getSku() != null ? created.getSku() : ("id-" + created.getId());
@@ -129,9 +137,9 @@ public class ProductServiceImpl implements ProductService {
                                         sku + "-img." + deriveExt(meta),
                                         sku + "-img." + deriveExt(meta),
                                         deriveContentType(meta),
-                                        bytes
-                                );
-                                com.vtcweb.backend.service.storage.ImageStorageService.UploadResult uploaded = imageStorageService.upload(mf, folder);
+                                        bytes);
+                                com.vtcweb.backend.service.storage.ImageStorageService.UploadResult uploaded = imageStorageService
+                                        .upload(mf, folder);
                                 url = uploaded.url();
                             }
                         } else if (isExternalNonCloudinaryUrl(url)) {
@@ -143,9 +151,9 @@ public class ProductServiceImpl implements ProductService {
                                         sku + "-ext." + deriveExt(meta),
                                         sku + "-ext." + deriveExt(meta),
                                         deriveContentType(meta),
-                                        bytes
-                                );
-                                com.vtcweb.backend.service.storage.ImageStorageService.UploadResult uploaded = imageStorageService.upload(mf, folder);
+                                        bytes);
+                                com.vtcweb.backend.service.storage.ImageStorageService.UploadResult uploaded = imageStorageService
+                                        .upload(mf, folder);
                                 url = uploaded.url();
                             }
                         }
@@ -160,7 +168,8 @@ public class ProductServiceImpl implements ProductService {
         // Attach variations (attributes-driven; variationKey is derived server-side)
         if (request.getVariations() != null) {
             for (ProductVariationCreateRequest varReq : request.getVariations()) {
-                if (varReq == null) continue;
+                if (varReq == null)
+                    continue;
                 if (varReq.getAttributes() == null || varReq.getAttributes().isEmpty()) {
                     throw new IllegalArgumentException("variation.attributes must not be empty");
                 }
@@ -169,7 +178,7 @@ public class ProductServiceImpl implements ProductService {
                     throw new IllegalArgumentException("variation.attributes contain no valid entries");
                 }
                 ProductVariation var = new ProductVariation();
-                var.setVariationKey(key); // internal uniqueness key; not exposed
+                var.setVariationKey(key); // internal uniqueness key
                 var.setPrice(varReq.getPrice());
                 var.setStock(varReq.getStock() != null ? varReq.getStock() : 0);
                 // Variation image (data URI support)
@@ -188,9 +197,9 @@ public class ProductServiceImpl implements ProductService {
                                         skuVar + "-var." + deriveExt(meta),
                                         skuVar + "-var." + deriveExt(meta),
                                         deriveContentType(meta),
-                                        bytes
-                                );
-                                com.vtcweb.backend.service.storage.ImageStorageService.UploadResult up = imageStorageService.upload(mf, folderVar);
+                                        bytes);
+                                com.vtcweb.backend.service.storage.ImageStorageService.UploadResult up = imageStorageService
+                                        .upload(mf, folderVar);
                                 variationImageUrl = up.url();
                             }
                         } else if (isExternalNonCloudinaryUrl(variationImageUrl)) {
@@ -201,14 +210,15 @@ public class ProductServiceImpl implements ProductService {
                                         skuVar + "-var-ext." + deriveExt(meta),
                                         skuVar + "-var-ext." + deriveExt(meta),
                                         deriveContentType(meta),
-                                        bytes
-                                );
-                                com.vtcweb.backend.service.storage.ImageStorageService.UploadResult up = imageStorageService.upload(mf, folderVar);
+                                        bytes);
+                                com.vtcweb.backend.service.storage.ImageStorageService.UploadResult up = imageStorageService
+                                        .upload(mf, folderVar);
                                 variationImageUrl = up.url();
                             }
                         }
                     } catch (Exception e) {
-                        log.warn("Failed to normalize variation image for product {}: {}", created.getId(), e.getMessage());
+                        log.warn("Failed to normalize variation image for product {}: {}", created.getId(),
+                                e.getMessage());
                     }
                 }
                 var.setImageUrl(variationImageUrl);
@@ -220,13 +230,14 @@ public class ProductServiceImpl implements ProductService {
         // Return the product with details loaded
         Long createdId = java.util.Objects.requireNonNull(created.getId(), "created id must not be null");
         return productRepository.findOneById(createdId)
-            .orElseGet(() -> productRepository.findById(createdId).orElse(created));
+                .orElseGet(() -> productRepository.findById(createdId).orElse(created));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Product getById(Long id) {
-        if (id == null) throw new IllegalArgumentException("id must not be null");
+        if (id == null)
+            throw new IllegalArgumentException("id must not be null");
         return productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Product not found: id=" + id));
     }
@@ -248,24 +259,29 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public Page<Product> list(Pageable pageable, com.vtcweb.backend.model.entity.product.ProductStatus status) {
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
-        if (status == null) return list(pageable);
+        if (status == null)
+            return list(pageable);
         return productRepository.findByStatus(status, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Product> listByCategory(Long categoryId, Pageable pageable) {
-        if (categoryId == null) throw new IllegalArgumentException("categoryId must not be null");
+        if (categoryId == null)
+            throw new IllegalArgumentException("categoryId must not be null");
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
         return productRepository.findByCategory_Id(categoryId, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Product> listByCategory(Long categoryId, Pageable pageable, com.vtcweb.backend.model.entity.product.ProductStatus status) {
-        if (categoryId == null) throw new IllegalArgumentException("categoryId must not be null");
+    public Page<Product> listByCategory(Long categoryId, Pageable pageable,
+            com.vtcweb.backend.model.entity.product.ProductStatus status) {
+        if (categoryId == null)
+            throw new IllegalArgumentException("categoryId must not be null");
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
-        if (status == null) return listByCategory(categoryId, pageable);
+        if (status == null)
+            return listByCategory(categoryId, pageable);
         return productRepository.findByCategory_IdAndStatus(categoryId, status, pageable);
     }
 
@@ -278,27 +294,31 @@ public class ProductServiceImpl implements ProductService {
         if (q.isEmpty()) {
             return productRepository.findAll(pageable);
         }
-    return productRepository
-        .findByNameContainingIgnoreCaseOrShortDescriptionContainingIgnoreCaseOrCategory_NameContainingIgnoreCaseOrDetailedDescriptionContaining(
-            q, q, q, q, pageable);
+        return productRepository
+                .findByNameContainingIgnoreCaseOrShortDescriptionContainingIgnoreCaseOrCategory_NameContainingIgnoreCaseOrDetailedDescriptionContaining(
+                        q, q, q, q, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Product> searchByName(String name, Pageable pageable, com.vtcweb.backend.model.entity.product.ProductStatus status) {
+    public Page<Product> searchByName(String name, Pageable pageable,
+            com.vtcweb.backend.model.entity.product.ProductStatus status) {
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
         String q = (name == null) ? "" : name.trim();
-        if (status == null) return searchByName(name, pageable);
-        if (q.isEmpty()) return list(pageable, status);
+        if (status == null)
+            return searchByName(name, pageable);
+        if (q.isEmpty())
+            return list(pageable, status);
         return productRepository
-            .findByNameContainingIgnoreCaseOrShortDescriptionContainingIgnoreCaseOrCategory_NameContainingIgnoreCaseOrDetailedDescriptionContainingAndStatus(
-                q, q, q, q, status, pageable);
+                .findByNameContainingIgnoreCaseOrShortDescriptionContainingIgnoreCaseOrCategory_NameContainingIgnoreCaseOrDetailedDescriptionContainingAndStatus(
+                        q, q, q, q, status, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Product> getBySku(String sku) {
-        if (sku == null || sku.isBlank()) return Optional.empty();
+        if (sku == null || sku.isBlank())
+            return Optional.empty();
         return productRepository.findBySku(sku.trim().toUpperCase());
     }
 
@@ -314,24 +334,29 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public Page<Product> listInStock(Pageable pageable, com.vtcweb.backend.model.entity.product.ProductStatus status) {
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
-        if (status == null) return listInStock(pageable);
+        if (status == null)
+            return listInStock(pageable);
         return productRepository.findInStockByStatus(status, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Product> listInStockByCategory(Long categoryId, Pageable pageable) {
-        if (categoryId == null) throw new IllegalArgumentException("categoryId must not be null");
+        if (categoryId == null)
+            throw new IllegalArgumentException("categoryId must not be null");
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
         return productRepository.findInStockByCategory(categoryId, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Product> listInStockByCategory(Long categoryId, Pageable pageable, com.vtcweb.backend.model.entity.product.ProductStatus status) {
-        if (categoryId == null) throw new IllegalArgumentException("categoryId must not be null");
+    public Page<Product> listInStockByCategory(Long categoryId, Pageable pageable,
+            com.vtcweb.backend.model.entity.product.ProductStatus status) {
+        if (categoryId == null)
+            throw new IllegalArgumentException("categoryId must not be null");
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
-        if (status == null) return listInStockByCategory(categoryId, pageable);
+        if (status == null)
+            return listInStockByCategory(categoryId, pageable);
         return productRepository.findInStockByCategoryAndStatus(categoryId, status, pageable);
     }
 
@@ -344,26 +369,32 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Product> listOutOfStock(Pageable pageable, com.vtcweb.backend.model.entity.product.ProductStatus status) {
+    public Page<Product> listOutOfStock(Pageable pageable,
+            com.vtcweb.backend.model.entity.product.ProductStatus status) {
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
-        if (status == null) return listOutOfStock(pageable);
+        if (status == null)
+            return listOutOfStock(pageable);
         return productRepository.findOutOfStockByStatus(status, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Product> listOutOfStockByCategory(Long categoryId, Pageable pageable) {
-        if (categoryId == null) throw new IllegalArgumentException("categoryId must not be null");
+        if (categoryId == null)
+            throw new IllegalArgumentException("categoryId must not be null");
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
         return productRepository.findOutOfStockByCategory(categoryId, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Product> listOutOfStockByCategory(Long categoryId, Pageable pageable, com.vtcweb.backend.model.entity.product.ProductStatus status) {
-        if (categoryId == null) throw new IllegalArgumentException("categoryId must not be null");
+    public Page<Product> listOutOfStockByCategory(Long categoryId, Pageable pageable,
+            com.vtcweb.backend.model.entity.product.ProductStatus status) {
+        if (categoryId == null)
+            throw new IllegalArgumentException("categoryId must not be null");
         java.util.Objects.requireNonNull(pageable, "pageable must not be null");
-        if (status == null) return listOutOfStockByCategory(categoryId, pageable);
+        if (status == null)
+            return listOutOfStockByCategory(categoryId, pageable);
         return productRepository.findOutOfStockByCategoryAndStatus(categoryId, status, pageable);
     }
 
@@ -380,8 +411,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product update(Long id, Product updates, Long newCategoryId) {
-        if (id == null) throw new IllegalArgumentException("id must not be null");
-        if (updates == null) throw new IllegalArgumentException("updates must not be null");
+        if (id == null)
+            throw new IllegalArgumentException("id must not be null");
+        if (updates == null)
+            throw new IllegalArgumentException("updates must not be null");
         Product existing = getById(id);
         // Name
         if (updates.getName() != null && !updates.getName().isBlank()) {
@@ -393,9 +426,11 @@ public class ProductServiceImpl implements ProductService {
             existing.setName(newName);
         }
         // Short description
-        if (updates.getShortDescription() != null) existing.setShortDescription(updates.getShortDescription());
-    // Detailed description
-    if (updates.getDetailedDescription() != null) existing.setDetailedDescription(updates.getDetailedDescription());
+        if (updates.getShortDescription() != null)
+            existing.setShortDescription(updates.getShortDescription());
+        // Detailed description
+        if (updates.getDetailedDescription() != null)
+            existing.setDetailedDescription(updates.getDetailedDescription());
         // Base price
         if (updates.getBasePrice() != null) {
             if (isNegative(updates.getBasePrice())) {
@@ -427,29 +462,36 @@ public class ProductServiceImpl implements ProductService {
                 existing.setSku(generateSku(newCategory));
             }
         }
-        @SuppressWarnings({"DataFlowIssue", "null"})
+        @SuppressWarnings({ "DataFlowIssue", "null" })
         Product saved = productRepository.save(existing);
         return saved;
     }
 
     @Override
     public void delete(Long id) {
-        if (id == null) throw new IllegalArgumentException("id must not be null");
+        if (id == null)
+            throw new IllegalArgumentException("id must not be null");
         // Ensure it exists first
         Product existing = getById(id);
         // Collect images (product level and variation images)
         // Product-level images
-        java.util.List<com.vtcweb.backend.model.entity.product.ProductImage> images = productImageService.listByProduct(id, org.springframework.data.domain.PageRequest.of(0, 200)).getContent();
+        java.util.List<com.vtcweb.backend.model.entity.product.ProductImage> images = productImageService
+                .listByProduct(id, org.springframework.data.domain.PageRequest.of(0, 200)).getContent();
         int imgDeleted = 0;
         for (com.vtcweb.backend.model.entity.product.ProductImage img : images) {
-            if (imageStorageService.deleteByUrl(img.getUrl())) imgDeleted++;
+            if (imageStorageService.deleteByUrl(img.getUrl()))
+                imgDeleted++;
         }
         // Variation images
         java.util.concurrent.atomic.AtomicInteger varDeleted = new java.util.concurrent.atomic.AtomicInteger(0);
         if (existing.getVariations() != null) {
-            existing.getVariations().forEach(var -> { if (imageStorageService.deleteByUrl(var.getImageUrl())) varDeleted.incrementAndGet(); });
+            existing.getVariations().forEach(var -> {
+                if (imageStorageService.deleteByUrl(var.getImageUrl()))
+                    varDeleted.incrementAndGet();
+            });
         }
-        log.debug("Product {} image cleanup results: productImagesDeleted={}, variationImagesDeleted={}", id, imgDeleted, varDeleted.get());
+        log.debug("Product {} image cleanup results: productImagesDeleted={}, variationImagesDeleted={}", id,
+                imgDeleted, varDeleted.get());
         productRepository.delete(existing);
     }
 
@@ -468,8 +510,9 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * SKU Format: CCC-NNN
-     *  - CCC: first 3 alphanumeric chars of category name (uppercased, padded with X if shorter)
-     *  - NNN: per-category numeric sequence (001, 002, ...)
+     * - CCC: first 3 alphanumeric chars of category name (uppercased, padded with X
+     * if shorter)
+     * - NNN: per-category numeric sequence (001, 002, ...)
      * Ensures uniqueness by incrementing sequence until a free candidate is found.
      */
     private String generateSku(Category category) {
@@ -479,7 +522,7 @@ public class ProductServiceImpl implements ProductService {
         if (category.getId() == null) {
             throw new IllegalArgumentException("Category must be persisted before generating SKU");
         }
-    String categoryCode = deriveCategoryCode(category);
+        String categoryCode = deriveCategoryCode(category);
         int nextSequence = determineNextSequence(category.getId(), categoryCode);
         int attempts = 0;
         int candidateSequence = nextSequence;
@@ -491,7 +534,8 @@ public class ProductServiceImpl implements ProductService {
             candidateSequence++;
             attempts++;
         }
-        throw new IllegalStateException("Unable to generate unique SKU after " + MAX_SKU_ATTEMPTS + " attempts for category " + category.getId());
+        throw new IllegalStateException("Unable to generate unique SKU after " + MAX_SKU_ATTEMPTS
+                + " attempts for category " + category.getId());
     }
 
     private int determineNextSequence(Long categoryId, String categoryCode) {
@@ -530,13 +574,15 @@ public class ProductServiceImpl implements ProductService {
             // Accept only alphanumeric 1-3 chars
             if (explicit.matches("[A-Z0-9]{1,3}")) {
                 // Pad to 3 chars if shorter (e.g. 'HW' -> 'HWX') to maintain fixed width
-                return (explicit + "XXX").substring(0,3);
+                return (explicit + "XXX").substring(0, 3);
             }
         }
         String categoryName = category != null ? category.getName() : null;
-        if (categoryName == null) return DEFAULT_CATEGORY_CODE;
+        if (categoryName == null)
+            return DEFAULT_CATEGORY_CODE;
         String cleaned = categoryName.replaceAll("[^A-Za-z0-9]", "").toUpperCase();
-        if (cleaned.isEmpty()) return DEFAULT_CATEGORY_CODE;
+        if (cleaned.isEmpty())
+            return DEFAULT_CATEGORY_CODE;
         // Consonant-based generation similar to CategoryServiceImpl
         StringBuilder code = new StringBuilder();
         code.append(cleaned.charAt(0));
@@ -555,8 +601,9 @@ public class ProductServiceImpl implements ProductService {
                 code.append(c);
             }
         }
-        while (code.length() < 3) code.append('X');
-        return code.substring(0,3);
+        while (code.length() < 3)
+            code.append('X');
+        return code.substring(0, 3);
     }
 
     private String formatSku(String categoryCode, int sequence) {
@@ -564,9 +611,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private boolean isExternalNonCloudinaryUrl(String url) {
-        if (url == null) return false;
+        if (url == null)
+            return false;
         String lower = url.toLowerCase();
-        if (!(lower.startsWith("http://") || lower.startsWith("https://"))) return false;
+        if (!(lower.startsWith("http://") || lower.startsWith("https://")))
+            return false;
         return !lower.contains("res.cloudinary.com");
     }
 
@@ -579,7 +628,8 @@ public class ProductServiceImpl implements ProductService {
                     .GET()
                     .header("User-Agent", "VTC-Backend/1.0")
                     .build();
-            java.net.http.HttpResponse<byte[]> resp = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofByteArray());
+            java.net.http.HttpResponse<byte[]> resp = client.send(request,
+                    java.net.http.HttpResponse.BodyHandlers.ofByteArray());
             if (resp.statusCode() >= 200 && resp.statusCode() < 300) {
                 String ctype = resp.headers().firstValue("Content-Type").orElse("");
                 if (ctype.startsWith("image/")) {
@@ -593,27 +643,39 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private String guessMetaFromUrl(String url) {
-        if (url == null) return "image/png"; // default
+        if (url == null)
+            return "image/png"; // default
         String lower = url.toLowerCase();
-        if (lower.endsWith(".png")) return "image/png";
-        if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
-        if (lower.endsWith(".webp")) return "image/webp";
+        if (lower.endsWith(".png"))
+            return "image/png";
+        if (lower.endsWith(".jpg") || lower.endsWith(".jpeg"))
+            return "image/jpeg";
+        if (lower.endsWith(".webp"))
+            return "image/webp";
         return "image/png";
     }
 
     private String deriveExt(String meta) {
-        if (meta == null) return "png"; // default
-        if (meta.contains("image/png")) return "png";
-        if (meta.contains("image/jpeg")) return "jpg";
-        if (meta.contains("image/webp")) return "webp";
+        if (meta == null)
+            return "png"; // default
+        if (meta.contains("image/png"))
+            return "png";
+        if (meta.contains("image/jpeg"))
+            return "jpg";
+        if (meta.contains("image/webp"))
+            return "webp";
         return "png";
     }
 
     private String deriveContentType(String meta) {
-        if (meta == null) return org.springframework.http.MediaType.IMAGE_PNG_VALUE;
-        if (meta.contains("image/png")) return org.springframework.http.MediaType.IMAGE_PNG_VALUE;
-        if (meta.contains("image/jpeg")) return org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
-        if (meta.contains("image/webp")) return "image/webp";
+        if (meta == null)
+            return org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+        if (meta.contains("image/png"))
+            return org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+        if (meta.contains("image/jpeg"))
+            return org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
+        if (meta.contains("image/webp"))
+            return "image/webp";
         return org.springframework.http.MediaType.IMAGE_PNG_VALUE;
     }
 
@@ -623,19 +685,54 @@ public class ProductServiceImpl implements ProductService {
         private final @NonNull String originalFilename;
         private final String contentType;
         private final byte[] content;
+
         InMemoryMultipartFile(String name, String originalFilename, String contentType, byte[] content) {
             this.name = java.util.Objects.requireNonNull(name, "name");
             this.originalFilename = java.util.Objects.requireNonNull(originalFilename, "originalFilename");
             this.contentType = contentType;
             this.content = content != null ? content : new byte[0];
         }
-        @Override public @NonNull String getName() { return name; }
-        @Override public @NonNull String getOriginalFilename() { return originalFilename; }
-        @Override public String getContentType() { return contentType; }
-        @Override public boolean isEmpty() { return content.length == 0; }
-        @Override public long getSize() { return content.length; }
-        @Override public @NonNull byte[] getBytes() { return content.clone(); }
-        @Override public @NonNull java.io.InputStream getInputStream() { return new java.io.ByteArrayInputStream(content); }
-        @Override public void transferTo(@NonNull java.io.File dest) throws java.io.IOException { try (java.io.FileOutputStream fos = new java.io.FileOutputStream(dest)) { fos.write(content); } }
+
+        @Override
+        public @NonNull String getName() {
+            return name;
+        }
+
+        @Override
+        public @NonNull String getOriginalFilename() {
+            return originalFilename;
+        }
+
+        @Override
+        public String getContentType() {
+            return contentType;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return content.length == 0;
+        }
+
+        @Override
+        public long getSize() {
+            return content.length;
+        }
+
+        @Override
+        public @NonNull byte[] getBytes() {
+            return content.clone();
+        }
+
+        @Override
+        public @NonNull java.io.InputStream getInputStream() {
+            return new java.io.ByteArrayInputStream(content);
+        }
+
+        @Override
+        public void transferTo(@NonNull java.io.File dest) throws java.io.IOException {
+            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(dest)) {
+                fos.write(content);
+            }
+        }
     }
 }

@@ -34,16 +34,17 @@ public class UserServiceImpl implements UserService {
     private final com.vtcweb.backend.config.EmailProperties emailProperties;
     private final com.vtcweb.backend.repository.review.ReviewRepository reviewRepository;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, OrderRepository orderRepository,
-                           com.vtcweb.backend.repository.cart.CartRepository cartRepository,
-                           com.vtcweb.backend.repository.wishlist.WishlistRepository wishlistRepository,
-                           com.vtcweb.backend.repository.user.BillingAddressRepository billingAddressRepository,
-                           com.vtcweb.backend.repository.user.ShippingAddressRepository shippingAddressRepository,
-                           com.vtcweb.backend.repository.user.RefreshTokenRepository refreshTokenRepository,
-                           com.vtcweb.backend.repository.user.PasswordResetTokenRepository passwordResetTokenRepository,
-                           com.vtcweb.backend.service.email.EmailService emailService,
-                           com.vtcweb.backend.config.EmailProperties emailProperties,
-                           com.vtcweb.backend.repository.review.ReviewRepository reviewRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            OrderRepository orderRepository,
+            com.vtcweb.backend.repository.cart.CartRepository cartRepository,
+            com.vtcweb.backend.repository.wishlist.WishlistRepository wishlistRepository,
+            com.vtcweb.backend.repository.user.BillingAddressRepository billingAddressRepository,
+            com.vtcweb.backend.repository.user.ShippingAddressRepository shippingAddressRepository,
+            com.vtcweb.backend.repository.user.RefreshTokenRepository refreshTokenRepository,
+            com.vtcweb.backend.repository.user.PasswordResetTokenRepository passwordResetTokenRepository,
+            com.vtcweb.backend.service.email.EmailService emailService,
+            com.vtcweb.backend.config.EmailProperties emailProperties,
+            com.vtcweb.backend.repository.review.ReviewRepository reviewRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.orderRepository = orderRepository;
@@ -63,7 +64,8 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmailIgnoreCase(req.getEmail())) {
             throw new ConflictException("Email already in use");
         }
-        // ADMIN may only create CUSTOMER; MANAGER may create elevated roles via role update endpoint later
+        // ADMIN may only create CUSTOMER; MANAGER may create elevated roles via role
+        // update endpoint later
         User user = User.builder()
                 .firstName(req.getFirstName().trim())
                 .lastName(req.getLastName().trim())
@@ -90,8 +92,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDto getByCode(String userCode) {
-        if (userCode == null || userCode.isBlank()) throw new NotFoundException("User not found");
-        User target = userRepository.findByUserCode(userCode).orElseThrow(() -> new NotFoundException("User not found"));
+        if (userCode == null || userCode.isBlank())
+            throw new NotFoundException("User not found");
+        User target = userRepository.findByUserCode(userCode)
+                .orElseThrow(() -> new NotFoundException("User not found"));
         enforceAdminScope(target);
         UserDto dto = Mapper.toUserDto(target);
         enrichWithStats(dto);
@@ -101,14 +105,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Page<UserDto> list(Pageable pageable) {
-        // Listing is allowed; filtering of elevated users from ADMIN could be added later if required
+        // Listing is allowed; filtering of elevated users from ADMIN could be added
+        // later if required
         return userRepository.findAll(pageable).map(Mapper::toUserDto);
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDto getByUserCode(String userCode) {
-        if (userCode == null || userCode.isBlank()) throw new NotFoundException("User not found");
+        if (userCode == null || userCode.isBlank())
+            throw new NotFoundException("User not found");
         User target = userRepository.findByUserCode(userCode)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         enforceAdminScope(target);
@@ -146,30 +152,43 @@ public class UserServiceImpl implements UserService {
                 throw new ConflictException("Cannot delete the only manager account");
             }
         }
-            // 1) Detach/anonymize reviews authored by this user to preserve review content
-            try {
-                reviewRepository.anonymizeReviewsForDeletedUser(target.getId(), "Deleted User");
-            } catch (Exception ignored) { }
+        // 1) Detach/anonymize reviews authored by this user to preserve review content
+        try {
+            reviewRepository.anonymizeReviewsForDeletedUser(target.getId(), "Deleted User");
+        } catch (Exception ignored) {
+        }
 
-            // 1.5) Detach user reference from orders as a runtime-safe fallback so delete
-            // succeeds even if the DB migration to set the FK to ON DELETE SET NULL hasn't
-            // been applied yet. This is idempotent and keeps order snapshot fields intact.
-            try {
-                orderRepository.detachUserFromOrders(target.getId());
-            } catch (Exception ignored) { }
+        try {
+            orderRepository.detachUserFromOrders(target.getId());
+        } catch (Exception ignored) {
+        }
 
-            // 2) Delete dependent rows with NOT NULL FKs that would block user deletion
-            try { refreshTokenRepository.deleteByUser(target); } catch (Exception ignored) {}
-            try { passwordResetTokenRepository.deleteByUser(target); } catch (Exception ignored) {}
-            try { billingAddressRepository.deleteByUserId(target.getId()); } catch (Exception ignored) {}
-            try { shippingAddressRepository.deleteByUserId(target.getId()); } catch (Exception ignored) {}
-            try { wishlistRepository.deleteByUserId(target.getId()); } catch (Exception ignored) {}
-            try { cartRepository.deleteByUserId(target.getId()); } catch (Exception ignored) {}
+        try {
+            refreshTokenRepository.deleteByUser(target);
+        } catch (Exception ignored) {
+        }
+        try {
+            passwordResetTokenRepository.deleteByUser(target);
+        } catch (Exception ignored) {
+        }
+        try {
+            billingAddressRepository.deleteByUserId(target.getId());
+        } catch (Exception ignored) {
+        }
+        try {
+            shippingAddressRepository.deleteByUserId(target.getId());
+        } catch (Exception ignored) {
+        }
+        try {
+            wishlistRepository.deleteByUserId(target.getId());
+        } catch (Exception ignored) {
+        }
+        try {
+            cartRepository.deleteByUserId(target.getId());
+        } catch (Exception ignored) {
+        }
 
-            // 3) Physically delete user row. Orders.user FK should be configured as ON DELETE SET NULL
-            // so that orders keep their snapshot but the relation is removed. The DB migration to
-            // change the FK must be applied before using this code in production.
-            userRepository.delete(target);
+        userRepository.delete(target);
     }
 
     @Override
@@ -202,7 +221,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Current password incorrect");
         }
         user.setPasswordHash(passwordEncoder.encode(newPassword));
-        // Notify user about password change (fire-and-forget)
+        // Notify user about password change
         try {
             if (user.getEmail() != null && !user.getEmail().isBlank()) {
                 java.util.Map<String, Object> params = new java.util.HashMap<>();
@@ -210,13 +229,16 @@ public class UserServiceImpl implements UserService {
                         user.getFirstName() == null ? "" : user.getFirstName(),
                         user.getLastName() == null ? "" : user.getLastName()).trim();
                 params.put("customer_name", customerName.isBlank() ? user.getEmail() : customerName);
-                String base = (emailProperties != null && emailProperties.getSiteUrl() != null && !emailProperties.getSiteUrl().isBlank())
-                        ? emailProperties.getSiteUrl() : "http://localhost:5173";
+                String base = (emailProperties != null && emailProperties.getSiteUrl() != null
+                        && !emailProperties.getSiteUrl().isBlank())
+                                ? emailProperties.getSiteUrl()
+                                : "http://localhost:5173";
                 params.put("account_link", base + "/account");
                 emailService.sendTemplateAsync(com.vtcweb.backend.service.email.EmailTemplateKey.PASSWORD_CHANGED,
                         user.getEmail(), "Your password was changed", params);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -226,7 +248,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Current password incorrect");
         }
         user.setPasswordHash(passwordEncoder.encode(req.getNewPassword()));
-        // Notify user about password change (fire-and-forget)
+        // Notify user about password change
         try {
             if (user.getEmail() != null && !user.getEmail().isBlank()) {
                 java.util.Map<String, Object> params = new java.util.HashMap<>();
@@ -234,13 +256,16 @@ public class UserServiceImpl implements UserService {
                         user.getFirstName() == null ? "" : user.getFirstName(),
                         user.getLastName() == null ? "" : user.getLastName()).trim();
                 params.put("customer_name", customerName.isBlank() ? user.getEmail() : customerName);
-                String base = (emailProperties != null && emailProperties.getSiteUrl() != null && !emailProperties.getSiteUrl().isBlank())
-                        ? emailProperties.getSiteUrl() : "http://localhost:5173";
+                String base = (emailProperties != null && emailProperties.getSiteUrl() != null
+                        && !emailProperties.getSiteUrl().isBlank())
+                                ? emailProperties.getSiteUrl()
+                                : "http://localhost:5173";
                 params.put("account_link", base + "/account");
                 emailService.sendTemplateAsync(com.vtcweb.backend.service.email.EmailTemplateKey.PASSWORD_CHANGED,
                         user.getEmail(), "Your password was changed", params);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -257,9 +282,11 @@ public class UserServiceImpl implements UserService {
         // Normalize & validate
         java.util.Set<Role> newRoles = new java.util.HashSet<>();
         for (String r : rolesRequested) {
-            if (r == null) continue;
+            if (r == null)
+                continue;
             String trimmed = r.trim().toUpperCase();
-            if (trimmed.isEmpty()) continue;
+            if (trimmed.isEmpty())
+                continue;
             if (!trimmed.startsWith("ROLE_")) {
                 trimmed = "ROLE_" + trimmed; // allow passing CUSTOMER vs ROLE_CUSTOMER
             }
@@ -293,26 +320,32 @@ public class UserServiceImpl implements UserService {
 
     private User currentUserEntity() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth.getName() == null) throw new IllegalStateException("No authenticated user");
+        if (auth == null || auth.getName() == null)
+            throw new IllegalStateException("No authenticated user");
         return userRepository.fetchWithRolesByEmail(auth.getName())
                 .orElseThrow(() -> new NotFoundException("Current user not found"));
     }
 
     private void applyUpdates(User user, UserUpdateRequest req) {
-        if (req.getFirstName() != null && !req.getFirstName().isBlank()) user.setFirstName(req.getFirstName().trim());
-        if (req.getLastName() != null && !req.getLastName().isBlank()) user.setLastName(req.getLastName().trim());
+        if (req.getFirstName() != null && !req.getFirstName().isBlank())
+            user.setFirstName(req.getFirstName().trim());
+        if (req.getLastName() != null && !req.getLastName().isBlank())
+            user.setLastName(req.getLastName().trim());
         if (req.getEmail() != null && !req.getEmail().equalsIgnoreCase(user.getEmail())) {
             if (userRepository.existsByEmailIgnoreCase(req.getEmail())) {
                 throw new ConflictException("Email already in use");
             }
             user.setEmail(req.getEmail().trim().toLowerCase());
         }
-        if (req.getPhone() != null) user.setPhone(req.getPhone());
-        if (req.getEnabled() != null) user.setEnabled(Boolean.TRUE.equals(req.getEnabled()));
+        if (req.getPhone() != null)
+            user.setPhone(req.getPhone());
+        if (req.getEnabled() != null)
+            user.setEnabled(Boolean.TRUE.equals(req.getEnabled()));
     }
 
     private void enrichWithStats(UserDto dto) {
-        if (dto == null || dto.getEmail() == null) return;
+        if (dto == null || dto.getEmail() == null)
+            return;
         long count = orderRepository.countByCustomerEmailIgnoreCase(dto.getEmail());
         java.math.BigDecimal total = orderRepository.sumTotalByCustomerEmailIgnoreCase(dto.getEmail());
         dto.setOrderCount((int) Math.min(count, Integer.MAX_VALUE));
@@ -320,21 +353,27 @@ public class UserServiceImpl implements UserService {
     }
 
     // Enforce hierarchy: MANAGER > ADMIN > CUSTOMER.
-    // ADMIN cannot act on MANAGER or ADMIN targets; MANAGER can act on all; users cannot act on themselves for privilege escalation (except self-updates handled separately).
+    // ADMIN cannot act on MANAGER or ADMIN targets; MANAGER can act on all; users
+    // cannot act on themselves for privilege escalation (except self-updates
+    // handled separately).
     private void enforceAdminScope(User target) {
         User acting = currentUserEntity();
-        if (acting.getId().equals(target.getId())) return; // allow self operations where method permits
+        if (acting.getId().equals(target.getId()))
+            return; // allow self operations where method permits
         boolean actingIsManager = acting.getRoles().contains(Role.ROLE_MANAGER);
-        if (actingIsManager) return; // full access
+        if (actingIsManager)
+            return; // full access
         boolean actingIsAdmin = acting.getRoles().contains(Role.ROLE_ADMIN);
         if (actingIsAdmin) {
-            boolean targetElevated = target.getRoles().contains(Role.ROLE_ADMIN) || target.getRoles().contains(Role.ROLE_MANAGER);
+            boolean targetElevated = target.getRoles().contains(Role.ROLE_ADMIN)
+                    || target.getRoles().contains(Role.ROLE_MANAGER);
             if (targetElevated) {
                 throw new ForbiddenException("ADMIN may not manage other admins or manager");
             }
             return;
         }
-        // Non-admin non-manager should not reach here because of controller @PreAuthorize, but guard anyway
+        // Non-admin non-manager should not reach here because of controller
+        // @PreAuthorize, but guard anyway
         throw new ForbiddenException("Insufficient privileges");
     }
 
@@ -348,7 +387,8 @@ public class UserServiceImpl implements UserService {
             byte[] bytes = new byte[6]; // 12 hex chars -> will substring to 9
             rnd.nextBytes(bytes);
             StringBuilder sb = new StringBuilder();
-            for (byte b : bytes) sb.append(String.format("%02x", b));
+            for (byte b : bytes)
+                sb.append(String.format("%02x", b));
             code = "USR-" + sb.substring(0, hexLen);
             attempts++;
             if (attempts > 10) {

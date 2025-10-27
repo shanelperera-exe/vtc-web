@@ -184,6 +184,11 @@ export default function CustomerReviewsSection() {
     return () => clearTimeout(timeoutRef.current);
   }, [current]);
 
+  // Control vertical positioning of the review cards.
+  // `CARD_LIFT` is how much we lift cards to avoid bottom controls; `PAD_TOP` adds extra space above the card line.
+  const CARD_LIFT = 80;
+  const PAD_TOP = 40; // pixels added above the review card line
+
   const prevSlide = () => {
     setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
@@ -193,7 +198,7 @@ export default function CustomerReviewsSection() {
 
   return (
     <div
-      className="relative mb-12 mt-24 w-full overflow-hidden border-y-2 border-neutral-950"
+      className="relative w-full overflow-hidden border-y-2 border-neutral-950"
       style={{ height: 650, clipPath: polygonClip }}
     >
       {/* Inline CSS (no external file) to provide the animated grid background */}
@@ -271,9 +276,11 @@ export default function CustomerReviewsSection() {
           zIndex: isActive ? 10 : Math.max(0, half - Math.abs(offset)),
           transition:
             "transform 0.7s cubic-bezier(.77,0,.18,1), box-shadow 0.5s, background 0.5s",
+          // lift cards slightly so bottom navigation buttons do not overlap the card text
+          // increased lift to keep card text clear of the nav buttons
           transform: `translateX(calc(-50% + ${offset * 243.333}px)) translateY(calc(-50% + ${
-            idx % 2 === 0 ? -15 : 15
-          }px)) rotate(${isActive ? 0 : idx % 2 === 0 ? -2.5 : 2.5}deg) translateZ(0px)`,
+              idx % 2 === 0 ? -15 : 15
+            }px - ${CARD_LIFT}px + ${PAD_TOP}px)) rotate(${isActive ? 0 : idx % 2 === 0 ? -2.5 : 2.5}deg) translateZ(0px)`,
           boxShadow: isActive
             ? "0 8px 32px rgba(60,60,200,0.15)"
             : "0 2px 8px rgba(0,0,0,0.08)",
@@ -346,7 +353,7 @@ export default function CustomerReviewsSection() {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-8">
+  <div className="absolute bottom-22 left-1/2 z-10 flex -translate-x-1/2 gap-8">
         <button
           className="grid h-14 w-14 place-content-center bg-neutral-950 text-3xl text-white transition-colors hover:bg-neutral-700"
           onClick={prevSlide}

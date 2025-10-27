@@ -11,6 +11,6 @@ public class CouponApplyResponseDTO {
     private String code;
     private boolean valid;
     private String message;
-    private BigDecimal discountAmount; // amount to subtract from subtotal
+    private BigDecimal discountAmount;
     private BigDecimal newSubtotal;
 }

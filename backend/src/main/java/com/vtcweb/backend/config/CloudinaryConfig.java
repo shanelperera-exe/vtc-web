@@ -9,11 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Cloudinary configuration. Values are read from environment variables or .env file (spring-dotenv).
+ * Cloudinary configuration. Values are read from environment variables/.env
+ * file (spring-dotenv).
  * Expected variables:
- *   CLOUDINARY_CLOUD_NAME
- *   CLOUDINARY_API_KEY
- *   CLOUDINARY_API_SECRET
+ * CLOUDINARY_CLOUD_NAME
+ * CLOUDINARY_API_KEY
+ * CLOUDINARY_API_SECRET
  */
 @Configuration
 public class CloudinaryConfig {

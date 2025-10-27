@@ -19,26 +19,28 @@ public interface ProductVariationRepository extends JpaRepository<ProductVariati
      * Fetch variations for a product with attributes eagerly loaded.
      * Use paging to avoid loading large collections into memory.
      */
-    @EntityGraph(attributePaths = {"attributes"}, type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = { "attributes" }, type = EntityGraph.EntityGraphType.LOAD)
     Page<ProductVariation> findByProductId(Long productId, Pageable pageable);
 
     /**
      * Convenience method for small result sets or when paging is not required.
      */
-    @EntityGraph(attributePaths = {"attributes"}, type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = { "attributes" }, type = EntityGraph.EntityGraphType.LOAD)
     List<ProductVariation> findByProductId(Long productId);
 
     /**
-     * Find a specific variation by product and variation id with attributes fetched.
+     * Find a specific variation by product and variation id with attributes
+     * fetched.
      */
-    @EntityGraph(attributePaths = {"attributes"}, type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = { "attributes" }, type = EntityGraph.EntityGraphType.LOAD)
     Optional<ProductVariation> findByProductIdAndId(Long productId, Long id);
 
     /**
      * Find variation by product and variation key (unique within a product).
-     * Consider enforcing uniqueness at the DB level for (product_id, variation_key).
+     * Consider enforcing uniqueness at the DB level for (product_id,
+     * variation_key).
      */
-    @EntityGraph(attributePaths = {"attributes"}, type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = { "attributes" }, type = EntityGraph.EntityGraphType.LOAD)
     Optional<ProductVariation> findByProductIdAndVariationKey(Long productId, String variationKey);
 
     /**

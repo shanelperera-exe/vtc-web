@@ -69,7 +69,8 @@ public class ProductController {
     }
 
     /**
-     * Retrieve product by id with details (relations eager-loaded via repository method).
+     * Retrieve product by id with details (relations eager-loaded via repository
+     * method).
      */
     @GetMapping("/{id}/details")
     public ResponseEntity<ProductDTO> getByIdWithDetails(@PathVariable("id") Long id) {
@@ -83,8 +84,8 @@ public class ProductController {
      */
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> list(Pageable pageable,
-                                                @RequestParam(name = "status", required = false) String status,
-                                                @RequestParam(name = "stock", required = false) String stock) {
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "stock", required = false) String stock) {
         boolean provided = status != null;
         com.vtcweb.backend.model.entity.product.ProductStatus st = parseStatus(status);
         if (!provided) {
@@ -96,7 +97,8 @@ public class ProductController {
         if (sf == StockFilter.IN_STOCK) {
             products = (st == null) ? productService.listInStock(pageable) : productService.listInStock(pageable, st);
         } else if (sf == StockFilter.OUT_OF_STOCK) {
-            products = (st == null) ? productService.listOutOfStock(pageable) : productService.listOutOfStock(pageable, st);
+            products = (st == null) ? productService.listOutOfStock(pageable)
+                    : productService.listOutOfStock(pageable, st);
         } else {
             products = (st == null) ? productService.list(pageable) : productService.list(pageable, st);
         }
@@ -119,9 +121,10 @@ public class ProductController {
      * List products by category with pagination.
      */
     @GetMapping("/by-category/{categoryId}")
-    public ResponseEntity<Page<ProductDTO>> listByCategory(@PathVariable("categoryId") Long categoryId, Pageable pageable,
-                                                           @RequestParam(name = "status", required = false) String status,
-                                                           @RequestParam(name = "stock", required = false) String stock) {
+    public ResponseEntity<Page<ProductDTO>> listByCategory(@PathVariable("categoryId") Long categoryId,
+            Pageable pageable,
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "stock", required = false) String stock) {
         boolean provided = status != null;
         com.vtcweb.backend.model.entity.product.ProductStatus st = parseStatus(status);
         if (!provided) {
@@ -156,23 +159,30 @@ public class ProductController {
 
     /**
      * Search products by text with pagination.
-     * Matches across: name (ignore case), shortDescription (ignore case), category name (ignore case),
-     * and description (case-sensitive to avoid CLOB + UPPER issues on certain DBs like H2).
-     * Use query param 'name' for compatibility (e.g., /api/products/search?name=book).
+     * Matches across: name (ignore case), shortDescription (ignore case), category
+     * name (ignore case),
+     * and description (case-sensitive to avoid CLOB + UPPER issues on certain DBs
+     * like H2).
+     * Use query param 'name' for compatibility (e.g.,
+     * /api/products/search?name=book).
      */
     @GetMapping("/search")
-        public ResponseEntity<Page<ProductDTO>> search(@RequestParam(name = "name", required = false) String name,
-                               @RequestParam(name = "sku", required = false) String sku,
-                               @RequestParam(name = "status", required = false) String status,
-                               Pageable pageable) {
+    public ResponseEntity<Page<ProductDTO>> search(@RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "sku", required = false) String sku,
+            @RequestParam(name = "status", required = false) String status,
+            Pageable pageable) {
         if (sku != null && !sku.isBlank()) {
             java.util.Optional<Product> opt = productService.getBySku(sku);
             if (opt.isPresent()) {
                 Product p = opt.get();
-                java.util.List<ProductDTO> list = java.util.List.of(enrichWithPrimary(Mapper.toDtoShallow(p), resolvePrimaryImages(java.util.List.of(p.getId()))));
-                return ResponseEntity.ok(new org.springframework.data.domain.PageImpl<>(java.util.Objects.requireNonNull(list), java.util.Objects.requireNonNull(pageable), 1));
+                java.util.List<ProductDTO> list = java.util.List.of(
+                        enrichWithPrimary(Mapper.toDtoShallow(p), resolvePrimaryImages(java.util.List.of(p.getId()))));
+                return ResponseEntity.ok(new org.springframework.data.domain.PageImpl<>(
+                        java.util.Objects.requireNonNull(list), java.util.Objects.requireNonNull(pageable), 1));
             } else {
-                return ResponseEntity.ok(new org.springframework.data.domain.PageImpl<>(java.util.Objects.requireNonNull(java.util.List.of()), java.util.Objects.requireNonNull(pageable), 0));
+                return ResponseEntity.ok(new org.springframework.data.domain.PageImpl<>(
+                        java.util.Objects.requireNonNull(java.util.List.of()),
+                        java.util.Objects.requireNonNull(pageable), 0));
             }
         }
         boolean provided = status != null;
@@ -181,8 +191,8 @@ public class ProductController {
             st = com.vtcweb.backend.model.entity.product.ProductStatus.ACTIVE;
         }
         Page<Product> products = (st == null)
-            ? productService.searchByName(name, pageable)
-            : productService.searchByName(name, pageable, st);
+                ? productService.searchByName(name, pageable)
+                : productService.searchByName(name, pageable, st);
         java.util.List<Long> ids = products.stream().map(Product::getId).toList();
         java.util.Map<Long, String> primaryMap = resolvePrimaryImages(ids);
         Page<ProductDTO> page = products.map(p -> {
@@ -204,20 +214,25 @@ public class ProductController {
 
     /**
      * Aggregated stats by product SKU.
-     * Public GET for dashboards. Uses SKU resolution -> productId, computes totals and 90-day daily series.
+     * Public GET for dashboards. Uses SKU resolution -> productId, computes totals
+     * and 90-day daily series.
      */
     @GetMapping("/by-sku/{sku}/stats")
     public ResponseEntity<ProductStatsDTO> statsBySku(@PathVariable("sku") String sku,
-                                                      @RequestParam(name = "days", required = false, defaultValue = "90") int days) {
-        if (sku == null || sku.isBlank()) return ResponseEntity.badRequest().build();
+            @RequestParam(name = "days", required = false, defaultValue = "90") int days) {
+        if (sku == null || sku.isBlank())
+            return ResponseEntity.badRequest().build();
         java.util.Optional<Product> opt = productService.getBySku(sku);
-        if (opt.isEmpty()) return ResponseEntity.notFound().build();
+        if (opt.isEmpty())
+            return ResponseEntity.notFound().build();
         Product p = opt.get();
 
         Long pid = p.getId();
         long units = java.util.Objects.requireNonNullElse(orderItemRepository.sumQuantityByProductId(pid), 0L);
-        java.math.BigDecimal revenue = java.util.Objects.requireNonNullElse(orderItemRepository.sumRevenueByProductId(pid), java.math.BigDecimal.ZERO);
-        long orderCount = java.util.Objects.requireNonNullElse(orderItemRepository.countDistinctOrdersByProductId(pid), 0L);
+        java.math.BigDecimal revenue = java.util.Objects
+                .requireNonNullElse(orderItemRepository.sumRevenueByProductId(pid), java.math.BigDecimal.ZERO);
+        long orderCount = java.util.Objects.requireNonNullElse(orderItemRepository.countDistinctOrdersByProductId(pid),
+                0L);
         java.math.BigDecimal avgPrice = (units > 0)
                 ? revenue.divide(java.math.BigDecimal.valueOf(units), java.math.RoundingMode.HALF_UP)
                 : java.math.BigDecimal.ZERO;
@@ -229,19 +244,23 @@ public class ProductController {
         java.util.Map<String, ProductStatsDTO.DataPoint> series = new java.util.LinkedHashMap<>();
         for (int i = 0; i < window; i++) {
             String d = start.plusDays(i).toString();
-            series.put(d, ProductStatsDTO.DataPoint.builder().date(d).units(0).revenue(java.math.BigDecimal.ZERO).build());
+            series.put(d,
+                    ProductStatsDTO.DataPoint.builder().date(d).units(0).revenue(java.math.BigDecimal.ZERO).build());
         }
         var since = start.atStartOfDay();
         var recent = orderItemRepository.findByProductIdAndOrder_PlacedAtAfter(pid, since);
         for (var oi : recent) {
             java.time.LocalDate d = oi.getOrder() != null && oi.getOrder().getPlacedAt() != null
-                    ? oi.getOrder().getPlacedAt().toLocalDate() : null;
-            if (d == null) continue;
+                    ? oi.getOrder().getPlacedAt().toLocalDate()
+                    : null;
+            if (d == null)
+                continue;
             String key = d.toString();
             var dp = series.get(key);
             if (dp != null) {
                 long addUnits = java.util.Objects.requireNonNullElse(oi.getQuantity(), 0);
-                java.math.BigDecimal addRev = java.util.Objects.requireNonNullElse(oi.getTotalPrice(), java.math.BigDecimal.ZERO);
+                java.math.BigDecimal addRev = java.util.Objects.requireNonNullElse(oi.getTotalPrice(),
+                        java.math.BigDecimal.ZERO);
                 dp.setUnits(dp.getUnits() + addUnits);
                 dp.setRevenue(dp.getRevenue().add(addRev));
             }
@@ -252,15 +271,19 @@ public class ProductController {
         for (Object[] row : orderItemRepository.sumQuantityByVariation(pid)) {
             Long variationId = (Long) row[0];
             long vUnits = ((Number) row[1]).longValue();
-            if (variationId == null) continue;
+            if (variationId == null)
+                continue;
             var pvOpt = productVariationRepository.findById(variationId);
             String label = pvOpt.map(v -> {
                 var attrs = v.getAttributes();
-                if (attrs == null || attrs.isEmpty()) return "Variation " + v.getId();
+                if (attrs == null || attrs.isEmpty())
+                    return "Variation " + v.getId();
                 return attrs.entrySet().stream().sorted(java.util.Map.Entry.comparingByKey())
-                        .map(e -> e.getKey() + "=" + e.getValue()).reduce((a,b)->a+" | "+b).orElse("Variation " + v.getId());
+                        .map(e -> e.getKey() + "=" + e.getValue()).reduce((a, b) -> a + " | " + b)
+                        .orElse("Variation " + v.getId());
             }).orElse("Variation " + variationId);
-            topVariants.add(ProductStatsDTO.TopVariant.builder().variationId(variationId).label(label).units(vUnits).build());
+            topVariants.add(
+                    ProductStatsDTO.TopVariant.builder().variationId(variationId).label(label).units(vUnits).build());
         }
 
         // pick primary image
@@ -282,13 +305,14 @@ public class ProductController {
     }
 
     /**
-     * Update a product. Only provided fields are applied. Category can be changed via newCategoryId.
+     * Update a product. Only provided fields are applied. Category can be changed
+     * via newCategoryId.
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<ProductDTO> update(@PathVariable("id") Long id,
-                                          @Valid @RequestBody UpdateProductRequest request,
-                                          @RequestParam(name = "newCategoryId", required = false) Long newCategoryId) {
+            @Valid @RequestBody UpdateProductRequest request,
+            @RequestParam(name = "newCategoryId", required = false) Long newCategoryId) {
         // Build a minimal updates entity
         Product updates = new Product();
         Mapper.applyUpdates(updates, request);
@@ -297,12 +321,13 @@ public class ProductController {
     }
 
     /**
-     * Update product status only (admin/managers). Accepts {"status": "active|inactive|ACTIVE|INACTIVE"}.
+     * Update product status only (admin/managers). Accepts {"status":
+     * "active|inactive|ACTIVE|INACTIVE"}.
      */
     @PutMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<ProductDTO> updateStatus(@PathVariable("id") Long id,
-                                                   @Valid @RequestBody ProductStatusUpdateRequest request) {
+            @Valid @RequestBody ProductStatusUpdateRequest request) {
         if (request == null || request.getStatus() == null || request.getStatus().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
@@ -335,11 +360,14 @@ public class ProductController {
     private com.vtcweb.backend.repository.product.ProductImageRepository productImageRepository;
 
     private java.util.Map<Long, String> resolvePrimaryImages(java.util.Collection<Long> productIds) {
-        if (productIds == null || productIds.isEmpty()) return java.util.Collections.emptyMap();
-        java.util.List<com.vtcweb.backend.model.entity.product.ProductImage> images = productImageRepository.findByProduct_IdIn(productIds);
+        if (productIds == null || productIds.isEmpty())
+            return java.util.Collections.emptyMap();
+        java.util.List<com.vtcweb.backend.model.entity.product.ProductImage> images = productImageRepository
+                .findByProduct_IdIn(productIds);
         java.util.Map<Long, String> map = new java.util.HashMap<>();
         for (com.vtcweb.backend.model.entity.product.ProductImage img : images) {
-            if (!productIds.contains(img.getProduct().getId())) continue;
+            if (!productIds.contains(img.getProduct().getId()))
+                continue;
             if (img.getType() == com.vtcweb.backend.model.entity.product.ProductImage.ImageType.PRIMARY) {
                 map.put(img.getProduct().getId(), img.getUrl());
             } else {
@@ -350,7 +378,8 @@ public class ProductController {
     }
 
     private ProductDTO enrichWithPrimary(ProductDTO dto, java.util.Map<Long, String> primaryMap) {
-        if (dto == null) return null;
+        if (dto == null)
+            return null;
         String primary = primaryMap.get(dto.getId());
         if (primary != null) {
             dto.setImage(primary);
@@ -360,9 +389,11 @@ public class ProductController {
     }
 
     private com.vtcweb.backend.model.entity.product.ProductStatus parseStatus(String status) {
-        if (status == null || status.isBlank()) return null; // caller decides default
+        if (status == null || status.isBlank())
+            return null; // caller decides default
         String s = status.trim().toUpperCase();
-        if ("ALL".equals(s)) return null; // explicit no-filter
+        if ("ALL".equals(s))
+            return null; // explicit no-filter
         try {
             return com.vtcweb.backend.model.entity.product.ProductStatus.valueOf(s);
         } catch (IllegalArgumentException ex) {
@@ -370,12 +401,18 @@ public class ProductController {
         }
     }
 
-    private enum StockFilter { IN_STOCK, OUT_OF_STOCK, NONE }
+    private enum StockFilter {
+        IN_STOCK, OUT_OF_STOCK, NONE
+    }
+
     private StockFilter parseStock(String stock) {
-        if (stock == null || stock.isBlank()) return StockFilter.NONE;
+        if (stock == null || stock.isBlank())
+            return StockFilter.NONE;
         String s = stock.trim().toLowerCase();
-        if (s.equals("in") || s.equals("in-stock") || s.equals("instock") || s.equals("available")) return StockFilter.IN_STOCK;
-        if (s.equals("out") || s.equals("out-of-stock") || s.equals("outofstock") || s.equals("unavailable")) return StockFilter.OUT_OF_STOCK;
+        if (s.equals("in") || s.equals("in-stock") || s.equals("instock") || s.equals("available"))
+            return StockFilter.IN_STOCK;
+        if (s.equals("out") || s.equals("out-of-stock") || s.equals("outofstock") || s.equals("unavailable"))
+            return StockFilter.OUT_OF_STOCK;
         return StockFilter.NONE;
     }
 }

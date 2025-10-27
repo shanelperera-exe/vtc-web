@@ -26,12 +26,15 @@ public class CheckoutController {
     @PostMapping
     @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','MANAGER')")
     public ResponseEntity<CheckoutResponseDTO> checkout(@Valid @RequestBody CheckoutRequestDTO request,
-                                                        @AuthenticationPrincipal Object principal) {
-        // Resolve current user from Spring Security Authentication (username = email per JwtAuthenticationFilter)
+            @AuthenticationPrincipal Object principal) {
+        // Resolve current user from Spring Security Authentication (username = email
+        // per JwtAuthenticationFilter)
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth != null ? auth.getName() : null;
-        if (email == null || email.isBlank()) throw new NotFoundException("Authenticated user not found");
-        User user = userRepository.findByEmailIgnoreCase(email).orElseThrow(() -> new NotFoundException("User not found"));
+        if (email == null || email.isBlank())
+            throw new NotFoundException("Authenticated user not found");
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new NotFoundException("User not found"));
         CheckoutResponseDTO resp = checkoutService.checkout(user.getId(), request);
         return ResponseEntity.ok(resp);
     }

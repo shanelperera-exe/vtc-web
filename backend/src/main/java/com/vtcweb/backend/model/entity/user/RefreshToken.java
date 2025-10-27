@@ -27,10 +27,10 @@ public class RefreshToken {
     private User user;
 
     @Column(nullable = false, unique = true, length = 200)
-    private String token; // secure random UUID-like string; not a JWT itself
+    private String token;
 
     @Column(nullable = false)
-    private Instant expiry; // absolute expiry time
+    private Instant expiry;
 
     @Column(nullable = false)
     @Builder.Default
@@ -40,5 +40,7 @@ public class RefreshToken {
     @Column(updatable = false, nullable = false)
     private Instant createdAt;
 
-    public boolean isExpired() { return Instant.now().isAfter(expiry); }
+    public boolean isExpired() {
+        return Instant.now().isAfter(expiry);
+    }
 }

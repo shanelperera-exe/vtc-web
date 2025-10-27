@@ -25,5 +25,5 @@ public class UserCreateRequest {
 
     @NotBlank
     @Size(min = 8, max = 150)
-    private String password; // plain text in request only
+    private String password;
 }

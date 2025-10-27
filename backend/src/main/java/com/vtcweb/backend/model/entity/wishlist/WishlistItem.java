@@ -5,14 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "wishlist_items",
-       uniqueConstraints = {
-           @UniqueConstraint(name = "uk_wishlist_item_wishlist_product", columnNames = {"wishlist_id", "product_id"})
-       },
-       indexes = {
-           @Index(name = "idx_wishlist_items_wishlist_id", columnList = "wishlist_id"),
-           @Index(name = "idx_wishlist_items_product_id", columnList = "product_id")
-       })
+@Table(name = "wishlist_items", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_wishlist_item_wishlist_product", columnNames = { "wishlist_id", "product_id" })
+}, indexes = {
+        @Index(name = "idx_wishlist_items_wishlist_id", columnList = "wishlist_id"),
+        @Index(name = "idx_wishlist_items_product_id", columnList = "product_id")
+})
 @Getter
 @Setter
 @NoArgsConstructor

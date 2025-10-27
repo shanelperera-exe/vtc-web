@@ -9,6 +9,5 @@ import java.math.BigDecimal;
 @Setter
 public class CouponApplyRequestDTO {
     private String code;
-    // subtotal in cents or main currency (project uses BigDecimal LKR amounts)
     private BigDecimal subtotal;
 }

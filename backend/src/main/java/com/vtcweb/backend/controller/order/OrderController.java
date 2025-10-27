@@ -68,7 +68,8 @@ public class OrderController {
     public ResponseEntity<OrderDTO> getByOrderNumberWithItems(@PathVariable("orderNumber") String orderNumber) {
         Order order = orderService.getByOrderNumber(orderNumber);
         enforceOwnerOrAdmin(order);
-        return ResponseEntity.of(orderService.getByOrderNumberWithDetails(orderNumber).map(Mapper::toOrderDtoWithItems));
+        return ResponseEntity
+                .of(orderService.getByOrderNumberWithDetails(orderNumber).map(Mapper::toOrderDtoWithItems));
     }
 
     @GetMapping("/me")
@@ -82,7 +83,8 @@ public class OrderController {
                 return ResponseEntity.ok(page);
             }
         } catch (Exception ignored) {
-            // Fall back to email-based query for compatibility (e.g., guest accounts linked by email)
+            // Fall back to email-based query for compatibility (e.g., guest accounts linked
+            // by email)
         }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth != null ? auth.getName() : null;
@@ -93,7 +95,7 @@ public class OrderController {
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<OrderDTO> updateStatus(@PathVariable("id") Long id,
-                                                 @Valid @RequestBody OrderStatusUpdateRequest request) {
+            @Valid @RequestBody OrderStatusUpdateRequest request) {
         Order updated = orderService.updateStatus(id, request.getNewStatus());
         return ResponseEntity.ok(Mapper.toOrderDtoShallow(updated));
     }
@@ -116,15 +118,16 @@ public class OrderController {
 
     private void enforceOwnerOrAdmin(Order order) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) return; // will be blocked by global security if unauthenticated
+        if (auth == null)
+            return; // will be blocked by global security if unauthenticated
         String email = auth.getName();
         boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> {
             String r = a.getAuthority();
             return "ROLE_ADMIN".equals(r) || "ROLE_MANAGER".equals(r);
         });
-        if (!isAdmin && order != null && order.getCustomerEmail() != null && !order.getCustomerEmail().equalsIgnoreCase(email)) {
+        if (!isAdmin && order != null && order.getCustomerEmail() != null
+                && !order.getCustomerEmail().equalsIgnoreCase(email)) {
             throw new com.vtcweb.backend.exception.ForbiddenException("Access denied");
         }
     }
 }
-

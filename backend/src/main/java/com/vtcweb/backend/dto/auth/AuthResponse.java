@@ -15,7 +15,6 @@ public class AuthResponse {
     private long expiresInSeconds; // access token expiry relative
     private UserDto user;
 
-    // Populated internally so controller can set cookie; not serialized in API response
     @JsonIgnore
     private String refreshToken;
 }

@@ -30,13 +30,12 @@ public class CloudinaryImageStorageService implements ImageStorageService {
 			if (contentType != null && !contentType.startsWith("image/")) {
 				throw new IllegalArgumentException("Only image files are allowed");
 			}
-	    @SuppressWarnings("unchecked")
-	    Map<String, Object> params = (Map<String, Object>) (Map<?, ?>) ObjectUtils.asMap(
+			@SuppressWarnings("unchecked")
+			Map<String, Object> params = (Map<String, Object>) (Map<?, ?>) ObjectUtils.asMap(
 					"folder", folder != null && !folder.isBlank() ? folder : "products",
 					"resource_type", "image",
 					"overwrite", false,
-					"format", deriveFormat(contentType)
-			);
+					"format", deriveFormat(contentType));
 			Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), params);
 			String url = (String) result.get("secure_url");
 			String publicId = (String) result.get("public_id");
@@ -50,7 +49,8 @@ public class CloudinaryImageStorageService implements ImageStorageService {
 
 	@Override
 	public void delete(String publicId) {
-		if (publicId == null || publicId.isBlank()) return; // no-op
+		if (publicId == null || publicId.isBlank())
+			return; // no-op
 		try {
 			cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
 		} catch (Exception e) {
@@ -59,10 +59,14 @@ public class CloudinaryImageStorageService implements ImageStorageService {
 	}
 
 	private String deriveFormat(String contentType) {
-		if (contentType == null) return null; // let Cloudinary decide
-		if (MediaType.IMAGE_PNG_VALUE.equals(contentType)) return "png";
-		if (MediaType.IMAGE_JPEG_VALUE.equals(contentType)) return "jpg";
-		if ("image/webp".equals(contentType)) return "webp";
+		if (contentType == null)
+			return null; // let Cloudinary decide
+		if (MediaType.IMAGE_PNG_VALUE.equals(contentType))
+			return "png";
+		if (MediaType.IMAGE_JPEG_VALUE.equals(contentType))
+			return "jpg";
+		if ("image/webp".equals(contentType))
+			return "webp";
 		return null;
 	}
 }

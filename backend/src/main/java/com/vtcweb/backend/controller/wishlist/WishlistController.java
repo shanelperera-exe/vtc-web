@@ -42,7 +42,8 @@ public class WishlistController {
         try {
             Jws<Claims> parsed = jwtTokenProvider.parseAndValidate(token);
             String subject = parsed.getBody().getSubject();
-            if (!StringUtils.hasText(subject)) throw new UnauthorizedException("Token subject missing");
+            if (!StringUtils.hasText(subject))
+                throw new UnauthorizedException("Token subject missing");
             return Long.parseLong(subject);
         } catch (JwtException | NumberFormatException ex) {
             throw new UnauthorizedException("Invalid JWT token");
@@ -60,7 +61,7 @@ public class WishlistController {
     @PostMapping("/add/{productId}")
     @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','MANAGER')")
     public ResponseEntity<WishlistItemDTO> add(@PathVariable("productId") Long productId,
-                                               HttpServletRequest request) {
+            HttpServletRequest request) {
         Long userId = resolveUserId(request);
         WishlistItemDTO item = wishlistService.addProduct(userId, productId);
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
@@ -69,7 +70,7 @@ public class WishlistController {
     @DeleteMapping("/remove/{productId}")
     @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','MANAGER')")
     public ResponseEntity<Void> remove(@PathVariable("productId") Long productId,
-                                       HttpServletRequest request) {
+            HttpServletRequest request) {
         Long userId = resolveUserId(request);
         wishlistService.removeProduct(userId, productId);
         return ResponseEntity.noContent().build();
@@ -86,7 +87,7 @@ public class WishlistController {
     @PostMapping("/merge-local")
     @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','MANAGER')")
     public ResponseEntity<WishlistResponseDTO> mergeLocal(@RequestBody List<Long> productIds,
-                                                          HttpServletRequest request) {
+            HttpServletRequest request) {
         Long userId = resolveUserId(request);
         WishlistResponseDTO resp = wishlistService.mergeLocal(userId, productIds);
         return ResponseEntity.ok(resp);

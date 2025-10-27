@@ -42,7 +42,6 @@ const StyledWrapper = styled.div`
     top: 0;
     left: 0;
     border: 2px solid var(--main-color);
-    box-shadow: 3px 3px var(--main-color);
     background-color: var(--input-out-of-focus);
     transition: all 0.3s;
   }

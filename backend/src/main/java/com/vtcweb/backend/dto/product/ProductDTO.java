@@ -21,14 +21,14 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDTO {
     private Long id;
-    private String sku; // immutable identifier
+    private String sku;
     private String name;
     private String shortDescription;
     @JsonProperty("detailedDescription")
     private String detailedDescription;
 
     private BigDecimal basePrice;
-    
+
     private BigDecimal price;
 
     private BigDecimal compareAtPrice;
@@ -53,5 +53,5 @@ public class ProductDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private String status; // "active" | "inactive"
+    private String status;
 }

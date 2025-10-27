@@ -18,13 +18,12 @@ public class UserDto {
     private String lastName;
     private String email;
     private String phone;
-    private Set<String> roles; // stringified roles
+    private Set<String> roles;
     private boolean enabled;
     private boolean locked;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant lastLogin;
-    // Aggregated stats (optional; may be null when not requested)
     private Integer orderCount;
     private BigDecimal totalSpend;
 }

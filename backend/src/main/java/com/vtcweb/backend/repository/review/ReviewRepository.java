@@ -14,8 +14,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByProduct_IdOrderByCreatedAtDesc(Long productId);
 
     /**
-     * Detach all reviews referencing the given user id by nulling the foreign key and
-     * setting a neutral public display name. This prevents FK violations on user deletion
+     * Detach all reviews referencing the given user id by nulling the foreign key
+     * and
+     * setting a neutral public display name. This prevents FK violations on user
+     * deletion
      * while keeping the review content for future readers.
      */
     @Modifying(clearAutomatically = true, flushAutomatically = true)

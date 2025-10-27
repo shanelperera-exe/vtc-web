@@ -79,7 +79,8 @@ public class CouponServiceImpl implements CouponService {
         } else if (coupon.getAmountOff() != null) {
             discount = coupon.getAmountOff();
         }
-        if (discount.compareTo(subtotal) > 0) discount = subtotal;
+        if (discount.compareTo(subtotal) > 0)
+            discount = subtotal;
 
         resp.setValid(true);
         resp.setMessage("Coupon applied");

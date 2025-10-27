@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import zxcvbn from 'zxcvbn';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { FiUserPlus, FiLogIn } from 'react-icons/fi';
 import { validateEmail, validatePassword, validateName } from '../../utils/validation';
 import useDebounce from '../../hooks/useDebounce';
 import AuthButton from "../ui/AuthBtn";
@@ -42,15 +43,21 @@ const RegisterForm = ({ onSubmit, onShowAllAuth, onSignIn, primaryBtnClass, seco
     finally { setSubmitting(false); }
   };
 
-  const containerCls = `mx-auto w-full max-w-xl sm:max-w-2xl md:max-w-3xl ${compact ? 'p-6' : 'p-8'}`;
-  const headingCls = `${compact ? 'mb-1 text-3xl' : 'mb-2 text-4xl'} text-center font-bold uppercase`;
+  // reduce vertical padding (py) but keep comfortable horizontal padding (px)
+  const containerCls = `mx-auto w-full max-w-xl sm:max-w-2xl md:max-w-3xl ${compact ? 'py-1 px-4' : 'py-2 px-6'}`;
+  const headingCls = `${compact ? 'mb-1 text-4xl' : 'mb-2 text-4xl'} text-center font-bold uppercase`;
   const subHeadingCls = `${compact ? 'mb-5' : 'mb-8'} text-center text-sm text-neutral-500`;
   const blockGap = compact ? 'mt-3' : 'mt-4';
   const sectionGap = compact ? 'gap-3' : 'gap-4';
 
   return (
     <div className={containerCls}>
-      <h3 className={headingCls}>Create account</h3>
+      <h3 className={headingCls}>
+        <span className="inline-flex items-center justify-center gap-3">
+          <FiUserPlus className="text-4xl" />
+          <span>Create account</span>
+        </span>
+      </h3>
       <p className={subHeadingCls}>Sign up to get started</p>
 
       <form onSubmit={handleSubmit}>
@@ -91,7 +98,7 @@ const RegisterForm = ({ onSubmit, onShowAllAuth, onSignIn, primaryBtnClass, seco
             id="reg-email"
             type="email"
             required
-            placeholder="jane.doe@email.com"
+            placeholder="example@email.com"
             onBlur={() => setTouched(t => ({ ...t, email: true }))}
             className={`w-full rounded border-[1px] p-2 outline-[#0bd964] transition-colors placeholder:italic focus:border-[#0bd964] ${touched.email && emailErr ? 'border-rose-500' : 'border-neutral-300'}`}
             value={email}
@@ -161,16 +168,25 @@ const RegisterForm = ({ onSubmit, onShowAllAuth, onSignIn, primaryBtnClass, seco
             <div className="mb-3 text-sm text-red-600" role="alert">{localError || authError}</div>
           )}
         </div>
-  <AuthButton type="submit" label={submitting ? 'Creating...' : 'Create Account'} bgClass={primaryBtnClass} disabled={formInvalid || submitting} />
+  <AuthButton type="submit" disabled={formInvalid || submitting} bgClass={primaryBtnClass ?? 'bg-emerald-600 text-white'}>
+    <span className="inline-flex items-center justify-center gap-2">
+      <FiUserPlus className="text-lg" />
+      <span>{submitting ? 'Creating...' : 'Create Account'}</span>
+    </span>
+  </AuthButton>
 
   <div className={`${compact ? 'mt-5' : 'mt-6'} text-center text-sm text-neutral-600`}>Already have an account?</div>
         <AuthButton
           type="button"
-          label="Sign In"
           onClick={onSignIn ?? onShowAllAuth}
           containerClassName="mt-1"
-          bgClass={secondaryBtnClass}
-        />
+          bgClass="bg-black text-white"
+        >
+          <span className="inline-flex items-center justify-center gap-2">
+            <FiLogIn className="text-lg" />
+            <span>Sign In</span>
+          </span>
+        </AuthButton>
       </form>
 
       <div className="mt-6 flex flex-col items-center justify-center gap-2 text-xs text-neutral-700">

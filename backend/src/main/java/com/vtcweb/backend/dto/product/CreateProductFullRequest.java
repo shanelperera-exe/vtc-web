@@ -33,7 +33,10 @@ public class CreateProductFullRequest {
     private String detailedDescription;
 
     @JsonProperty("description")
-    private void legacyDescription(String legacy) { if (this.detailedDescription == null) this.detailedDescription = legacy; }
+    private void legacyDescription(String legacy) {
+        if (this.detailedDescription == null)
+            this.detailedDescription = legacy;
+    }
 
     @NotNull
     @DecimalMin("0.0")
@@ -48,15 +51,11 @@ public class CreateProductFullRequest {
     @Valid
     private List<ProductVariationCreateRequest> variations;
 
-    // Optional bullet-point highlights
     private List<@Size(max = 300) String> highlights;
 
-    // Optional client-supplied SKU (ignored; server generates per category)
     @Size(max = 40)
     private String sku;
 
-    // Optional status at creation; defaults to ACTIVE server-side if missing
     @Size(max = 16)
     private String status;
 }
-

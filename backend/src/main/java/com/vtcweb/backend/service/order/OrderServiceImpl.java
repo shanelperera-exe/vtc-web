@@ -38,7 +38,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order create(CreateOrderRequest request) {
-        if (request == null) throw new IllegalArgumentException("request must not be null");
+        if (request == null)
+            throw new IllegalArgumentException("request must not be null");
         validateCreateRequest(request);
 
         Order order = new Order();
@@ -63,17 +64,20 @@ public class OrderServiceImpl implements OrderService {
 
         BigDecimal subtotal = BigDecimal.ZERO;
         for (CreateOrderItemRequest itemReq : request.getItems()) {
-            if (itemReq == null) continue;
+            if (itemReq == null)
+                continue;
             Product product = productRepository.findById(itemReq.getProductId())
                     .orElseThrow(() -> new NotFoundException("Product not found: id=" + itemReq.getProductId()));
             Category category = product.getCategory();
             ProductVariation variation = null;
             if (itemReq.getVariationId() != null) {
                 variation = variationRepository.findByProductIdAndId(product.getId(), itemReq.getVariationId())
-                        .orElseThrow(() -> new NotFoundException("Variation not found: productId=" + product.getId() + ", variationId=" + itemReq.getVariationId()));
+                        .orElseThrow(() -> new NotFoundException("Variation not found: productId=" + product.getId()
+                                + ", variationId=" + itemReq.getVariationId()));
             }
             int qty = (itemReq.getQuantity() == null) ? 0 : itemReq.getQuantity();
-            if (qty <= 0) throw new IllegalArgumentException("quantity must be >= 1");
+            if (qty <= 0)
+                throw new IllegalArgumentException("quantity must be >= 1");
 
             BigDecimal unitPrice;
             if (variation != null && variation.getPrice() != null) {
@@ -83,7 +87,8 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 throw new IllegalStateException("No price available for product id=" + product.getId());
             }
-            if (unitPrice.signum() < 0) throw new IllegalStateException("unitPrice negative for product id=" + product.getId());
+            if (unitPrice.signum() < 0)
+                throw new IllegalStateException("unitPrice negative for product id=" + product.getId());
 
             BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(qty));
             subtotal = subtotal.add(totalPrice);
@@ -95,7 +100,8 @@ public class OrderServiceImpl implements OrderService {
             } else if (product != null && product.getImages() != null && !product.getImages().isEmpty()) {
                 // try primary first
                 for (var img : product.getImages()) {
-                    if (img != null && img.getType() != null && img.getType().name().equals("PRIMARY") && img.getUrl() != null && !img.getUrl().isBlank()) {
+                    if (img != null && img.getType() != null && img.getType().name().equals("PRIMARY")
+                            && img.getUrl() != null && !img.getUrl().isBlank()) {
                         imageUrl = img.getUrl();
                         break;
                     }
@@ -121,8 +127,8 @@ public class OrderServiceImpl implements OrderService {
                     .unitPrice(unitPrice)
                     .totalPrice(totalPrice)
                     .imageUrl(imageUrl)
-                    // snapshot attributes defensively (clone) to preserve historical integrity
-                    .variationAttributes(variation != null ? new java.util.HashMap<>(variation.getAttributes()) : new java.util.HashMap<>())
+                    .variationAttributes(variation != null ? new java.util.HashMap<>(variation.getAttributes())
+                            : new java.util.HashMap<>())
                     .build();
             order.addItem(item);
         }
@@ -140,7 +146,8 @@ public class OrderServiceImpl implements OrderService {
         order.setShippingFee(shippingFee);
         order.setTotal(total);
 
-        // If the customer email corresponds to a registered user, link the order to that user
+        // If the customer email corresponds to a registered user, link the order to
+        // that user
         if (order.getCustomerEmail() != null) {
             userRepository.findByEmailIgnoreCase(order.getCustomerEmail()).ifPresent(order::setUser);
         }
@@ -161,7 +168,8 @@ public class OrderServiceImpl implements OrderService {
                 java.util.List<java.util.Map<String, Object>> items = new java.util.ArrayList<>();
                 if (saved.getItems() != null) {
                     for (OrderItem it : saved.getItems()) {
-                        if (it == null) continue;
+                        if (it == null)
+                            continue;
                         java.util.Map<String, Object> m = new java.util.HashMap<>();
                         m.put("name", it.getProductName());
                         m.put("qty", it.getQuantity());
@@ -203,7 +211,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public Order getByOrderNumber(String orderNumber) {
         return orderRepository.findByOrderNumber(orderNumber)
-                .orElseThrow(() -> new com.vtcweb.backend.exception.NotFoundException("Order not found: orderNumber=" + orderNumber));
+                .orElseThrow(() -> new com.vtcweb.backend.exception.NotFoundException(
+                        "Order not found: orderNumber=" + orderNumber));
     }
 
     @Override
@@ -215,14 +224,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public Page<Order> listByCustomerEmail(String email, Pageable pageable) {
-        if (email == null || email.isBlank()) throw new IllegalArgumentException("email must not be blank");
+        if (email == null || email.isBlank())
+            throw new IllegalArgumentException("email must not be blank");
         return orderRepository.findByCustomerEmailIgnoreCase(email, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Order> listByUserId(Long userId, Pageable pageable) {
-        if (userId == null) throw new IllegalArgumentException("userId must not be null");
+        if (userId == null)
+            throw new IllegalArgumentException("userId must not be null");
         return orderRepository.findByUserId(userId, pageable);
     }
 
@@ -233,10 +244,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order updateStatus(Long id, OrderStatus newStatus, LocalDateTime at) {
-        if (newStatus == null) throw new IllegalArgumentException("newStatus must not be null");
+        if (newStatus == null)
+            throw new IllegalArgumentException("newStatus must not be null");
         Order order = getById(id);
         OrderStatus current = order.getStatus();
-        if (current == newStatus) return order; // idempotent
+        if (current == newStatus)
+            return order; // idempotent
 
         // Enforce linear progression
         switch (newStatus) {
@@ -270,14 +283,17 @@ public class OrderServiceImpl implements OrderService {
                 if (!order.isStockRestored()) {
                     // For each order item that references a variation, lock and increment stock
                     for (OrderItem it : order.getItems()) {
-                        if (it == null) continue;
+                        if (it == null)
+                            continue;
                         Long varId = it.getVariationId();
                         int qty = it.getQuantity() == null ? 0 : it.getQuantity();
-                        if (varId == null || qty <= 0) continue;
+                        if (varId == null || qty <= 0)
+                            continue;
                         // lock variation row for update
                         ProductVariation variation = variationRepository.findWithLockingById(varId)
                                 .orElse(null);
-                        if (variation == null) continue; // nothing to do
+                        if (variation == null)
+                            continue; // nothing to do
                         Integer currentStock = variation.getStock();
                         int newStock = (currentStock == null ? 0 : currentStock) + qty;
                         variation.setStock(newStock);
@@ -292,7 +308,8 @@ public class OrderServiceImpl implements OrderService {
         }
         Order saved = orderRepository.save(order);
 
-        // Notify customer about status update (except reverting to PLACED which is disallowed above)
+        // Notify customer about status update (except reverting to PLACED which is
+        // disallowed above)
         try {
             if (saved.getCustomerEmail() != null && !saved.getCustomerEmail().isBlank()) {
                 String to = saved.getCustomerEmail();
@@ -320,19 +337,28 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void validateCreateRequest(CreateOrderRequest r) {
-        if (isBlank(r.getCustomerFirstName())) throw new IllegalArgumentException("customerFirstName blank");
-        if (isBlank(r.getCustomerLastName())) throw new IllegalArgumentException("customerLastName blank");
-        if (isBlank(r.getCustomerEmail())) throw new IllegalArgumentException("customerEmail blank");
-        if (r.getItems() == null || r.getItems().isEmpty()) throw new IllegalArgumentException("items empty");
-        if (r.getBillingAddress() == null) throw new IllegalArgumentException("billingAddress null");
-        if (r.getShippingAddress() == null) throw new IllegalArgumentException("shippingAddress null");
+        if (isBlank(r.getCustomerFirstName()))
+            throw new IllegalArgumentException("customerFirstName blank");
+        if (isBlank(r.getCustomerLastName()))
+            throw new IllegalArgumentException("customerLastName blank");
+        if (isBlank(r.getCustomerEmail()))
+            throw new IllegalArgumentException("customerEmail blank");
+        if (r.getItems() == null || r.getItems().isEmpty())
+            throw new IllegalArgumentException("items empty");
+        if (r.getBillingAddress() == null)
+            throw new IllegalArgumentException("billingAddress null");
+        if (r.getShippingAddress() == null)
+            throw new IllegalArgumentException("shippingAddress null");
     }
 
-    private boolean isBlank(String s) { return s == null || s.trim().isEmpty(); }
+    private boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
 
     private String generateOrderNumber() {
         // Format required by product: ORDYYYYMMDDXXXX
-        // where XXXX is a zero-padded 4-digit sequence (generated randomly but checked for uniqueness)
+        // where XXXX is a zero-padded 4-digit sequence (generated randomly but checked
+        // for uniqueness)
         String date = java.time.LocalDate.now().toString().replaceAll("-", "");
         int attempts = 0;
         java.util.Random rnd = RANDOM; // SecureRandom
@@ -342,26 +368,29 @@ public class OrderServiceImpl implements OrderService {
             String seqStr = String.format("%04d", seq);
             candidate = "ORD" + date + seqStr;
             attempts++;
-            if (attempts > 50) throw new IllegalStateException("Unable to generate unique order number after many attempts");
+            if (attempts > 50)
+                throw new IllegalStateException("Unable to generate unique order number after many attempts");
         } while (orderRepository.existsByOrderNumber(candidate));
         return candidate;
     }
 
     private Address toAddressEntity(com.vtcweb.backend.dto.order.AddressDTO dto) {
-        if (dto == null) return null;
+        if (dto == null)
+            return null;
         return Address.builder()
-        .line1(dto.getLine1())
-        .line2(dto.getLine2())
-        .city(dto.getCity())
-        .district(dto.getDistrict())
-        .province(dto.getProvince())
-        .postalCode(dto.getPostalCode())
-        .country(dto.getCountry())
+                .line1(dto.getLine1())
+                .line2(dto.getLine2())
+                .city(dto.getCity())
+                .district(dto.getDistrict())
+                .province(dto.getProvince())
+                .postalCode(dto.getPostalCode())
+                .country(dto.getCountry())
                 .build();
     }
 
     private PaymentInfo toPaymentInfoEntity(com.vtcweb.backend.dto.order.PaymentInfoDTO dto) {
-        if (dto == null) return null;
+        if (dto == null)
+            return null;
         return PaymentInfo.builder()
                 .cardType(dto.getCardType())
                 .cardLast4(dto.getCardLast4())
@@ -371,8 +400,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private BigDecimal defaultNonNegative(BigDecimal v) {
-        if (v == null) return BigDecimal.ZERO;
-        if (v.signum() < 0) throw new IllegalArgumentException("Negative monetary value not allowed");
+        if (v == null)
+            return BigDecimal.ZERO;
+        if (v.signum() < 0)
+            throw new IllegalArgumentException("Negative monetary value not allowed");
         return v;
     }
 
@@ -382,20 +413,24 @@ public class OrderServiceImpl implements OrderService {
             if (variation != null && variation.getImageUrl() != null && !variation.getImageUrl().isBlank()) {
                 return variation.getImageUrl();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         if (product != null && product.getImages() != null && !product.getImages().isEmpty()) {
             // try primary
             for (var img : product.getImages()) {
                 try {
-                    if (img != null && img.getType() != null && img.getType().name().equals("PRIMARY") && img.getUrl() != null && !img.getUrl().isBlank()) {
+                    if (img != null && img.getType() != null && img.getType().name().equals("PRIMARY")
+                            && img.getUrl() != null && !img.getUrl().isBlank()) {
                         return img.getUrl();
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
             // fallback to any image
             for (var img : product.getImages()) {
-                if (img != null && img.getUrl() != null && !img.getUrl().isBlank()) return img.getUrl();
+                if (img != null && img.getUrl() != null && !img.getUrl().isBlank())
+                    return img.getUrl();
             }
         }
         return null;

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class OrderStatusUpdateRequest {
     @NotNull
     private OrderStatus newStatus;
-    // Optional explicit timestamp to set for this status update (falls back to now if null)
+
     private LocalDateTime at;
 }
-

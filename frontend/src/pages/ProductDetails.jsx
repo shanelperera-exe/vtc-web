@@ -381,6 +381,7 @@ export default function ProductDetails() {
                       alt={product.name}
                       src={selectedImg}
                       className="object-contain w-full h-full aspect-square"
+                      style={{ border: '3px solid #d1d5db', boxSizing: 'border-box' }}
                     />
                   </div>
                 </div>

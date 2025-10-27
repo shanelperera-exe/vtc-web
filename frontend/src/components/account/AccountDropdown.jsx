@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { FiLogOut, FiUser, FiSettings, FiPackage } from 'react-icons/fi'
+import { FiLogOut, FiUser, FiSettings, FiPackage, FiLogIn, FiUserPlus } from 'react-icons/fi'
+import { RiAccountCircleLine } from 'react-icons/ri'
 import AuthButton from '../ui/AuthBtn'
 import CommonBtn from '../ui/CommonBtn'
 
@@ -22,12 +23,12 @@ export default function AccountDropdown({
     ].join(' ')
 
     const wrapperVariants = {
-        open: { scaleY: 1, opacity: 1, transition: { when: 'beforeChildren', staggerChildren: 0.08 } },
-        closed: { scaleY: 0, opacity: 0, transition: { when: 'afterChildren', staggerChildren: 0.08 } },
+        open: { scaleY: 1, opacity: 1, transition: { when: 'beforeChildren', staggerChildren: 0.06 } },
+        closed: { scaleY: 0, opacity: 0, transition: { when: 'afterChildren', staggerChildren: 0.06 } },
     }
     const itemVariants = {
-        open: { opacity: 1, y: 0 },
-        closed: { opacity: 0, y: -8 },
+        open: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 400, damping: 30 } },
+        closed: { opacity: 0, y: -6, scale: 0.98, transition: { duration: 0.12 } },
     }
 
     return (
@@ -37,7 +38,7 @@ export default function AccountDropdown({
                 animate={open ? 'open' : 'closed'}
                 variants={wrapperVariants}
                 style={{ originY: 'top' }}
-                className="w-64 border-2 border-neutral-950 bg-white p-4 text-neutral-950 overflow-hidden"
+                className="w-64 border-2 border-neutral-950 bg-white p-4 text-neutral-950 overflow-hidden rounded-none"
             >
                 {isLoggedIn ? (
                     <>
@@ -69,15 +70,28 @@ export default function AccountDropdown({
                     </>
                 ) : (
                     <>
-                        <motion.p variants={itemVariants} className="whitespace-nowrap font-bold">Your Account</motion.p>
+                        <motion.p variants={itemVariants} className="whitespace-nowrap font-bold flex items-center gap-2">
+                            <RiAccountCircleLine className="text-xl" />
+                            <span>Your Account</span>
+                        </motion.p>
                         <motion.p variants={itemVariants} className="mb-2 text-xs text-neutral-600">Sign in or create an account</motion.p>
 
                         <motion.div variants={itemVariants}>
-                            <AuthButton label="Sign in" onClick={onSignIn} />
+                            <AuthButton onClick={onSignIn} bgClass="bg-emerald-600 text-white">
+                                <span className="inline-flex items-center justify-center gap-2">
+                                    <FiLogIn className="text-lg" />
+                                    <span>Sign in</span>
+                                </span>
+                            </AuthButton>
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <AuthButton label="Create Account" onClick={onCreateAccount} bgClass="bg-gray-400 text-black" />
+                            <AuthButton onClick={onCreateAccount} bgClass="bg-black text-white">
+                                <span className="inline-flex items-center justify-center gap-2">
+                                    <FiUserPlus className="text-lg" />
+                                    <span>Create Account</span>
+                                </span>
+                            </AuthButton>
                         </motion.div>
                     </>
                 )}

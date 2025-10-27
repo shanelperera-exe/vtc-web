@@ -35,9 +35,9 @@ public class BrevoEmailService implements EmailService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public BrevoEmailService(JavaMailSender mailSender,
-                             EmailProperties emailProperties,
-                             BrevoApiProperties brevoApiProperties,
-                             EmailTemplateIdsProperties templateIds) {
+            EmailProperties emailProperties,
+            BrevoApiProperties brevoApiProperties,
+            EmailTemplateIdsProperties templateIds) {
         this.mailSender = mailSender;
         this.emailProperties = emailProperties;
         this.brevoApiProperties = brevoApiProperties;
@@ -106,7 +106,8 @@ public class BrevoEmailService implements EmailService {
         sb.append("<h2>").append(subject).append("</h2>");
         sb.append("<ul>");
         if (params != null) {
-            params.forEach((k,v) -> sb.append("<li><b>").append(k).append(":</b> ").append(String.valueOf(v)).append("</li>"));
+            params.forEach((k, v) -> sb.append("<li><b>").append(k).append(":</b> ").append(String.valueOf(v))
+                    .append("</li>"));
         }
         sb.append("</ul></div>");
         sendHtml(to, subject, sb.toString());
@@ -119,15 +120,17 @@ public class BrevoEmailService implements EmailService {
         Map<String, Object> payload = new HashMap<>();
         Map<String, Object> toRecipient = new HashMap<>();
         toRecipient.put("email", to);
-        payload.put("to", new Object[]{ toRecipient });
+        payload.put("to", new Object[] { toRecipient });
 
         Map<String, Object> sender = new HashMap<>();
         sender.put("email", emailProperties.getFromAddress());
         sender.put("name", emailProperties.getFromName());
         payload.put("sender", sender);
         payload.put("templateId", templateId);
-        if (StringUtils.hasText(subject)) payload.put("subject", subject);
-        if (params != null) payload.put("params", params);
+        if (StringUtils.hasText(subject))
+            payload.put("subject", subject);
+        if (params != null)
+            payload.put("params", params);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -161,11 +164,15 @@ public class BrevoEmailService implements EmailService {
 
     @Override
     @Async("emailExecutor")
-    public void sendPlainTextAsync(String to, String subject, String text) { sendPlainText(to, subject, text); }
+    public void sendPlainTextAsync(String to, String subject, String text) {
+        sendPlainText(to, subject, text);
+    }
 
     @Override
     @Async("emailExecutor")
-    public void sendHtmlAsync(String to, String subject, String html) { sendHtml(to, subject, html); }
+    public void sendHtmlAsync(String to, String subject, String html) {
+        sendHtml(to, subject, html);
+    }
 
     @Override
     @Async("emailExecutor")

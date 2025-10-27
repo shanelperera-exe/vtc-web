@@ -16,7 +16,6 @@ public interface CategoryService {
 
     Page<Category> list(Pageable pageable);
 
-    /** Optional status-based listing. When status is null, returns all. */
     Page<Category> list(Pageable pageable, CategoryStatus status);
 
     Category update(Long id, Category updates);

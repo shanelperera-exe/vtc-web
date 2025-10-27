@@ -60,10 +60,11 @@ public class Order {
     @Column(length = 40)
     private String customerPhone;
 
-        // Link to registered user (optional). Keep customer snapshot fields for historical integrity.
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id")
-        private User user;
+    // Link to registered user (optional). Keep customer snapshot fields for
+    // historical integrity.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     // Addresses
     @Embedded
@@ -126,15 +127,16 @@ public class Order {
     @Column(name = "order_notes", columnDefinition = "TEXT")
     private String orderNotes;
 
-    // Idempotency guard to ensure we don't increment stock more than once when an order is cancelled
+    // Idempotency guard to ensure we don't increment stock more than once when an
+    // order is cancelled
     @Column(nullable = false)
     @Builder.Default
     private boolean stockRestored = false;
 
     public void addItem(OrderItem item) {
-        if (item == null) return;
+        if (item == null)
+            return;
         items.add(item);
         item.setOrder(this);
     }
 }
-

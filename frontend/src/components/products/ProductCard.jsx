@@ -298,18 +298,40 @@ const StyledWrapper = styled.div`
   }
   .img-card .quick-view-btn {
     pointer-events: auto; /* re-enable on button */
-    background: white;
-    color: black;
+    background: rgba(255,255,255,0.96);
+    color: #0b0b0b;
     border: 2px solid black;
-    border-radius: 0;
-    padding: 0.45rem 0.85rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: .01em;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    border-radius: 9999px; /* pill */
+    padding: 0.24rem 0.64rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  /* smaller icon inside quick view */
+  .img-card .quick-view-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .img-card .quick-view-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.14);
+    background-color: #fff;
+    border-color: black;
+  }
+
+  /* hide the textual label on very small screens to keep the button compact */
+  .img-card .quick-view-label {
+    display: inline-block;
+  }
+  @media (max-width: 420px) {
+    .img-card .quick-view-label { display: none; }
   }
 
   .card {
