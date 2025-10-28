@@ -1,16 +1,21 @@
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 import useCategories from "../../api/hooks/useCategories";
+import { slugifyCategory } from '../../utils/slugify';
 
 export default function DecorCollection() {
   const { data: categories, loading, error } = useCategories();
 
-  const collections = (categories || []).slice(0, 12).map(c => ({
-    name: c.name,
-    items: c.productCount ?? 0,
-    image: c.carouselImg || c.catMainImg || c.catTileImage1 || c.catTileImage2 || null,
-    link: `/collections/${encodeURIComponent(c.name.toLowerCase().replace(/\s+/g, '-'))}`
-  }));
+  const collections = (categories || []).slice(0, 12).map(c => {
+    const slug = slugifyCategory(c.name || '');
+    return {
+      name: c.name,
+      items: c.productCount ?? 0,
+      image: c.carouselImg || c.catMainImg || c.catTileImage1 || c.catTileImage2 || null,
+      // navigate to ProductsByCategory route for this category
+      link: `/category/${encodeURIComponent(slug)}`
+    };
+  });
 
   const containerRef = useRef(null);
 
