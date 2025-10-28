@@ -136,8 +136,8 @@ const ProductsByCategory = () => {
 			<div>
 				{/* Category Name */}
 				<div className="flex flex-col justify-center text-left gap-1 px-14 mt-8">
-					<h2 className="font-extrabold uppercase tracking-tight leading-tight text-[#1e2a38] text-4xl md:text-5xl lg:text-6xl m-0" style={{ fontFamily: "Jost, sans-serif" }}>
-						{category ? category.replace(/-/g, ' ').toUpperCase() : 'CATEGORY'}
+					<h2 className="font-semibold tracking-tight leading-tight text-[#1e2a38] text-4xl md:text-5xl lg:text-6xl m-0">
+						{category ? toTitleCase(category) : 'Category'}
 					</h2>
 
 					{/* Product count */}
@@ -171,7 +171,7 @@ const ProductsByCategory = () => {
 				</div>
 
 				{/* Pagination controls (mirroring admin style) */}
-				<div className="mt-10 px-14 flex flex-col sm:flex-row items-center justify-between gap-3">
+				<div className="mt-10 px-14 flex flex-col sm:flex-row items-center justify-between gap-3 mb-12">
 					<div className="flex items-center gap-2 text-sm">
 						<span>Rows per page</span>
 						<select

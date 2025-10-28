@@ -190,7 +190,7 @@ const ProductCard = ({ id, sku, name = 'Product title', description = '', image 
               </div>
             </div>
             <div className="card-footer">
-              <span className="text-title">LKR {formattedPrice}</span>
+              <span className="text-title price">LKR {formattedPrice}</span>
               {/* Quick view moved into image hover overlay */}
               {/* add-to-cart removed */}
               {/* <div className="card-button">
@@ -414,6 +414,13 @@ const StyledWrapper = styled.div`
     overflow: hidden;
     /* ensure max-height matches the used line-height to avoid partial clipping */
     max-height: calc(1.2em * 2);
+  }
+
+  /* Price styling: make price slightly larger and more prominent */
+  .price {
+    font-size: 1.18em;
+    font-weight: 700;
+    color: #0b0b0b;
   }
 
   .text-body {

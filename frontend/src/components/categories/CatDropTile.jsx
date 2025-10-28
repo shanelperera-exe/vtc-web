@@ -51,7 +51,20 @@ export default function CatDropTile({
 
       {/* Title overlay inside the square. Default: bottom; on hover: move to top. No white gradient. */}
       <div className="absolute inset-0 z-10 p-1.5 flex flex-col justify-end group-hover:justify-start transition-all duration-300">
-        <h3 className="text-base lg:text-2xl font-semibold leading-tight text-black truncate px-1">{label}</h3>
+        {
+          // Split label so second+ words render on the next line
+        }
+        {(() => {
+          const words = String(label || '').trim().split(/\s+/);
+          const first = words[0] || '';
+          const rest = words.slice(1).join(' ');
+          return (
+            <h3 className="text-base lg:text-2xl font-semibold leading-tight text-black px-1">
+              <span>{first}</span>
+              {rest ? <span className="block">{rest}</span> : null}
+            </h3>
+          );
+        })()}
       </div>
     </a>
   );
