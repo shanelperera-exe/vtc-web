@@ -156,6 +156,13 @@ export default function Checkout() {
 	const { cartItems, clearLocal } = useCart();
 	const navigate = useNavigate();
 
+		// If cart is somehow empty while on this page, send back to cart
+		useEffect(() => {
+			if (!Array.isArray(cartItems) || cartItems.length === 0) {
+				navigate('/cart', { replace: true });
+			}
+		}, [cartItems, navigate]);
+
 	const handlePlaceOrder = async () => {
 		if (!validateStep(2)) return;
 		// Require authentication before placing an order

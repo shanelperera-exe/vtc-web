@@ -28,7 +28,7 @@ export default function DecorCollection() {
   };
 
   return (
-    <section className="w-full overflow-hidden py-12 bg-white">
+    <section className="w-full overflow-hidden py-12 bg-neutral-50">
   <div className="w-full px-8">
         {/* Heading */}
         <div className="text-center mb-10">
@@ -43,11 +43,11 @@ export default function DecorCollection() {
         )}
         {/* Carousel */}
         <div className="relative">
-          {/* Centered viewport for 4 cards: 4*320 + 3*24 = 1352px */}
-          <div className="mx-auto w-full max-w-[1352px] relative">
+          {/* Centered viewport for 4 cards: 4*320 + 3*32 = 1376px */}
+          <div className="mx-auto w-full max-w-[1376px] relative">
             <div
               ref={containerRef}
-              className="flex gap-6 overflow-x-auto snap-x snap-mandatory px-0 py-4 scroll-smooth hide-scrollbar"
+              className="flex gap-8 overflow-x-auto snap-x snap-mandatory px-0 py-4 scroll-smooth hide-scrollbar"
             >
             {loading && (
               <div className="text-center w-full py-10 text-gray-500">Loading categories...</div>

@@ -54,45 +54,73 @@ export default function Footer() {
   }
 
   return (
-    <footer className="w-full bg-neutral-950 text-neutral-300">
+    <footer className="w-full bg-gradient-to-b from-neutral-950 via-neutral-900 to-black text-neutral-300">
+      {/* Decorative top border */}
+      <div className="h-1 w-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-500" />
+
       {/* USP strip */}
-      <div className="border-b border-neutral-800">
-        <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6">
-          <div className="grid gap-6 py-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="border-b border-neutral-800 bg-neutral-950/60 backdrop-blur-sm">
+        <div className="mx-auto max-w-8xl px-3 sm:px-4 lg:px-6">
+          <div className="grid gap-6 py-7 sm:grid-cols-2 lg:grid-cols-4">
             <USP
-              icon={<FaTruck className="h-10 w-10 text-emerald-400" aria-hidden />}
+              icon={<FaTruck className="h-8 w-8 text-emerald-400" aria-hidden />}
               title="Free islandwide delivery"
               subtitle="On orders over LKR 8,000"
             />
             <USP
-              icon={<FaLock className="h-10 w-10 text-emerald-400" aria-hidden />}
-              title="100% Payment secure"
-              subtitle="We ensure secure payment"
+              icon={<FaLock className="h-8 w-8 text-emerald-400" aria-hidden />}
+              title="Secure checkout"
+              subtitle="Encrypted payments & verified partners"
             />
             <USP
-              icon={<FaUndoAlt className="h-10 w-10 text-emerald-400" aria-hidden />}
-              title="Money back guarantee"
-              subtitle="You can return any item"
+              icon={<FaUndoAlt className="h-8 w-8 text-emerald-400" aria-hidden />}
+              title="Hassle-free returns"
+              subtitle="7‑day return window on eligible items"
+            />
+            <USP
+              icon={<FaWhatsapp className="h-8 w-8 text-emerald-400" aria-hidden />}
+              title="Live support"
+              subtitle="WhatsApp assistance 9.00 AM – 10.00 PM"
             />
           </div>
         </div>
       </div>
 
       {/* Main footer content */}
-      <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
-          {/* Brand + social */}
+      <div className="mx-auto max-w-8xl px-3 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+          {/* Brand + about + social */}
           <div className="lg:col-span-4 text-center lg:text-left">
             <a href="/" aria-label="Home" className="inline-flex items-center gap-2">
               <img src={logo} alt="Vidara Trade Center" className="h-10 w-auto" />
-              <span className="flex flex-col text-base md:text-2xl font-bold" style={{ fontFamily: 'Poppins, sans-serif', lineHeight: '0.9' }}>
+              <span
+                className="flex flex-col text-base md:text-2xl font-bold"
+                style={{ fontFamily: 'Poppins, sans-serif', lineHeight: '0.9' }}
+              >
                 <span className="text-white">vidara</span>
                 <span className="text-neutral-400">tradecenter.</span>
               </span>
             </a>
-            <p className="mt-3 max-w-sm text-sm text-neutral-400">
-              Vidara Trade Center brings you quality products with great service and secure shopping.
+            <p className="mt-3 max-w-sm text-sm text-neutral-400 mx-auto lg:mx-0">
+              An online marketplace from Wattala, Sri Lanka, connecting you with
+              trusted brands, fair prices and friendly customer care.
             </p>
+
+            <dl className="mt-5 space-y-2 text-sm text-neutral-400">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2 justify-center lg:justify-start">
+                <dt className="font-semibold text-neutral-200">Store address:</dt>
+                <dd>353, Kerawalapitiya, Hendala, Wattala, Sri Lanka</dd>
+              </div>
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2 justify-center lg:justify-start">
+                <dt className="font-semibold text-neutral-200">Hotline:</dt>
+                <dd>+94 77 123 4567</dd>
+              </div>
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2 justify-center lg:justify-start">
+                <dt className="font-semibold text-neutral-200">Email:</dt>
+                <dd>support@vidaratradecenter.lk</dd>
+              </div>
+            </dl>
+
             <div className="mt-6 flex items-center justify-center gap-3 lg:justify-start">
               <SocialLink href="https://facebook.com" label="Facebook">
                 <FaFacebookF className="h-6 w-6" />
@@ -107,96 +135,124 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          <nav className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-3 gap-6" aria-label="Footer">
-            <FooterColumn title="Information">
-              <FooterLink to="/about">About us</FooterLink>
-              <FooterLink to="/contact">Contact us</FooterLink>
-              <FooterLink to="/help">Help</FooterLink>
-              <FooterLink to="/terms">Terms & conditions</FooterLink>
-              <FooterLink to="/privacy">Privacy policy</FooterLink>
-            </FooterColumn>
-            <FooterColumn title="Customer Service">
-              <FooterLink to="/shipping">Shipping & delivery</FooterLink>
-              <FooterLink to="/returns">Returns & exchanges</FooterLink>
-              <FooterLink to="/contact">Customer support</FooterLink>
-            </FooterColumn>
-            <FooterColumn title="Account">
-              <FooterLink to="/account">Order history</FooterLink>
+          <nav
+            className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-3 gap-8"
+            aria-label="Footer navigation"
+          >
+            <FooterColumn title="Shop">
+              <FooterLink to="/products">All products</FooterLink>
+              <FooterLink to="/categories">Browse categories</FooterLink>
+              <FooterLink to="/offers">Deals & offers</FooterLink>
               <FooterLink to="/wishlist">Wishlist</FooterLink>
-              <FooterLink to="/cart">Shopping cart</FooterLink>
-              <FooterLink to="/login">Sign in</FooterLink>
+            </FooterColumn>
+            <FooterColumn title="Customer care">
+              <FooterLink to="/help">Help center</FooterLink>
+              <FooterLink to="/shipping">Delivery information</FooterLink>
+              <FooterLink to="/returns">Returns & exchanges</FooterLink>
+              <FooterLink to="/contact">Contact support</FooterLink>
+            </FooterColumn>
+            <FooterColumn title="Company">
+              <FooterLink to="/about">About Vidara</FooterLink>
+              <FooterLink to="/contact">Visit our store</FooterLink>
+              <FooterLink to="/privacy">Privacy policy</FooterLink>
+              <FooterLink to="/terms">Terms & conditions</FooterLink>
             </FooterColumn>
           </nav>
 
-          {/* Newsletter */}
+          {/* Newsletter + hours + payments */}
           <div className="lg:col-span-3">
             <div className="text-base font-semibold text-white">
-              Subscribe to our newsletter.
+              Stay in the loop.
             </div>
-            <form aria-live="polite" noValidate onSubmit={onSubmit} className="mt-1 flex w-full flex-row">
-              <div className="flex w-full min-h-[120px] flex-col justify-center p-0">
-                {/* Row 1: Email input */}
-                <div className="relative flex flex-row items-stretch">
-                  <div className="relative flex flex-[1_0_0] justify-start p-0">
-                    <div className="flex grow flex-col self-end">
-                      <label htmlFor="newsletter" className="sr-only">Email</label>
-                      <input
-                        id="newsletter"
-                        type="email"
-                        autoComplete="email"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter your email"
-                        aria-required="true"
-                        aria-invalid={email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'true' : 'false'}
-                        className="h-[40px] w-full rounded-none border-0 border-b border-neutral-600 bg-transparent pl-4 text-left text-[16px] font-normal text-white placeholder:text-neutral-400 focus:outline-none"
-                      />
-                      <div className="relative w-full" />
-                    </div>
-                  </div>
-                </div>
-                {/* Row 2: Subscribe button */}
-                <div className="relative flex flex-row items-stretch">
-                  <div className="relative flex flex-[1_0_0] justify-start py-[10px] px-0">
-                    <button
-                      type="submit"
-                      disabled={submitting}
-                      aria-busy={submitting}
-                      className="h-[45px] w-full cursor-pointer rounded-full border-0 bg-white text-[16px] font-bold leading-[1] text-neutral-900 hover:bg-neutral-100 transition disabled:opacity-70 disabled:cursor-not-allowed"
-                      aria-label="Subscribe"
-                    >
-                      {submitting ? 'Subscribing…' : 'Subscribe'}
-                    </button>
-                  </div>
+            <p className="mt-1 text-sm text-neutral-400">
+              Be the first to hear about new arrivals, seasonal offers and
+              curated picks just for you.
+            </p>
+
+            <form
+              aria-live="polite"
+              noValidate
+              onSubmit={onSubmit}
+              className="mt-4 flex w-full flex-col gap-3 sm:flex-row"
+            >
+              <label htmlFor="newsletter" className="sr-only">
+                Email
+              </label>
+              <input
+                id="newsletter"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                aria-required="true"
+                aria-invalid={
+                  email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'true' : 'false'
+                }
+                className="h-[44px] w-full rounded-full border border-neutral-700 bg-neutral-900/60 px-4 text-sm text-white placeholder:text-neutral-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+              <button
+                type="submit"
+                disabled={submitting}
+                aria-busy={submitting}
+                className="h-[44px] w-full sm:w-auto rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 px-6 text-sm font-semibold text-neutral-900 shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+                aria-label="Subscribe to newsletter"
+              >
+                {submitting ? 'Subscribing…' : 'Subscribe'}
+              </button>
+            </form>
+
+            <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 text-sm text-neutral-400">
+              <div>
+                <h4 className="text-xs font-semibold uppercase tracking-wide text-neutral-200">
+                  Opening hours
+                </h4>
+                <p className="mt-1">
+                  Mon – Sat: 9.00 AM – 10.00 PM
+                  <br />
+                  Sun & Poya days: 9.00 AM – 8.00 PM
+                </p>
+              </div>
+              <div>
+                <h4 className="text-xs font-semibold uppercase tracking-wide text-neutral-200">
+                  Payment methods
+                </h4>
+                <div className="mt-2 flex flex-wrap items-center gap-3 opacity-80">
+                  {['visa', 'mastercard', 'amex'].map((b) => (
+                    <img
+                      key={b}
+                      src={brandLogo(b)}
+                      alt={`${b} logo`}
+                      className="h-7 w-auto"
+                      loading="lazy"
+                    />
+                  ))}
                 </div>
               </div>
-            </form>
-            {/* Supported payment methods */}
-            <div className="mt-5 flex items-center gap-3 opacity-80">
-              {['visa','mastercard','amex'].map((b) => (
-                <img
-                  key={b}
-                  src={brandLogo(b)}
-                  alt={`${b} logo`}
-                  className="h-7 w-auto"
-                  loading="lazy"
-                />
-              ))}
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-neutral-800">
-        <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 py-6 text-center text-sm text-neutral-400 md:flex-row">
-            <p className="order-2 md:order-1">© {new Date().getFullYear()} Vidara Trade Center. All rights reserved.</p>
-            <div className="order-1 flex gap-4 md:order-2">
-              <a className="hover:text-emerald-400" href="/privacy">Privacy</a>
-              <a className="hover:text-emerald-400" href="/terms">Terms</a>
-              <a className="hover:text-emerald-400" href="/contact">Contact</a>
+      <div className="border-t border-neutral-800/80 bg-neutral-950/80">
+        <div className="mx-auto max-w-8xl px-3 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-between gap-4 py-5 text-center text-xs sm:text-sm text-neutral-400 md:flex-row">
+            <p className="order-2 md:order-1">
+              © {new Date().getFullYear()} Vidara Trade Center. All rights reserved.
+            </p>
+            <div className="order-1 flex flex-wrap items-center justify-center gap-4 md:order-2">
+              <span className="hidden sm:inline text-neutral-500">Made with care in Sri Lanka.</span>
+              <a className="hover:text-emerald-400" href="/privacy">
+                Privacy
+              </a>
+              <a className="hover:text-emerald-400" href="/terms">
+                Terms
+              </a>
+              <a className="hover:text-emerald-400" href="/contact">
+                Contact
+              </a>
             </div>
           </div>
         </div>

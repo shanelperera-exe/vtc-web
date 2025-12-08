@@ -186,8 +186,8 @@ export default function CustomerReviewsSection() {
 
   // Control vertical positioning of the review cards.
   // `CARD_LIFT` is how much we lift cards to avoid bottom controls; `PAD_TOP` adds extra space above the card line.
-  const CARD_LIFT = 80;
-  const PAD_TOP = 40; // pixels added above the review card line
+  const CARD_LIFT = 70;
+  const PAD_TOP = 20; // pixels added above the review card line
 
   const prevSlide = () => {
     setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
@@ -197,65 +197,21 @@ export default function CustomerReviewsSection() {
   };
 
   return (
-    <div
-      className="relative w-full overflow-hidden border-y-2 border-neutral-950"
-      style={{ height: 650, clipPath: polygonClip }}
-    >
-      {/* Inline CSS (no external file) to provide the animated grid background */}
-      <style>{`
-        .bgGridWrapper {
-          --blockSize: 32px;
-          --borderWidth: 2px;
-          /*light 2*/
-          --borderColor: #A2AF9B;
-          --bgColor: #F5F5DC;
-          width: 100%;
-          height: 100%;
-          background-color: var(--bgColor);
-          background-image:
-            linear-gradient(
-              transparent calc(var(--blockSize) - var(--borderWidth)),
-              var(--borderColor) calc(var(--blockSize) - var(--borderWidth))),
-            linear-gradient(
-              90deg, transparent calc(var(--blockSize) - var(--borderWidth)),
-              var(--borderColor) calc(var(--blockSize) - var(--borderWidth)));
-          background-size:
-            var(--blockSize) var(--blockSize),
-            var(--blockSize) var(--blockSize);
-          background-repeat: round;
-          animation: gridBgMove 2s infinite linear;
-        }
-        @keyframes gridBgMove {
-          to {
-            background-position-y: var(--blockSize);
-          }
-        }
-        /* Decorative bottom label */
-        .fancy-text {
-          position: absolute;
-          left: 50%;
-          bottom: -60px; /* pushes it down so it's cut by the container */
-          transform: translateX(-50%);
-          z-index: 1; /* above grid, below cards */
-          pointer-events: none;
-          user-select: none;
-          white-space: nowrap;
-          text-align: center;
-          font-family: inherit;
-          color: #099b48ff;
-          font-size: 175px;
-          line-height: 180px;
-          font-weight: 600;
-          letter-spacing: -9px;
-        }
-        @media (max-width: 1279px) { .fancy-text { font-size: 160px; line-height: 160px; letter-spacing: -8px; } }
-        @media (max-width: 1023px) { .fancy-text { font-size: 120px; line-height: 120px; letter-spacing: -6px; } }
-        @media (max-width: 767px)  { .fancy-text { font-size: 84px;  line-height: 84px;  letter-spacing: -4px; } }
-        @media (max-width: 479px)  { .fancy-text { font-size: 64px;  line-height: 64px;  letter-spacing: -3px; } }
-      `}</style>
+    <section className="py-8 sm:py-10 bg-white">
+      {/* Heading container centered like other sections */}
+      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+        <div className="text-center mb-2">
+          <p className="text-xs tracking-[0.2em] text-neutral-600 font-semibold uppercase">REVIEWS</p>
+          <h2 className="mt-2 text-3xl md:text-4xl font-bold tracking-tight text-neutral-900">What customers say</h2>
+          <p className="mt-2 text-neutral-600">Real feedback from shoppers who bought from VTC.</p>
+        </div>
+      </div>
 
-      {/* Animated grid background */}
-      <div className="bgGridWrapper"></div>
+      {/* Full-width slideshow container */}
+      <div
+        className="relative w-full overflow-hidden bg-white"
+        style={{ height: 580, clipPath: polygonClip }}
+      >
 
       {/* Slides — keep layout identical to the provided Slideshow */}
       {slides.map((slide, idx) => {
@@ -288,8 +244,9 @@ export default function CustomerReviewsSection() {
 
         let cardClass =
           "absolute left-1/2 top-1/2 cursor-pointer border-neutral-950 p-8 transition-colors duration-500";
+        // Use a darker, muted green for the active card (not too bright)
         cardClass += isActive
-          ? " bg-[#099b48ff] text-white"
+          ? " bg-[#0f5b3f] text-white"
           : " bg-white text-neutral-950";
 
         return (
@@ -312,13 +269,13 @@ export default function CustomerReviewsSection() {
                 seed={slide.name}
                 style="notionists"
                 className={`h-10 w-10 border-2 border-neutral-950 ${
-                  isActive ? "bg-[#0bd964]" : "bg-neutral-100"
+                  isActive ? "bg-white" : "bg-neutral-100"
                 }`}
                 alt={`Avatar for ${slide.name}`}
               />
               <span
                 className={`text-xs uppercase transition-colors ${
-                  isActive ? "text-emerald-100" : "text-neutral-700"
+                  isActive ? "text-white" : "text-neutral-700"
                 }`}
               >
                 {slide.subtitle}
@@ -338,7 +295,7 @@ export default function CustomerReviewsSection() {
             </div>
             <p
               className={`mt-3 text-lg md:text-xl leading-relaxed transition-colors ${
-                isActive ? "text-emerald-100" : "text-neutral-950"
+                isActive ? "text-white" : "text-neutral-950"
               }`}
             >
               {slide.description}
@@ -347,13 +304,8 @@ export default function CustomerReviewsSection() {
         );
       })}
 
-      {/* Decorative bottom text, half cut by height */}
-      <div className="fancy-text alt-font fill-text" aria-hidden>
-        customer reviews
-      </div>
-
       {/* Navigation Buttons */}
-  <div className="absolute bottom-22 left-1/2 z-10 flex -translate-x-1/2 gap-8">
+      <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-8">
         <button
           className="grid h-14 w-14 place-content-center bg-neutral-950 text-3xl text-white transition-colors hover:bg-neutral-700"
           onClick={prevSlide}
@@ -370,12 +322,7 @@ export default function CustomerReviewsSection() {
         </button>
       </div>
 
-      {/* Top label */}
-      <div className="absolute left-1/2 top-0 border-x-2 border-b-2 border-neutral-950 bg-white px-4 py-2" style={{ transform: "translateX(-50%) translateY(0%) translateZ(0px)" }}>
-        <h2 className="whitespace-nowrap text-center text-base font-medium sm:text-xl lg:text-2xl">
-          <span className="text-[#099b48ff]">What customers say.</span> Real reviews.
-        </h2>
       </div>
-    </div>
+    </section>
   );
 }

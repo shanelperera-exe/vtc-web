@@ -31,25 +31,32 @@ const StyledWrapper = styled.div`
   .button {
     position: relative;
     display: inline-flex;
-    height: 3.5rem;
+    height: 3.4rem;
     align-items: center;
     border-radius: 9999px;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    font-size: 1.2rem;
-    font-weight: 640;
-    color: #fafaf6;
-    letter-spacing: -0.06em;
+    padding-left: 1.75rem;
+    padding-right: 1.9rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #020617;
+    letter-spacing: -0.02em;
+    box-shadow: 0 18px 40px rgba(15, 118, 110, 0.55);
+    transform: translateY(0) scale(1);
+    transition:
+      transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 200ms ease-out;
   }
 
   .button-item {
     background-color: transparent;
-    color: #1d1d1f;
+    color: #020617;
   }
 
   .button-item .button-bg {
-    border-color: black;
-    background-color: white;
+    border-color: transparent;
+    background: radial-gradient(circle at 0% 0%, #a7f3d0, transparent 55%),
+      radial-gradient(circle at 100% 100%, #22c55e, transparent 55%),
+      #ecfdf5;
   }
 
   .button-inner,
@@ -70,7 +77,7 @@ const StyledWrapper = styled.div`
     top: 0;
     left: 0;
     opacity: 0;
-    transform: translateY(70%);
+    transform: translateY(110%) scale(0.98);
   }
 
   /* shopping bag icon inside the button */
@@ -93,7 +100,7 @@ const StyledWrapper = styled.div`
     width: 100%;
     height: 100%;
     transform: scale(1);
-    transition: transform 1.8s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: transform 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
   .button-bg,
@@ -118,58 +125,61 @@ const StyledWrapper = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    transform: scale(0);
+    transform: scale(0.4);
+    opacity: 0;
   }
 
   .button-bg-layer.-purple {
-    /* primary darker green */
-    background-color: #0a9747;
+    background: radial-gradient(circle at 0% 0%, rgba(5, 150, 105, 0.9), rgba(16, 185, 129, 0.5));
   }
 
   .button-bg-layer.-turquoise {
-    /* lighter/bright green */
-    background-color: #0bd964;
+    background: radial-gradient(circle at 100% 100%, rgba(45, 212, 191, 0.9), rgba(16, 185, 129, 0.5));
   }
 
   .button-bg-layer.-yellow {
-    --tw-bg-opacity: 1;
-    background-color: white;
+    background: radial-gradient(circle at 50% 0%, rgba(248, 250, 252, 1), rgba(226, 232, 240, 0.7));
+  }
+  .button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 26px 55px rgba(15, 118, 110, 0.8);
   }
 
   .button:hover .button-inner-static {
     opacity: 0;
-    transform: translateY(-70%);
+    transform: translateY(-110%) scale(1.02);
     transition:
-      transform 1.4s cubic-bezier(0.19, 1, 0.22, 1),
-      opacity 0.3s linear;
+      transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 160ms ease-out;
   }
 
   .button:hover .button-inner-hover {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     transition:
-      transform 1.4s cubic-bezier(0.19, 1, 0.22, 1),
-      opacity 1.4s cubic-bezier(0.19, 1, 0.22, 1);
+      transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 220ms ease-out;
   }
 
   .button:hover .button-bg-layer {
+    opacity: 1;
     transition:
-      transform 1.3s cubic-bezier(0.19, 1, 0.22, 1),
-      opacity 0.3s linear;
+      transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      opacity 220ms ease-out;
   }
 
   .button:hover .button-bg-layer-1 {
-    transform: scale(1);
+    transform: scale(1.05);
   }
 
   .button:hover .button-bg-layer-2 {
-    transition-delay: 0.1s;
-    transform: scale(1);
+    transition-delay: 40ms;
+    transform: scale(1.18);
   }
 
   .button:hover .button-bg-layer-3 {
-    transition-delay: 0.2s;
-    transform: scale(1);
+    transition-delay: 80ms;
+    transform: scale(1.3);
   }
 `;
 

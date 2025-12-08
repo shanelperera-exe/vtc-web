@@ -20,7 +20,7 @@ const Catslideshow = () => {
   // Always use the predefined static categories (no dynamic fetching)
   const merged = staticCategories;
   return (
-  <section className="bg-[#0a9747] py-2">
+  <section className="bg-[#0f5b3f] py-2">
     <div className="overflow-hidden w-full">
       {/* Right to left train */}
       <div className="overflow-hidden px-2">
@@ -29,7 +29,7 @@ const Catslideshow = () => {
             <a
               key={idx}
               href={cat.link}
-              className="font-neutral-950 flex cursor-pointer items-center gap-1 whitespace-nowrap px-2 py-4 text-3xl lowercase text-white font-semibold transition-colors hover:bg-[#0bd964]"
+              className="flex cursor-pointer items-center gap-1 whitespace-nowrap px-2 py-4 text-3xl lowercase text-white font-semibold transition-colors hover:bg-[#19614a]"
               style={{ flex: '0 0 auto' }}
               aria-hidden={idx >= merged.length}
               tabIndex={idx >= merged.length ? -1 : 0}
@@ -50,7 +50,7 @@ const Catslideshow = () => {
             <a
               key={idx}
               href={cat.link}
-              className="font-neutral-950 flex cursor-pointer items-center gap-1 whitespace-nowrap px-2 py-4 text-3xl lowercase text-white font-semibold transition-colors hover:bg-[#0bd964]"
+              className="flex cursor-pointer items-center gap-1 whitespace-nowrap px-2 py-4 text-3xl lowercase text-white font-semibold transition-colors hover:bg-[#19614a]"
               style={{ flex: '0 0 auto' }}
               aria-hidden={idx >= merged.length}
               tabIndex={idx >= merged.length ? -1 : 0}

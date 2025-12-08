@@ -19,12 +19,21 @@ import AdminLogin from './pages/AdminLogin';
 import Contact from './pages/Contact';
 import Help from './pages/Help';
 import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext.jsx'
+import { CartProvider, useCart } from './context/CartContext.jsx'
 import { NotificationProvider } from './components/ui/Notification';
 import LoadingOverlay from './components/ui/LoadingOverlay';
 import PrivateRoute from './components/auth/PrivateRoute';
 import LegacyProductRedirect from './routes/LegacyProductRedirect.jsx';
 import SiteLayout from './components/layout/SiteLayout.jsx';
+
+function CheckoutGuard({ children }) {
+  const { items } = useCart() || {};
+  const hasItems = Array.isArray(items) && items.length > 0;
+  if (!hasItems) {
+    return <Navigate to="/cart" replace />;
+  }
+  return children;
+}
 
 function App() {
   return (
@@ -41,7 +50,16 @@ function App() {
                 {/* Backward-compat: if any old links use numeric id path, redirect to SKU URL if possible */}
                 <Route path="/product-id/:id" element={<LegacyProductRedirect />} />
                 <Route path="/category/:category" element={<ProductsByCategory />} />
-                <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
+                <Route
+                  path="/checkout"
+                  element={
+                    <PrivateRoute>
+                      <CheckoutGuard>
+                        <Checkout />
+                      </CheckoutGuard>
+                    </PrivateRoute>
+                  }
+                />
                 <Route path="/cart" element={<ShoppingCart />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />

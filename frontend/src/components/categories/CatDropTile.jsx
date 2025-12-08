@@ -23,7 +23,7 @@ export default function CatDropTile({
       aria-label={label}
       title={label}
       className={
-        "group relative block overflow-hidden border-3 border-black transition-colors hover:bg-neutral-200 aspect-square hover:border-black" +
+        "group relative block overflow-hidden transition-colors hover:bg-neutral-200 aspect-square focus:outline-none focus:ring-0 " +
         className
       }
       style={{ textDecoration: "none" }}
@@ -50,7 +50,7 @@ export default function CatDropTile({
       )}
 
       {/* Title overlay inside the square. Default: bottom; on hover: move to top. No white gradient. */}
-      <div className="absolute inset-0 z-10 p-1.5 flex flex-col justify-end group-hover:justify-start transition-all duration-300">
+      <div className="absolute inset-0 z-10 p-1.5 flex items-start pointer-events-none">
         {
           // Split label so second+ words render on the next line
         }
@@ -59,7 +59,7 @@ export default function CatDropTile({
           const first = words[0] || '';
           const rest = words.slice(1).join(' ');
           return (
-            <h3 className="text-base lg:text-2xl font-semibold leading-tight text-black px-1">
+            <h3 className="text-lg md:text-xl lg:text-3xl font-semibold leading-tight text-black px-2 py-1 inline-block pointer-events-none" style={{ textShadow: '0 1px 3px rgba(255,255,255,0.6)' }}>
               <span>{first}</span>
               {rest ? <span className="block">{rest}</span> : null}
             </h3>

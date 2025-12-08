@@ -19,7 +19,7 @@ export default function FeaturedProducts() {
   }, [data]);
   return (
     <section className="py-12 sm:py-16 bg-neutral-50">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+      <div className="mx-auto w-full max-w-[1376px] px-6 sm:px-8">
         <div className="text-center mb-8">
           <p className="text-xs tracking-[0.2em] text-neutral-600 font-semibold">TRENDING NOW</p>
           <h2 className="mt-2 text-3xl md:text-4xl font-bold tracking-tight text-neutral-900">Featured products</h2>
@@ -39,7 +39,7 @@ export default function FeaturedProducts() {
             pagination={{ clickable: true }}
             autoplay={{ delay: 4500, disableOnInteraction: false }}
             loop={false}
-            spaceBetween={16}
+            spaceBetween={24}
             slidesPerView={1}
             breakpoints={{
               640: { slidesPerView: 2 },
