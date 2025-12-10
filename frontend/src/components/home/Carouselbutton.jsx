@@ -53,10 +53,8 @@ const StyledWrapper = styled.div`
   }
 
   .button-item .button-bg {
-    border-color: transparent;
-    background: radial-gradient(circle at 0% 0%, #a7f3d0, transparent 55%),
-      radial-gradient(circle at 100% 100%, #22c55e, transparent 55%),
-      #ecfdf5;
+    border-color: rgba(15, 23, 42, 0.06);
+    background: #ffffff;
   }
 
   .button-inner,
@@ -125,61 +123,62 @@ const StyledWrapper = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    transform: scale(0.4);
+    transform: scale(0.7);
     opacity: 0;
   }
 
   .button-bg-layer.-purple {
-    background: radial-gradient(circle at 0% 0%, rgba(5, 150, 105, 0.9), rgba(16, 185, 129, 0.5));
+    background: radial-gradient(circle at 0% 0%, rgba(15, 118, 110, 0.5), rgba(45, 212, 191, 0.15));
   }
 
   .button-bg-layer.-turquoise {
-    background: radial-gradient(circle at 100% 100%, rgba(45, 212, 191, 0.9), rgba(16, 185, 129, 0.5));
+    background: radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.5), rgba(34, 197, 94, 0.15));
   }
 
   .button-bg-layer.-yellow {
-    background: radial-gradient(circle at 50% 0%, rgba(248, 250, 252, 1), rgba(226, 232, 240, 0.7));
+    background: radial-gradient(circle at 50% 0%, rgba(248, 250, 252, 1), rgba(226, 232, 240, 0.5));
   }
+  /* New hover animation: subtle lift + glow ring + text slide */
   .button:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 26px 55px rgba(15, 118, 110, 0.8);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 26px 60px rgba(15, 118, 110, 0.85);
   }
 
   .button:hover .button-inner-static {
     opacity: 0;
-    transform: translateY(-110%) scale(1.02);
+    transform: translateY(-100%) translateX(-6px) scale(1.02);
     transition:
-      transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
-      opacity 160ms ease-out;
+      transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 150ms ease-out;
   }
 
   .button:hover .button-inner-hover {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0) translateX(0) scale(1);
     transition:
-      transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
-      opacity 220ms ease-out;
+      transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 210ms ease-out;
   }
 
   .button:hover .button-bg-layer {
     opacity: 1;
     transition:
-      transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
       opacity 220ms ease-out;
   }
 
   .button:hover .button-bg-layer-1 {
-    transform: scale(1.05);
+    transform: scale(1);
   }
 
   .button:hover .button-bg-layer-2 {
-    transition-delay: 40ms;
-    transform: scale(1.18);
+    transition-delay: 45ms;
+    transform: scale(1.12);
   }
 
   .button:hover .button-bg-layer-3 {
-    transition-delay: 80ms;
-    transform: scale(1.3);
+    transition-delay: 90ms;
+    transform: scale(1.22);
   }
 `;
 

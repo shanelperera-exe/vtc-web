@@ -87,9 +87,9 @@ const Tab = ({ children, tab, handleSetSelected, selected, icon }) => {
       id={`shift-tab-${tab}`}
       onMouseEnter={() => handleSetSelected(tab)}
       onClick={() => handleSetSelected(tab)}
-      className={`flex items-center gap-1 px-4 py-1.5 text-lg transition-colors font-medium ${
+      className={`flex items-center gap-1 px-4 py-1.5 text-lg transition-colors font-medium rounded-full ${
         selected === tab
-          ? " bg-black text-neutral-100"
+          ? "bg-black text-neutral-100"
           : "text-black hover:bg-black hover:text-white"
       }`}
       style={{ fontFamily: 'Poppins, sans-serif' }}
@@ -212,35 +212,10 @@ const Categories = () => {
     return { id: cat.id || slug || label, label, slug, primary, hover: hover && hover !== primary ? hover : '' };
   });
 
-  // Left static menu links (with icons)
-  const leftLinks = [
-    { label: 'About Us', href: '/about', icon: FiInfo },
-    { label: 'Contact Us', href: '/contact', icon: FiMail },
-    { label: 'Help', href: '/help', icon: FiHelpCircle },
-  ];
-
   return (
-    <div className="w-full h-full flex gap-8">
-      {/* Left menu links */}
-      <div className="mega-menu__menu-links shrink-0 w-64 pr-4 border-r border-neutral-200 overflow-y-auto">
-        {/* Use divide-y to add separators between links and keep consistent padding */}
-        <ul className="divide-y divide-neutral-200">
-          {leftLinks.map((l, i) => (
-            <li key={l.href} className="py-3">
-              <a href={l.href} className="text-neutral-800 hover:text-black font-semibold text-base md:text-lg transform transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:translate-x-1 px-2 flex items-center gap-3">
-                {l.icon && (() => {
-                  const Icon = l.icon;
-                  return <Icon className="w-5 h-5 text-neutral-600" aria-hidden="true" />;
-                })()}
-                <span className="inline-block transition-colors duration-200">{l.label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Right image tiles grid */}
-      <div className="mega-menu__image-links grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 overflow-y-auto flex-1 pr-1">
+    <div className="w-full h-full">
+      {/* Image tiles grid (fills full width) */}
+      <div className="mega-menu__image-links grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 overflow-y-auto w-full">
         {loading && (
           <div className="col-span-full text-neutral-500 text-sm">Loading categories…</div>
         )}

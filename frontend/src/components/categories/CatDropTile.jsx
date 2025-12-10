@@ -23,7 +23,7 @@ export default function CatDropTile({
       aria-label={label}
       title={label}
       className={
-        "group relative block overflow-hidden transition-colors hover:bg-neutral-200 aspect-square focus:outline-none focus:ring-0 " +
+        "group relative block overflow-hidden transition-colors hover:bg-neutral-200 aspect-[4/5] sm:aspect-[3/4] md:aspect-square focus:outline-none focus:ring-0 " +
         className
       }
       style={{ textDecoration: "none" }}
