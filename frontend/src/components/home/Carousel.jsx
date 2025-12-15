@@ -160,7 +160,7 @@ const Carousel = () => {
               <span className="text-xs">{slide.badge || 'Limited Time'}</span>
             </motion.div>
             <motion.h3
-              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
+              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0.12}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -189,7 +189,7 @@ const Carousel = () => {
         return (
           <div className="max-w-5xl">
             <motion.h3
-              className="font-semibold leading-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
+              className="font-semibold leading-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -233,7 +233,7 @@ const Carousel = () => {
         return (
           <div className="max-w-5xl">
             <motion.h3
-              className="font-semibold leading-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
+              className="font-semibold leading-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -274,7 +274,7 @@ const Carousel = () => {
               <FiGift size={16} /> <span className="text-xs">Special Offer</span>
             </motion.div>
             <motion.h3
-              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
+              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0.12}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -297,7 +297,7 @@ const Carousel = () => {
         return (
           <div className="max-w-3xl">
             <motion.h3
-              className="font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
+              className="font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -320,7 +320,7 @@ const Carousel = () => {
               <FiStar size={22} /> <span className="text-sm">Member Rewards</span>
             </motion.div>
             <motion.h3
-              className="mt-2 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
+              className="mt-2 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0.12}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -416,8 +416,8 @@ const Carousel = () => {
         autoplay={{ delay: 7000, disableOnInteraction: false }}
         speed={3000}
         loop
-        slidesPerView={1}
-  style={{ width: "100%", height: "92vh" }}
+          slidesPerView={1}
+        style={{ width: "100%", height: "92vh", maxHeight: "900px" }}
         onSwiper={setSwiperInstance}
         onSlideChange={(s) => setActiveIndex(s.realIndex || 0)}
       >
@@ -488,7 +488,7 @@ const Carousel = () => {
                   <span className="text-sm sm:text-base tracking-wide">Discover everyday essentials</span>
                 </motion.div>
                 <motion.h1
-                  className="font-medium leading-[1.05] tracking-tight text-white drop-shadow-lg text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
+                  className="font-medium leading-[1.05] tracking-tight text-white drop-shadow-lg text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
                   initial="hidden"
                   animate="show"
                   variants={fadeUp}
@@ -627,7 +627,7 @@ const Carousel = () => {
       <button
         ref={prevRef}
         type="button"
-        className="custom-swiper-button-prev absolute bottom-5 right-20 z-10 bg-black/70 text-white border-none w-12 h-12 flex items-center justify-center cursor-pointer text-lg transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
+        className="custom-swiper-button-prev absolute bottom-5 right-20 z-10 bg-black/70 text-white border-none w-10 h-10 hidden md:flex items-center justify-center cursor-pointer text-lg transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
         aria-label="Previous slide"
       >
         <FiArrowLeft size={22} />
@@ -635,7 +635,7 @@ const Carousel = () => {
       <button
         ref={nextRef}
         type="button"
-        className="custom-swiper-button-next absolute bottom-5 right-5 z-10 bg-black/70 text-white border-none w-12 h-12 flex items-center justify-center cursor-pointer text-2xl transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
+        className="custom-swiper-button-next absolute bottom-5 right-5 z-10 bg-black/70 text-white border-none w-10 h-10 hidden md:flex items-center justify-center cursor-pointer text-2xl transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
         aria-label="Next slide"
       >
         <FiArrowRight size={24} />
