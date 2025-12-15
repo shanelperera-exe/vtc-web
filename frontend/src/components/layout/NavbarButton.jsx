@@ -18,6 +18,18 @@ const ButtonBase = styled.button`
 	outline: none;
 	line-height: 1;
 
+	/* Make buttons slightly smaller on narrow mobile screens */
+	@media (max-width: 640px) {
+		width: 32px;
+		height: 32px;
+		border-width: 2px;
+
+		img, svg {
+			width: 18px;
+			height: 18px;
+		}
+	}
+
 	&:hover:not(:disabled) {
 		background: #37df80ff;
 		color: black;

@@ -29,13 +29,13 @@ const Catslideshow = () => {
             <a
               key={idx}
               href={cat.link}
-              className="flex cursor-pointer items-center gap-1 whitespace-nowrap px-2 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-2xl lg:text-3xl lowercase text-white font-semibold transition-colors hover:bg-[#19614a]"
+              className="flex cursor-pointer items-center gap-1 whitespace-nowrap px-2 py-4 text-3xl lowercase text-white font-semibold transition-colors hover:bg-[#19614a]"
               style={{ flex: '0 0 auto' }}
               aria-hidden={idx >= merged.length}
               tabIndex={idx >= merged.length ? -1 : 0}
             >
-              <span className="p-1 flex items-center justify-center" style={{ width: "2.25rem", height: "2.25rem" }}>
-                {cat.icon ? React.createElement(cat.icon, { size: 22, className: 'text-white', style: { strokeWidth: 1 } }) : null}
+              <span className="p-1 flex items-center justify-center" style={{ width: "2.5rem", height: "2.5rem" }}>
+                {cat.icon ? React.createElement(cat.icon, { size: 30, className: 'text-white', style: { strokeWidth: 1 } }) : null}
               </span>
               {cat.label}
             </a>
@@ -50,13 +50,13 @@ const Catslideshow = () => {
             <a
               key={idx}
               href={cat.link}
-              className="flex cursor-pointer items-center gap-1 whitespace-nowrap px-2 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-2xl lg:text-3xl lowercase text-white font-semibold transition-colors hover:bg-[#19614a]"
+              className="flex cursor-pointer items-center gap-1 whitespace-nowrap px-2 py-4 text-3xl lowercase text-white font-semibold transition-colors hover:bg-[#19614a]"
               style={{ flex: '0 0 auto' }}
               aria-hidden={idx >= merged.length}
               tabIndex={idx >= merged.length ? -1 : 0}
             >
-              <span className="p-1 flex items-center justify-center" style={{ width: "2.25rem", height: "2.25rem" }}>
-                {cat.icon ? React.createElement(cat.icon, { size: 22, className: 'text-white', style: { strokeWidth: 1 } }) : null}
+              <span className="p-1 flex items-center justify-center" style={{ width: "2.5rem", height: "2.5rem" }}>
+                {cat.icon ? React.createElement(cat.icon, { size: 30, className: 'text-white', style: { strokeWidth: 1 } }) : null}
               </span>
               {cat.label}
             </a>

@@ -5,6 +5,7 @@ import { FiMenu, FiX, FiUser, FiPackage, FiLogOut } from 'react-icons/fi';
 import logo2 from '../../assets/vtc_logo2.svg';
 import Searchbar from './SearchBar';
 import { useCategories } from '../../api/hooks/useCategories';
+import NavbarButton from './NavbarButton';
 
 // derive categories from backend data; fallback to empty list (retain shape {label, slug})
 function useCategoryButtons() {
@@ -67,24 +68,27 @@ export default function CornerNav({
         setOpen(o => !o);
     };
 
-    return (
-        <div className={`relative ${className}`} style={{ width: 40, height: 40 }}>
+        return (
+        <div className={`relative flex items-center ${className}`}>
             <LayoutGroup>
                 <AnimatePresence>
                     {!open && (
-                        <motion.button
+                        <motion.div
                             key="menu-button"
                             layoutId="hamburger-panel"
                             initial={false}
-                            className="w-10 h-10 bg-white border-3 border-black flex items-center justify-center focus:outline-none z-[9999] hover:bg-[#0bd964] hover:text-white"
-                            aria-label="Open menu"
-                            aria-expanded={false}
-                            onClick={toggle}
-                            style={{ cursor: 'pointer' }}
                             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                            className="z-[9999]"
                         >
-                            <FiMenu className="w-7 h-7 text-current" />
-                        </motion.button>
+                            <NavbarButton
+                                aria-label="Open menu"
+                                aria-expanded={false}
+                                onClick={toggle}
+                                className="hover:bg-[#0bd964] hover:text-white"
+                            >
+                                <FiMenu />
+                            </NavbarButton>
+                        </motion.div>
                     )}
                 </AnimatePresence>
                 <AnimatePresence>
@@ -114,10 +118,10 @@ export default function CornerNav({
                             <button
                                 onClick={toggle}
                                 aria-label="Close menu"
-                                className="absolute top-2 right-2 w-10 h-10 flex items-center justify-center focus:outline-none"
+                                className="absolute top-2 right-2 w-8 h-8 sm:w-8 sm:h-10 bg-white border-2 sm:border-[3px] border-black flex items-center justify-center focus:outline-none"
                                 style={{ cursor: 'pointer' }}
                             >
-                                <FiX className="w-8 h-8 text-black" />
+                                <FiX className="w-[26px] h-[26px] sm:w-6 sm:h-6 text-black" />
                             </button>
                             <div className="flex-1 flex flex-col px-7 pb-8 pt-18 overflow-y-auto">
                                 {/* Search bar */}

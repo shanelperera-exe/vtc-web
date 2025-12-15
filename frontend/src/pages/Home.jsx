@@ -13,7 +13,7 @@ import Newsletter from '../components/home/Newsletter';
 function Home() {
 	return (
 		<div>
-			<Navbar/>
+			<Navbar overlay />
 			<Carousel/>
 			<ShopByCategory/>
 			<ValueProps/>

@@ -160,7 +160,7 @@ const Carousel = () => {
               <span className="text-xs">{slide.badge || 'Limited Time'}</span>
             </motion.div>
             <motion.h3
-              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-6xl sm:text-7xl md:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0.12}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -186,10 +186,10 @@ const Carousel = () => {
           </div>
         );
       case 'categories':
-        return (
-          <div className="max-w-5xl">
-            <motion.h3
-              className="font-semibold leading-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+    return (
+      <div className="max-w-5xl">
+      <motion.h3
+        className="font-semibold leading-tight drop-shadow-lg text-white text-3xl sm:text-6xl md:text-7xl lg:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -230,10 +230,10 @@ const Carousel = () => {
           </div>
         );
       case 'service':
-        return (
-          <div className="max-w-5xl">
-            <motion.h3
-              className="font-semibold leading-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+    return (
+      <div className="max-w-5xl">
+      <motion.h3
+        className="font-semibold leading-tight drop-shadow-lg text-white text-3xl sm:text-6xl md:text-7xl lg:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -265,8 +265,8 @@ const Carousel = () => {
           </div>
         );
       case 'bundle':
-        return (
-          <div className="max-w-3xl">
+    return (
+      <div className="max-w-3xl">
             <motion.div
               className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur px-3 py-1 text-white/90"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
@@ -274,7 +274,7 @@ const Carousel = () => {
               <FiGift size={16} /> <span className="text-xs">Special Offer</span>
             </motion.div>
             <motion.h3
-              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+              className="mt-3 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-6xl md:text-7xl lg:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0.12}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -294,10 +294,10 @@ const Carousel = () => {
           </div>
         );
       case 'new':
-        return (
-          <div className="max-w-3xl">
-            <motion.h3
-              className="font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+    return (
+      <div className="max-w-3xl">
+      <motion.h3
+        className="font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-6xl md:text-7xl lg:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -314,13 +314,13 @@ const Carousel = () => {
           </div>
         );
       case 'loyalty':
-        return (
-          <div className="max-w-3xl">
+    return (
+      <div className="max-w-3xl">
             <motion.div className="flex items-center gap-2 text-yellow-200" initial="hidden" animate="show" variants={fadeUp} custom={0}>
               <FiStar size={22} /> <span className="text-sm">Member Rewards</span>
             </motion.div>
             <motion.h3
-              className="mt-2 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+              className="mt-2 font-semibold leading-[1.02] tracking-tight drop-shadow-lg text-white text-3xl sm:text-6xl md:text-7xl lg:text-8xl"
               initial="hidden" animate="show" variants={fadeUp} custom={0.12}
               style={{ textShadow: '0 6px 30px rgba(0,0,0,0.6)' }}
             >
@@ -408,7 +408,7 @@ const Carousel = () => {
   };
 
   return (
-    <div style={{ position: "relative", width: "100%", maxWidth: "100%", overflow: 'hidden' }}>
+  <div className="relative w-full max-w-full overflow-hidden h-[60vh] sm:h-[80vh] md:h-[85vh] lg:h-[92vh]">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         navigation={false}
@@ -416,8 +416,8 @@ const Carousel = () => {
         autoplay={{ delay: 7000, disableOnInteraction: false }}
         speed={3000}
         loop
-          slidesPerView={1}
-        style={{ width: "100%", height: "92vh", maxHeight: "900px" }}
+        slidesPerView={1}
+        className="w-full h-full"
         onSwiper={setSwiperInstance}
         onSlideChange={(s) => setActiveIndex(s.realIndex || 0)}
       >
@@ -488,6 +488,7 @@ const Carousel = () => {
                   <span className="text-sm sm:text-base tracking-wide">Discover everyday essentials</span>
                 </motion.div>
                 <motion.h1
+				  className="font-medium leading-[1.05] tracking-tight text-white drop-shadow-lg text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
                   className="font-medium leading-[1.05] tracking-tight text-white drop-shadow-lg text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
                   initial="hidden"
                   animate="show"
@@ -582,7 +583,7 @@ const Carousel = () => {
                 alt={img.name}
                 style={{
                   width: "100%",
-                  height: "95vh",
+                  height: "100%",
                   objectFit: "cover",
                   /* image will be clipped by parent rounded corners */
                   borderBottomLeftRadius: '0',
@@ -627,7 +628,7 @@ const Carousel = () => {
       <button
         ref={prevRef}
         type="button"
-        className="custom-swiper-button-prev absolute bottom-5 right-20 z-10 bg-black/70 text-white border-none w-10 h-10 hidden md:flex items-center justify-center cursor-pointer text-lg transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
+        className="custom-swiper-button-prev absolute bottom-5 right-20 z-10 bg-black/70 text-white border-none w-12 h-12 flex items-center justify-center cursor-pointer text-lg transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
         aria-label="Previous slide"
       >
         <FiArrowLeft size={22} />
@@ -635,7 +636,7 @@ const Carousel = () => {
       <button
         ref={nextRef}
         type="button"
-        className="custom-swiper-button-next absolute bottom-5 right-5 z-10 bg-black/70 text-white border-none w-10 h-10 hidden md:flex items-center justify-center cursor-pointer text-2xl transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
+        className="custom-swiper-button-next absolute bottom-5 right-5 z-10 bg-black/70 text-white border-none w-12 h-12 flex items-center justify-center cursor-pointer text-2xl transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
         aria-label="Next slide"
       >
         <FiArrowRight size={24} />

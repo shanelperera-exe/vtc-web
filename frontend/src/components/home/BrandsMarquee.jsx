@@ -3,7 +3,7 @@ import placeholderLogos from '../../assets/brands';
 
 // Small tile for a single logo (keeps 1:1 square and padding)
 const LogoTile = ({ src, alt, imgLoading = 'lazy' }) => (
-  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 p-2 flex items-center justify-center mx-4" aria-hidden>
+  <div className="w-24 h-24 p-2 flex items-center justify-center mx-4" aria-hidden>
     <div className="w-full h-full flex items-center justify-center">
       <img
         src={src}

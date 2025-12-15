@@ -5,6 +5,18 @@ html, body {
     font-family: "Poppins", sans-serif;
 }
 
+/* Base font sizing; bump size on very small screens so
+   text and components are more legible on real phones */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 18px;
+  }
+}
+
 /* Prevent horizontal scrollbar caused by 100vw and similar full-viewport widths */
 html, body {
   overflow-x: hidden;

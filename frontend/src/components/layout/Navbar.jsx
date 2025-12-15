@@ -35,11 +35,12 @@ const Navbar = () => {
   return (
     <>
     <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
-      <div className="max-w-8xl mx-auto flex items-center justify-between px-5 py-2">
+      <div className="max-w-8xl mx-auto flex items-center justify-between px-3 sm:px-5 py-1.5 sm:py-2">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2">
-          <img src={logo3} alt="Logo" className="h-8 md:h-10 w-auto" />
-          <span className="flex flex-col text-lg md:text-2xl font-bold" style={{ fontFamily: 'Poppins, sans-serif', lineHeight: '0.9' }}>
+        <a href="/" className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <img src={logo3} alt="Logo" className="h-6 xs:h-7 sm:h-8 md:h-10 w-auto flex-shrink-0" />
+          {/* Hide brand text on mobile; show from small screens up */}
+          <span className="hidden sm:flex flex-col text-base sm:text-lg md:text-2xl font-bold truncate" style={{ fontFamily: 'Poppins, sans-serif', lineHeight: '0.9' }}>
             <span className="text-black">vidara</span>
             <span className="text-gray-500">tradecenter.</span>
           </span>
@@ -51,7 +52,7 @@ const Navbar = () => {
         </div>
 
         {/* Right Side Icons (desktop & mobile) */}
-        <div className="flex items-center gap-3 relative ml-auto">
+        <div className="flex items-center gap-2 sm:gap-3 relative ml-auto flex-shrink-0">
           {/* Place Explore products dropdown just left of the right-side icons on desktop */}
           <div className="hidden lg:flex items-center mr-3">
             <CatDropDown />
@@ -75,18 +76,16 @@ const Navbar = () => {
             onVisitProfile={() => { window.location.href = '/account'; setShowLogin(false); }}
             onSignOut={() => { logout?.(); setShowLogin(false); }}
           />
-          {/* Cart always visible; wishlist hidden on mobile */}
+          {/* Cart always visible */}
           <NavbarButton onClick={() => setCartOpen(true)} aria-label="Open cart sidebar">
             <FiShoppingCart />
           </NavbarButton>
-          {/* Wishlist only rendered on desktop to ensure not present in mobile DOM */}
-          {isDesktop && (
-            <NavbarButton as="a" href="/wishlist" aria-label="Open wishlist" style={{ textDecoration: 'none' }}>
-              <FiHeart />
-            </NavbarButton>
-          )}
-          {/* Hamburger menu inline where wishlist would be on mobile */}
-          <div className="flex lg:hidden">
+          {/* Wishlist now visible on both mobile and desktop, placed right of cart and left of hamburger */}
+          <NavbarButton as="a" href="/wishlist" aria-label="Open wishlist" style={{ textDecoration: 'none' }}>
+            <FiHeart />
+          </NavbarButton>
+          {/* Hamburger menu (mobile only) appears to the right of wishlist */}
+            <div className="flex lg:hidden mt-[3px]">
             <CornerNav
               isLoggedIn={isAuthenticated}
               userName={user ? (user.firstName + ' ' + user.lastName) : 'Guest'}
