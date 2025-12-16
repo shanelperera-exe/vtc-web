@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import java.util.Optional;
 
 @Repository
@@ -46,4 +49,18 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @org.springframework.data.jpa.repository.Modifying(clearAutomatically = true, flushAutomatically = true)
     @org.springframework.data.jpa.repository.Query("update Order o set o.user = null where o.user.id = :userId")
     int detachUserFromOrders(@org.springframework.data.repository.query.Param("userId") Long userId);
+
+    // --- Admin analytics helpers (sales = non-cancelled orders) ---
+
+    @Query("select coalesce(sum(o.total),0) from Order o where o.placedAt >= :start and o.placedAt < :end and o.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED")
+    java.math.BigDecimal sumSalesTotalBetween(LocalDateTime start, LocalDateTime end);
+
+    @Query("select count(o) from Order o where o.placedAt >= :start and o.placedAt < :end and o.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED")
+    long countSalesBetween(LocalDateTime start, LocalDateTime end);
+
+    @Query("select o from Order o where o.placedAt >= :start and o.placedAt < :end and o.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED")
+    List<Order> findSalesBetween(LocalDateTime start, LocalDateTime end);
+
+    @Query("select o.status, count(o) from Order o where o.placedAt >= :start and o.placedAt < :end group by o.status")
+    List<Object[]> countByStatusBetween(LocalDateTime start, LocalDateTime end);
 }

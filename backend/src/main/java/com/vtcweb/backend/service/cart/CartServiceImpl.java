@@ -1,6 +1,7 @@
 package com.vtcweb.backend.service.cart;
 
 import com.vtcweb.backend.dto.cart.CartItemRequestDTO;
+import com.vtcweb.backend.dto.cart.CartItemUpdateRequestDTO;
 import com.vtcweb.backend.dto.cart.CartItemResponseDTO;
 import com.vtcweb.backend.dto.cart.CartMergeFailureDTO;
 import com.vtcweb.backend.dto.cart.CartResponseDTO;
@@ -90,7 +91,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	@CacheEvict(value = CART_CACHE, key = "#userId")
-	public CartItemResponseDTO updateItem(Long userId, Long cartItemId, CartItemRequestDTO request) {
+	public CartItemResponseDTO updateItem(Long userId, Long cartItemId, CartItemUpdateRequestDTO request) {
 		CartItem item = findItemForUser(userId, cartItemId);
 		int requestedQty = request.getQuantity();
 		ensurePositiveQuantity(requestedQty);

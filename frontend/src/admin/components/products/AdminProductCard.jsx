@@ -560,7 +560,7 @@ function QuickStatsPanel({ variants, defaultThreshold }) {
 
 function StatCard({ label, value, color }) {
     return (
-        <div className="border border-gray-200 p-2">
+		<div className="border border-gray-200 rounded-xl bg-white/80 p-2">
             <div className="text-[11px] text-gray-600">{label}</div>
             <div className={`text-sm font-semibold ${color || 'text-gray-900'}`}>{value ?? '—'}</div>
         </div>

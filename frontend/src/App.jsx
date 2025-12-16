@@ -27,8 +27,8 @@ import LegacyProductRedirect from './routes/LegacyProductRedirect.jsx';
 import SiteLayout from './components/layout/SiteLayout.jsx';
 
 function CheckoutGuard({ children }) {
-  const { items } = useCart() || {};
-  const hasItems = Array.isArray(items) && items.length > 0;
+  const { cartItems } = useCart() || {};
+  const hasItems = Array.isArray(cartItems) && cartItems.length > 0;
   if (!hasItems) {
     return <Navigate to="/cart" replace />;
   }

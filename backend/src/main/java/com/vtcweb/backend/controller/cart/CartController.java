@@ -3,6 +3,7 @@ package com.vtcweb.backend.controller.cart;
 import com.vtcweb.backend.dto.cart.CartItemRequestDTO;
 import com.vtcweb.backend.dto.cart.CartItemResponseDTO;
 import com.vtcweb.backend.dto.cart.CartResponseDTO;
+import com.vtcweb.backend.dto.cart.CartItemUpdateRequestDTO;
 import com.vtcweb.backend.exception.UnauthorizedException;
 import com.vtcweb.backend.security.JwtTokenProvider;
 import com.vtcweb.backend.service.cart.CartService;
@@ -54,7 +55,7 @@ public class CartController {
 	@PutMapping("/item/{id}")
 	@PreAuthorize("hasAnyRole('CUSTOMER','ADMIN','MANAGER')")
 	public ResponseEntity<CartItemResponseDTO> updateItem(@PathVariable("id") Long cartItemId,
-			@Valid @RequestBody CartItemRequestDTO requestBody,
+			@Valid @RequestBody CartItemUpdateRequestDTO requestBody,
 			HttpServletRequest request) {
 		Long userId = resolveUserId(request);
 		CartItemResponseDTO response = cartService.updateItem(userId, cartItemId, requestBody);

@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { FiSearch, FiBell, FiMail } from 'react-icons/fi';
+import { FiSearch, FiBell, FiMail, FiClock, FiCalendar } from 'react-icons/fi';
 import { useAuth } from '../../../context/AuthContext';
 import { AvatarImg } from '../../../services/AvatarImg';
 import AdminAccountDropdown from './AdminAccountDropdown';
 import { useNavigate } from 'react-router-dom';
 
-const AdminSearchBar = () => (
-  <div className="relative w-50 sm:w-56 md:w-[300px] ml-5 md:ml-6">
+  const AdminSearchBar = () => (
+  <div className="relative w-40 sm:w-56 md:w-[320px]">
     <input
       type="text"
       name="text"
-      className="w-full h-10 pl-3 pr-10 border-3 border-black text-sm focus:outline-none focus:border-black"
+      className="w-full h-10 pl-3 pr-10 border-2 border-black rounded-xl text-sm focus:outline-none focus:border-black bg-white/90"
       placeholder="Search"
     />
     <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black">
@@ -55,7 +55,7 @@ const AdminIconsAvatar = () => {
   };
 
   return (
-    <div id="admin-avatar-container" className="relative flex shrink-0 gap-4 md:gap-6 mr-2 md:mr-6">
+    <div id="admin-avatar-container" className="relative flex shrink-0 gap-4">
       <button className="relative text-xl text-black" aria-label="Notifications">
         <FiBell size={24} />
         <span className="absolute left-0 top-0 grid h-5 w-5 -translate-x-[50%] -translate-y-[5%] place-content-center border-2 border-black text-xs font-medium" style={{background: "#0bd964", color: "black"}}>17</span>
@@ -63,8 +63,20 @@ const AdminIconsAvatar = () => {
       <button className="relative text-xl text-gray-400" aria-label="Messages">
         <FiMail size={24} />
       </button>
-      <button type="button" onClick={() => setOpen(o => !o)} aria-haspopup="menu" aria-expanded={open} className="grid h-10 w-10 cursor-pointer place-content-center border-2 border-black overflow-hidden" style={{background: "#0bd964", color: "#000"}}>
-        <AvatarImg seed={email || adminName} style="notionists" alt={`Avatar for ${adminName}`} className="h-10 w-10 object-cover" />
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className="grid h-10 w-10 cursor-pointer place-content-center border-2 border-black rounded-full overflow-hidden"
+        style={{ background: "#0bd964", color: "#000" }}
+      >
+        <AvatarImg
+          seed={email || adminName}
+          style="notionists"
+          alt={`Avatar for ${adminName}`}
+          className="h-12 w-12 object-cover"
+        />
       </button>
 
       <AdminAccountDropdown
@@ -126,12 +138,19 @@ const AdminGreeting = () => {
   const dateStr = useMemo(() => now.toLocaleDateString([], { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }), [now]);
 
   return (
-    <div className="ml-4 hidden sm:block">
-      <div className="leading-tight">
-        <div className="font-semibold text-black text-sm md:text-base">{greeting}, {adminName}</div>
-        <div className="text-xs text-gray-600 flex justify-between w-full">
+    <div className="hidden sm:flex flex-col ml-2 md:ml-4">
+      <div className="inline-flex items-center gap-2 text-black">
+        <span className="text-xs md:text-base">{greeting},</span>
+        <span className="text-xs md:text-base font-semibold truncate">{adminName}</span>
+      </div>
+      <div className="mt-1 flex items-center gap-3 text-[11px] md:text-xs text-gray-700">
+        <div className="inline-flex items-center gap-1">
+          <FiClock className="text-black" size={14} />
           <span>{timeStr}</span>
-          <span className="text-right flex-1">{dateStr}</span>
+        </div>
+        <div className="inline-flex items-center gap-1">
+          <FiCalendar className="text-black" size={14} />
+          <span>{dateStr}</span>
         </div>
       </div>
     </div>
@@ -139,12 +158,14 @@ const AdminGreeting = () => {
 };
 
 const AdminTopBar = () => (
-  <div className="flex items-center justify-between gap-4 md:gap-12 w-full px-2 pt-5">
-    <div className="flex w-full items-center gap-2 md:gap-4">
-      <AdminSearchBar />
-      <AdminGreeting />
+  <div className="sticky top-0 z-40 w-full px-3 md:px-4 py-3 backdrop-blur-md bg-white/70 supports-[backdrop-filter]:bg-white/60 border-b border-black/10">
+    <div className="flex items-center justify-between gap-3 md:gap-8 rounded-2xl px-3 md:px-4 py-2">
+      <div className="flex w-full items-center gap-2 md:gap-4">
+        <AdminSearchBar />
+        <AdminGreeting />
+      </div>
+      <AdminIconsAvatar />
     </div>
-    <AdminIconsAvatar />
   </div>
 );
 

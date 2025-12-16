@@ -9,35 +9,61 @@ import {
   Tooltip
 } from "recharts";
 
-// Example Sri Lankan Revenue Data (LKR Millions)
-const data = [
-  { date: "Sep 10", revenue: 250 },
-  { date: "Sep 11", revenue: 320 },
-  { date: "Sep 12", revenue: 480 },
-  { date: "Sep 13", revenue: 610 },
-  { date: "Sep 14", revenue: 720 },
-  { date: "Sep 15", revenue: 540 },
-  { date: "Sep 16", revenue: 860 },
-];
+function shortMoney(n, cur = 'LKR') {
+  const num = Number(n || 0);
+  const abs = Math.abs(num);
+  if (abs >= 1_000_000_000) return `${cur} ${(num / 1_000_000_000).toFixed(1)}B`;
+  if (abs >= 1_000_000) return `${cur} ${(num / 1_000_000).toFixed(1)}M`;
+  if (abs >= 1_000) return `${cur} ${(num / 1_000).toFixed(1)}k`;
+  return `${cur} ${num.toFixed(0)}`;
+}
 
-export default function RevenueChart() {
+function shortNumber(n) {
+  const num = Number(n || 0);
+  const abs = Math.abs(num);
+  if (abs >= 1_000_000_000) return `${(num / 1_000_000_000).toFixed(1)}B`;
+  if (abs >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
+  if (abs >= 1_000) return `${(num / 1_000).toFixed(1)}k`;
+  return `${num.toFixed(0)}`;
+}
+
+function formatShortDate(dateStr) {
+  try {
+    if (!dateStr || typeof dateStr !== 'string') return String(dateStr || '');
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    const m = Number(parts[1]);
+    const d = Number(parts[2]);
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${months[Math.max(0, Math.min(11, m - 1))]} ${d}`;
+  } catch {
+    return String(dateStr || '');
+  }
+}
+
+export default function RevenueChart({ analytics }) {
+  const cur = analytics?.currency || 'LKR';
+  const series = (analytics?.revenueLast7Days || []).map(p => ({
+    date: formatShortDate(p?.date),
+    revenue: Number(p?.revenue || 0),
+  }));
+
   return (
     <div
-      className="col-span-12 md:col-span-8 h-72 w-full p-4"
-      style={{
-        background: "rgb(251, 251, 251)",
-        border: "2px solid rgb(221, 226, 223)",
-      }}
+        className="col-span-12 md:col-span-8 h-72 w-full p-4 rounded-2xl border border-gray-200 shadow-sm overflow-hidden"
+        style={{
+          background: "rgb(251, 251, 251)",
+        }}
     >
       <span
         className="mb-2 block text-lg font-semibold"
         style={{ color: "rgb(35, 41, 38)" }}
       >
-        Revenue (LKR Millions)
+        Revenue ({cur})
       </span>
 
       <ResponsiveContainer width="100%" height={208}>
-        <AreaChart data={data} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+        <AreaChart data={series} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
           {/* Grid */}
           <CartesianGrid stroke="#84958b55" />
 
@@ -54,7 +80,7 @@ export default function RevenueChart() {
             axisLine={{ stroke: "#5e6e65" }}
             tickLine={{ stroke: "#5e6e65" }}
             tick={{ fontSize: "0.8rem", fill: "#5e6e65" }}
-            tickFormatter={(value) => `Rs ${value}`}
+            tickFormatter={(value) => shortNumber(value)}
           />
 
           {/* Tooltip */}
@@ -65,6 +91,7 @@ export default function RevenueChart() {
               padding: "10px",
             }}
             labelStyle={{ marginBottom: "5px" }}
+            formatter={(value) => shortMoney(value, cur)}
           />
 
           {/* Area with animation */}

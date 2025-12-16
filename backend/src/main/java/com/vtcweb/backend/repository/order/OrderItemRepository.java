@@ -25,4 +25,28 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
     @Query("select oi.variationId, coalesce(sum(oi.quantity),0) from OrderItem oi where oi.productId = :productId and oi.variationId is not null group by oi.variationId order by coalesce(sum(oi.quantity),0) desc")
     List<Object[]> sumQuantityByVariation(Long productId);
+
+        // --- Admin analytics helpers (sales = non-cancelled orders) ---
+
+        @Query("select oi.productId, max(oi.productName), max(oi.categoryName), max(oi.imageUrl), coalesce(sum(oi.totalPrice),0) " +
+            "from OrderItem oi " +
+            "where oi.order.placedAt >= :start and oi.order.placedAt < :end " +
+            "and oi.order.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED " +
+            "group by oi.productId " +
+            "order by coalesce(sum(oi.totalPrice),0) desc")
+        List<Object[]> topProductsByRevenueBetween(LocalDateTime start, LocalDateTime end);
+
+        @Query("select coalesce(sum(oi.totalPrice),0) from OrderItem oi where oi.productId = :productId " +
+            "and oi.order.placedAt >= :start and oi.order.placedAt < :end " +
+            "and oi.order.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED")
+        BigDecimal sumRevenueByProductIdBetween(Long productId, LocalDateTime start, LocalDateTime end);
+
+        @Query("select oi.categoryId, max(oi.categoryName), coalesce(sum(oi.quantity),0) " +
+            "from OrderItem oi " +
+            "where oi.order.placedAt >= :start and oi.order.placedAt < :end " +
+            "and oi.order.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED " +
+            "and oi.categoryId is not null " +
+            "group by oi.categoryId " +
+            "order by coalesce(sum(oi.quantity),0) desc")
+        List<Object[]> topCategoriesByUnitsBetween(LocalDateTime start, LocalDateTime end);
 }

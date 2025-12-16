@@ -2,23 +2,27 @@
 
 
 html, body {
-    font-family: "Poppins", sans-serif;
+	font-family: "Poppins", sans-serif;
 }
 
-/* Base font sizing; bump size on very small screens so
-   text and components are more legible on real phones */
+/* Base font sizing; desktop-like by default */
 html {
   font-size: 16px;
 }
 
+/* For the main (non-admin) site, bump font size slightly on very small screens
+   so text/components are more legible on real phones. Keep admin at desktop
+   sizing so /admin on mobile matches desktop more closely. */
 @media (max-width: 480px) {
-  html {
+  html:not(.admin-mode) {
     font-size: 18px;
   }
 }
 
-/* Prevent horizontal scrollbar caused by 100vw and similar full-viewport widths */
-html, body {
+/* Prevent horizontal scrollbar caused by 100vw and similar full-viewport widths
+   on the main site. Allow admin mode to manage its own horizontal scrolling. */
+html:not(.admin-mode),
+body:not(.admin-mode) {
   overflow-x: hidden;
 }
 

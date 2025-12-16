@@ -139,9 +139,9 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs, isTransition
                     target={shouldReload ? "_self" : undefined}
                     onClick={() => setSelected(title)}
                     className={({ isActive }) => (
-                        open
-                            ? `flex h-12 w-full items-center gap-2 border-2 border-black hover:border-black px-2 transition-colors ${isActive || selected === title ? "bg-black text-green-400" : "bg-[#23f47d] text-black"}`
-                            : `grid h-12 w-12 place-content-center border-2 border-black hover:border-black text-2xl transition-colors ${isActive || selected === title ? "bg-black text-green-400" : "bg-[#23f47d] text-black"}`
+                            open
+                                ? `flex h-12 w-full items-center gap-2 border-2 border-black hover:border-black px-2 transition-colors rounded-xl ${isActive || selected === title ? "bg-black text-green-400" : "bg-[#23f47d] text-black"}`
+                                : `grid h-12 w-12 place-content-center border-2 border-black hover:border-black text-2xl transition-colors rounded-xl ${isActive || selected === title ? "bg-black text-green-400" : "bg-[#23f47d] text-black"}`
                     )}
                 >
                     <div className={`grid place-content-center ${open ? "h-6 w-6 text-2xl" : ""}`}>
