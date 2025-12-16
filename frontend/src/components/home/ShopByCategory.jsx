@@ -88,13 +88,27 @@ export default function DecorCollection() {
 
                         {/* content sits above the fill */}
                         <div className="relative px-4 py-2 flex items-center justify-between gap-3">
-                          <h5 className="font-semibold text-lg text-black group-hover:text-white transition-colors duration-300">{col.name}</h5>
+                          {/* Category name on the left */}
+                          <h5 className="font-semibold text-lg text-black group-hover:text-white transition-colors duration-300">
+                            {col.name}
+                          </h5>
 
-                          <div className="relative">
-                            <span className="text-sm text-gray-700 group-hover:text-white transition-opacity duration-300 inline-block group-hover:opacity-0">{col.items} ITEMS</span>
-                            <span className="absolute inset-0 flex items-center justify-end pr-1 opacity-0 group-hover:opacity-100 group-hover:text-white transition-opacity duration-300">
-                              <ArrowRight size={18} />
+                          {/* Right-side area: mobile shows only the numeric badge (bold), desktop shows full text+arrow */}
+                          <div className="flex items-center gap-2">
+                            {/* Mobile-only: numeric count in a black circle, bold */}
+                            <span className="inline-flex sm:hidden items-center justify-center rounded-full bg-black text-white text-xs w-6 h-6 font-bold">
+                              {col.items}
                             </span>
+
+                            {/* Desktop / larger screens: keep existing text + arrow behavior */}
+                            <div className="relative hidden sm:block">
+                              <span className="text-sm text-gray-700 group-hover:text-white transition-opacity duration-300 inline-block group-hover:opacity-0">
+                                {col.items} ITEMS
+                              </span>
+                              <span className="absolute inset-0 flex items-center justify-end pr-1 opacity-0 group-hover:opacity-100 group-hover:text-white transition-opacity duration-300">
+                                <ArrowRight size={18} />
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -110,18 +124,18 @@ export default function DecorCollection() {
               type="button"
               onClick={() => scrollBy(-1)}
               aria-label="Previous"
-              className="hidden md:flex items-center justify-center bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-14 h-14 -left-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
+              className="flex md:flex items-center justify-center bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-10 h-10 md:w-14 md:h-14 left-2 md:-left-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
             >
-              <ChevronLeft size={22} />
+              <ChevronLeft size={18} />
             </button>
 
             <button
               type="button"
               onClick={() => scrollBy(1)}
               aria-label="Next"
-              className="hidden md:flex items-center justify-center bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-14 h-14 -right-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
+              className="flex md:flex items-center justify-center bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-10 h-10 md:w-14 md:h-14 right-2 md:-right-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
             >
-              <ChevronRight size={22} />
+              <ChevronRight size={18} />
             </button>
         </div>
       </div>

@@ -42,7 +42,7 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-slate-50 text-neutral-900">
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden overflow-y-auto bg-slate-50 text-neutral-900">
       {/* Animated aurora background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#bbf7d022,_transparent_60%),_radial-gradient(circle_at_bottom,_#a7f3d022,_transparent_55%)]" />
@@ -77,30 +77,7 @@ export default function AdminLogin() {
       </div>
 
       {/* Content shell */}
-      <div className="relative z-10 flex h-full w-full max-w-6xl flex-col px-4 py-6 md:px-8 lg:px-12">
-        {/* Top bar */}
-        <header className="flex items-center justify-between text-xs text-neutral-600">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-400/70 bg-white/70 shadow-[0_0_22px_rgba(16,185,129,0.35)] backdrop-blur">
-              <span className="text-[11px] font-extrabold tracking-[0.25em] text-emerald-600">
-                VT
-              </span>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-700 whitespace-nowrap">
-                Vidara Trade Center
-              </p>
-              <p className="text-[11px] text-neutral-500">
-                Administrative Control Surface
-              </p>
-            </div>
-          </div>
-          <div className="hidden items-center gap-2 rounded-full bg-white/70 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-neutral-500 ring-1 ring-emerald-200/80 backdrop-blur sm:inline-flex">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-[pulse_1.4s_ease-in-out_infinite]" />
-            <span>Production environment</span>
-          </div>
-        </header>
-
+      <div className="relative z-10 flex w-full max-w-6xl flex-col px-4 py-6 md:px-8 lg:px-12">
         {/* Main content */}
         <main className="mt-6 flex flex-1 flex-col gap-8 md:mt-8 md:flex-row md:items-center">
           {/* Left: copy / reassurance */}
@@ -139,49 +116,16 @@ export default function AdminLogin() {
               <HiExternalLink className="h-3.5 w-3.5" />
               <span>Visit vidaratradecenter.me</span>
             </a>
-
-            <dl className="grid grid-cols-2 gap-4 text-xs text-neutral-600 sm:text-sm">
-              <div className="rounded-xl border border-neutral-200/80 bg-white/80 p-3 shadow-[0_6px_18px_rgba(15,23,42,0.06)] backdrop-blur">
-                <dt className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.20em] text-neutral-500">
-                  <HiShieldCheck className="h-4 w-4 text-emerald-500" />
-                  Security
-                </dt>
-                <dd className="mt-1.5">
-                  Role-based access, TLS-only traffic and activity monitoring.
-                </dd>
-              </div>
-              <div className="rounded-xl border border-neutral-200/80 bg-white/80 p-3 shadow-[0_6px_18px_rgba(15,23,42,0.06)] backdrop-blur">
-                <dt className="text-[11px] font-semibold uppercase tracking-[0.20em] text-neutral-500">
-                  Reliability
-                </dt>
-                <dd className="mt-1.5">
-                  24/7 monitoring with alerts on suspicious activity.
-                </dd>
-              </div>
-            </dl>
-
-            <div className="flex flex-wrap items-center gap-3 text-[11px] text-neutral-500">
-              <span className="inline-flex items-center gap-1 rounded-full bg-white/80 px-3 py-1 ring-1 ring-neutral-200/80">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                Enforced admin roles
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-white/80 px-3 py-1 ring-1 ring-neutral-200/80">
-                IP & session logging
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-white/80 px-3 py-1 ring-1 ring-neutral-200/80">
-                Automatic timeouts
-              </span>
-            </div>
           </section>
 
-          {/* Right: 1:1 login surface (form styling preserved) */}
+          {/* Right: login surface (form styling preserved) */}
           <section className="flex flex-1 items-center justify-center">
-            <div className="relative aspect-square w-full max-w-md sm:max-w-lg">
+            <div className="relative w-full max-w-md sm:max-w-lg">
               {/* Glow behind card */}
               <div className="pointer-events-none absolute -inset-[2px] rounded-3xl bg-gradient-to-br from-emerald-400/55 via-emerald-300/25 to-transparent opacity-60 blur-xl" />
 
               {/* Card wrapper with original form styles preserved */}
-              <div className="relative flex h-full w-full flex-col justify-center rounded-3xl border-2 border-black bg-white/90 p-8 shadow-xl backdrop-blur-md sm:p-10 overflow-hidden">
+              <div className="relative flex w-full flex-col justify-center rounded-3xl border-2 border-black bg-white/90 p-8 shadow-xl backdrop-blur-md sm:p-10">
                 <div className="mb-6 space-y-3 text-center">
                   <div className="inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
                     <HiShieldCheck className="h-4 w-4 text-emerald-500" />
@@ -310,8 +254,8 @@ export default function AdminLogin() {
         </main>
 
         {/* Footer inside viewport */}
-        <footer className="mt-4 text-[11px] text-right text-neutral-500 md:mt-6">
-          © {new Date().getFullYear()} Vidara Trade Center · Admin Portal
+        <footer className="mt-4 text-[11px] text-center text-neutral-500 md:mt-6">
+          © {new Date().getFullYear()} Vidara Trade Center. All rights reserved. Unauthorized access to this administrative portal is strictly prohibited.
         </footer>
       </div>
     </div>

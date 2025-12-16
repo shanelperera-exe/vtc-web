@@ -393,11 +393,6 @@ const StyledWrapper = styled.div`
   .img-card .quick-view-label {
     display: inline-block;
   }
-  @media (max-width: 420px) {
-    .img-card .quick-view-label {
-      display: none;
-    }
-  }
 
   .card {
     width: 100%;
@@ -416,24 +411,7 @@ const StyledWrapper = styled.div`
     justify-content: space-between;
   }
 
-  @media (max-width: 768px) {
-    .card {
-      width: 90%;
-      min-width: 140px;
-      max-width: 260px;
-      margin: 1vw auto;
-      padding: 0.85em;
-      height: 440px; /* slightly larger mobile height */
-    }
-    .img-card {
-      width: 100%;
-      max-width: 260px;
-      min-width: 140px;
-      padding: 0; /* removed mobile padding as well */
-      /* mobile fallback for aspect-ratio */
-      min-height: 240px;
-    }
-  }
+  /* No mobile-specific size overrides: keep full desktop card size/layout on all viewports */
 
   .wishlist-btn-wrapper {
     position: absolute;
