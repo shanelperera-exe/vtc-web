@@ -74,7 +74,8 @@ export default function AdminUserDetails() {
 	if (loading) {
 		return (
 			<div className="px-8 mt-16">
-				<h1 className="text-4xl font-bold mb-4">Loading user…</h1>
+				<h1 className="text-4xl font-bold mb-2 text-black tracking-tight">Loading user…</h1>
+				<p className="text-sm text-gray-600">Fetching profile, addresses, and orders.</p>
 			</div>
 		);
 	}
@@ -82,8 +83,15 @@ export default function AdminUserDetails() {
 	if (!user) {
 		return (
 			<div className="px-8 mt-16">
-				<h1 className="text-4xl font-bold mb-4">User not found</h1>
-				<button onClick={() => navigate(-1)} className="text-emerald-700 font-medium hover:underline">Go back</button>
+				<h1 className="text-4xl font-bold mb-2 text-black tracking-tight">User not found</h1>
+				<p className="text-sm text-gray-600 mb-4">This user may have been deleted or the link is invalid.</p>
+				<button
+					onClick={() => navigate(-1)}
+					className="inline-flex items-center gap-2 rounded-lg px-4 py-2 border border-black/10 bg-white text-sm font-semibold text-black hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+				>
+					<FiArrowLeft className="w-4 h-4" />
+					<span>Go back</span>
+				</button>
 			</div>
 		);
 	}
@@ -101,14 +109,17 @@ export default function AdminUserDetails() {
 	const lastOrder = ordersWithDates.length ? new Date(Math.max(...ordersWithDates.map(o => o?.placedAt ? new Date(o.placedAt).getTime() : 0))) : null;
 
 	return (
-		<div className="w-full">
+		<div className="w-full pb-24">
 			<div className="mt-8 mb-6 px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
 				<div>
-					<h1 className="text-5xl font-extrabold text-black tracking-tight">User Detail</h1>
+					<h1 className="text-4xl md:text-5xl font-extrabold text-black tracking-tight">User Detail</h1>
 					<p className="text-sm text-gray-600 mt-2">Manage account role, status & view order history.</p>
 				</div>
 				<div className="flex gap-3">
-					<button onClick={() => navigate('/admin/users')} className="inline-flex items-center gap-2 px-4 py-2 border-2 border-black/10 text-sm font-medium hover:bg-black hover:text-white">
+					<button
+						onClick={() => navigate('/admin/users')}
+						className="inline-flex items-center gap-2 rounded-lg px-4 py-2 border border-black/10 bg-white text-sm font-semibold text-black hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+					>
 						<FiArrowLeft className="w-4 h-4" />
 						<span>Back to users</span>
 					</button>
@@ -125,20 +136,19 @@ export default function AdminUserDetails() {
 						</span>
 					</h2>
 					<div
-						className="shadow-sm border-3 border-black p-6 pb-6 md:pb-8 relative overflow-hidden min-h-[320px]"
-						style={{ background: 'linear-gradient(90deg, #ffffff 0%, #0bd964 80%)' }}
+						className="relative overflow-hidden rounded-xl border border-black/10 shadow-sm p-6 pb-6 md:pb-8 min-h-[320px] bg-gradient-to-r from-white to-emerald-400/30"
 					>
 						{(user.firstName && user.lastName) && (
 							<div className="absolute top-6 right-6 flex flex-col items-end">
 								<AvatarImg
 									seed={user.firstName + ' ' + user.lastName}
 									alt={`Avatar for ${user.firstName} ${user.lastName}`}
-									className="w-50 h-50 border-3 border-black bg-white/90"
+									className="w-40 h-40 md:w-44 md:h-44 rounded-full border border-black/10 bg-white shadow-sm"
 								/>
-								<div className="mt-3 text-sm font-medium text-black/90 text-left space-y-0">
-									<div className='text-white drop-shadow-md'>User Code: <span className='text-black'>{user.userCode || user.id}</span></div>
-									<div className='text-white drop-shadow-md'>Created: <span className='text-black'>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</span></div>
-									<div className='text-white drop-shadow-md'>Last login: <span className='text-black'>{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : '-'}</span></div>
+								<div className="mt-3 text-xs font-semibold text-black/70 text-left space-y-1">
+									<div>USER CODE: <span className="font-bold text-black">{user.userCode || user.id}</span></div>
+									<div>CREATED: <span className="font-bold text-black">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</span></div>
+									<div>LAST LOGIN: <span className="font-bold text-black">{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : '-'}</span></div>
 								</div>
 							</div>
 						)}
@@ -155,18 +165,18 @@ export default function AdminUserDetails() {
 										<StatusBadge status={status} />
 									</div>
 								</div>
-								<div className="mb-1">Email: <span className="font-medium">{user.email}</span></div>
-								<div>Phone: <span className="font-medium">{user.phone ?? '-'}</span></div>
+								<div className="mb-1 text-gray-800">Email: <span className="font-semibold">{user.email}</span></div>
+								<div className="text-gray-800">Phone: <span className="font-semibold">{user.phone ?? '-'}</span></div>
 							</div>
 
 							<div className="text-sm text-gray-900">
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 									<div>
-										<div className="font-semibold mb-2">Billing addresses</div>
+										<div className="text-xs font-semibold uppercase tracking-wide text-black/60 mb-2">Billing addresses</div>
 										{billingAddrs.length > 0 ? (
 											<div className="space-y-2">
 												{billingAddrs.map((a, idx) => (
-													<address key={`bill-${a.id || idx}`} className="not-italic text-xs">
+													<address key={`bill-${a.id || idx}`} className="not-italic text-xs rounded-lg border border-black/10 bg-white/70 p-3">
 														<div>{a.name || '-'}</div>
 														<div>{a.line1}{a.line2 ? `, ${a.line2}` : ''}</div>
 														<div>{[a.city, a.district].filter(Boolean).join(', ')}</div>
@@ -181,11 +191,11 @@ export default function AdminUserDetails() {
 										)}
 									</div>
 									<div>
-										<div className="font-semibold mb-2 text-black whitespace-nowrap">Shipping addresses</div>
+										<div className="text-xs font-semibold uppercase tracking-wide text-black/60 mb-2 whitespace-nowrap">Shipping addresses</div>
 										{shippingAddrs.length > 0 ? (
 											<div className="space-y-2">
 												{shippingAddrs.map((a, idx) => (
-													<address key={`ship-${a.id || idx}`} className="not-italic text-xs">
+													<address key={`ship-${a.id || idx}`} className="not-italic text-xs rounded-lg border border-black/10 bg-white/70 p-3">
 														<div>{a.name || '-'}</div>
 														<div>{a.line1}{a.line2 ? `, ${a.line2}` : ''}</div>
 														<div>{[a.city, a.district].filter(Boolean).join(', ')}</div>
@@ -213,7 +223,7 @@ export default function AdminUserDetails() {
 							<span>Account controls</span>
 						</span>
 					</h3>
-					<div className="bg-white border-3 border-black p-6 min-h-[320px]">
+					<div className="rounded-xl bg-white border border-black/10 shadow-sm p-6 min-h-[320px]">
 						<div className="flex flex-col md:flex-row md:items-start gap-8">
 							<div className="w-44">
 								<label className="block text-xs font-semibold uppercase tracking-wide mb-1">Role</label>
@@ -267,26 +277,26 @@ export default function AdminUserDetails() {
 											notify({ type: 'error', text: e?.message || 'Failed to save changes' });
 										} finally { setSaving(false); }
 									}}
-									className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-black text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+									className="inline-flex items-center gap-2 rounded-lg px-4 py-2 bg-emerald-700 hover:bg-black text-white text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 									disabled={saving || (!isCurrentManager && (role !== roleFromDto(user)) && role !== 'customer')}
 								>
 									<FiSave className="w-4 h-4" />
 									<span>Save changes</span>
 								</button>
 								{status === 'active' ? (
-									<button onClick={() => setStatus('disabled')} className="inline-flex items-center gap-2 px-3 py-1 bg-white text-rose-600 border-2 border-rose-600 hover:bg-rose-200 text-sm font-semibold">
+									<button onClick={() => setStatus('disabled')} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 bg-white text-rose-700 border border-rose-300 hover:bg-rose-50 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
 										<FiSlash className="w-4 h-4" />
 										<span>Disable</span>
 									</button>
 								) : (
-									<button onClick={() => setStatus('active')} className="inline-flex items-center gap-2 px-3 py-1 bg-white text-emerald-800 hover:bg-emerald-200 border-2 border-emerald-700 text-sm font-semibold">
+									<button onClick={() => setStatus('active')} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 bg-white text-emerald-800 hover:bg-emerald-50 border border-emerald-300 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
 										<FiCheckCircle className="w-4 h-4" />
 										<span>Activate</span>
 									</button>
 								)}
 							</div>
 							{!isCurrentManager && (
-								<p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 inline-block">Only the manager can modify user roles.</p>
+								<p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-3 py-2 rounded-lg inline-flex">Only the manager can modify user roles.</p>
 							)}
 							{isViewingSelf && role === 'manager' && (
 								<p className="text-xs text-emerald-700">You are the platform manager. You may delegate by promoting an admin, which will demote you automatically (future backend logic).</p>
@@ -294,20 +304,22 @@ export default function AdminUserDetails() {
 
 							{/* Delete user panel inside account controls */}
 							{(isCurrentManager || (isCurrentAdmin && role === 'customer')) && !isViewingSelf && (
-								<div className="mt-4 border-t pt-4 mb-[3px]">
-									<h5 className="text-sm font-semibold mb-2">Delete account</h5>
-									<p className="text-xs text-gray-600 mb-3 flex items-start gap-2">
+								<div className="mt-4 border-t border-black/10 pt-4 mb-[3px]">
+									<div className="rounded-lg border border-rose-200 bg-rose-50/40 p-4">
+										<h5 className="text-sm font-semibold mb-2 text-rose-800">Delete account</h5>
+										<p className="text-xs text-rose-900/70 mb-3 flex items-start gap-2">
 										<FiInfo className="w-4 h-4 text-emerald-700 mt-0.5" />
 										<span><span className="font-semibold">Note:</span> Permanently remove this user's account. Reviews and orders will be preserved but the account will be deleted.</span>
 									</p>
 									<div>
 										<button
 											onClick={() => setDeleteOpen(true)}
-											className="inline-flex items-center gap-2 px-4 py-2 border-2 border-rose-700 text-rose-700 hover:bg-rose-700 hover:text-white text-sm font-semibold"
+												className="inline-flex items-center gap-2 rounded-lg px-4 py-2 border border-rose-300 bg-white text-rose-800 hover:bg-rose-700 hover:text-white hover:border-rose-700 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 										>
 											<FiTrash2 className="w-4 h-4" />
 											<span>Delete user</span>
 										</button>
+									</div>
 									</div>
 								</div>
 							)}
@@ -324,7 +336,7 @@ export default function AdminUserDetails() {
 							<span>User stats</span>
 						</span>
 					</h4>
-					<div className="bg-white border-3 border-black p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+					<div className="rounded-xl bg-white border border-black/10 shadow-sm p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
 						<Metric label="Orders" value={orderCount} />
 						<Metric label="Total spend" value={new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(totalSpend)} />
 						<Metric label="Avg order" value={orderCount ? new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(totalSpend / orderCount) : new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(0)} />
@@ -344,8 +356,9 @@ export default function AdminUserDetails() {
 						<span>Order history</span>
 					</span>
 				</h2>
-				<div className="bg-white border-3 border-black/20 overflow-hidden">
-					<table className="w-full text-sm">
+				<div className="rounded-xl border border-black/10 bg-white shadow-sm overflow-hidden">
+					<div className="overflow-x-auto">
+						<table className="w-full text-sm">
 						<thead className="bg-gray-50 text-gray-700">
 							<tr className="text-left">
 								<Th>Order No.</Th>
@@ -356,12 +369,12 @@ export default function AdminUserDetails() {
 								<Th></Th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody className="divide-y divide-gray-100">
 							{orders.length === 0 && (
 								<tr><Td colSpan={6} className="py-10 text-center text-gray-500">No orders yet.</Td></tr>
 							)}
 							{orders.map(o => (
-								<tr key={o.id} className="border-t border-gray-100 hover:bg-emerald-50/40">
+								<tr key={o.id} className="hover:bg-emerald-50/40 transition-colors">
 								<Td className="text-sm">{o.orderNumber ? `#${o.orderNumber}` : `#${o.id}`}</Td>
 									<Td>{o.placedAt ? new Date(o.placedAt).toLocaleDateString() : '-'}</Td>
 								<Td><OrderStatus status={o.status} /></Td>
@@ -369,7 +382,7 @@ export default function AdminUserDetails() {
 									<Td>{new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(o.total)}</Td>
 								<Td>
 									<Link
-										className="inline-flex items-center gap-2 px-3 py-1 border-2 border-emerald-700 text-emerald-800 hover:bg-emerald-600 hover:text-white text-xs font-semibold"
+										className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 border border-emerald-700 text-emerald-800 hover:bg-emerald-700 hover:text-white text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 										to={`/admin/orders/${o.orderNumber || o.id}`}
 									>
 										<span>View order</span>
@@ -380,6 +393,7 @@ export default function AdminUserDetails() {
 							))}
 						</tbody>
 					</table>
+						</div>
 				</div>
 			</section>
 
@@ -387,14 +401,14 @@ export default function AdminUserDetails() {
 			<Dialog open={deleteOpen} onClose={() => (deleting ? null : setDeleteOpen(false))} className="relative z-[60]">
 				<DialogBackdrop className="fixed inset-0 bg-black/30" />
 				<div className="fixed inset-0 z-[61] flex items-center justify-center p-4">
-					<DialogPanel className="w-full max-w-md bg-white border-3 border-black shadow-xl">
+					<DialogPanel className="w-full max-w-md bg-white rounded-xl border border-black/10 shadow-xl overflow-hidden">
 						<div className="p-5">
 							<DialogTitle className="text-2xl font-bold text-gray-900">Delete user?</DialogTitle>
 							<p className="mt-2 text-sm text-gray-700">This will permanently delete the account for <span className="font-semibold">{user?.firstName} {user?.lastName}</span> ({user?.email}). This action cannot be undone.</p>
 							<div className="mt-6 flex justify-end gap-3">
 								<button
 									onClick={() => setDeleteOpen(false)}
-									className="px-4 py-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 text-sm font-semibold"
+									className="rounded-lg px-4 py-2 border border-black/10 bg-white text-gray-800 hover:bg-gray-50 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 									disabled={deleting}
 								>
 									Cancel
@@ -414,7 +428,7 @@ export default function AdminUserDetails() {
 											setDeleting(false);
 										}
 									}}
-									className="px-4 py-2 bg-rose-700 text-white border-2 border-rose-800 hover:bg-rose-800 text-sm font-semibold disabled:opacity-60"
+									className="rounded-lg px-4 py-2 bg-rose-700 text-white border border-rose-800 hover:bg-rose-800 text-sm font-semibold transition-colors disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 									disabled={deleting}
 								>
 									{deleting ? 'Deleting…' : 'Delete'}
@@ -428,8 +442,8 @@ export default function AdminUserDetails() {
 	);
 }
 
-const Th = ({ children }) => <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">{children}</th>;
-const Td = ({ children, className = '', ...rest }) => <td className={`px-4 py-3 align-top ${className}`} {...rest}>{children}</td>;
+const Th = ({ children }) => <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase whitespace-nowrap">{children}</th>;
+const Td = ({ children, className = '', ...rest }) => <td className={`px-4 py-3 align-top text-gray-800 ${className}`} {...rest}>{children}</td>;
 
 // Status badge style aligned with OrderDetails status badge
 const getStatusBadgeMeta = (status) => {
@@ -456,7 +470,7 @@ const OrderStatus = ({ status }) => {
 
 function Metric({ label, value }) {
 	return (
-		<div className="flex flex-col gap-1">
+		<div className="flex flex-col gap-1 rounded-lg border border-black/10 bg-gray-50 p-3">
 			<span className="text-xs font-semibold uppercase tracking-wide text-black/60">{label}</span>
 			<span className="text-2xl font-semibold text-black">{value}</span>
 		</div>

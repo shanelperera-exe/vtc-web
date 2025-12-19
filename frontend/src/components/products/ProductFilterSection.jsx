@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Checkbox from '../ui/Checkbox';
 import Slider from '../ui/Slider';
+import { FiSliders } from 'react-icons/fi';
 
 const ProductFilterSection = ({ onFilterChange }) => {
 	// State for collapsible sections
@@ -168,9 +169,10 @@ const ProductFilterSection = ({ onFilterChange }) => {
 							className="flex items-center justify-between cursor-pointer py-2 font-semibold w-full border-b border-gray-300"
 							onClick={() => toggleSection('sort')}
 						>
-							<div className="flex gap-x-1 capitalize text-[16px]">
+							<div className="flex gap-x-2 items-center capitalize text-[16px]">
+								<FiSliders className="w-4 h-4 text-black/60" />
 								<span>Sort by:</span>
-								<span>{sortBy}</span>
+								<span className="font-semibold text-black/80">{sortBy}</span>
 							</div>
 							<div className="z-10">
 								<span className={`block transition-transform ${openSections.sort ? '' : 'rotate-180'}`}><svg fill="currentColor" width="24" height="24" viewBox="0 0 466 1000"><path d="M405 380c14.667-17.333 30.667-17.333 48 0 17.333 14.667 17.333 30.667 0 48L257 620c-14.667 14.667-30.667 14.667-48 0L13 428c-17.333-17.333-17.333-33.333 0-48 16-16 32.667-16 50 0l170 156 172-156"></path></svg></span>
@@ -179,7 +181,7 @@ const ProductFilterSection = ({ onFilterChange }) => {
 						<div
 							className={`transition-all duration-300 ease-in-out overflow-hidden ${openSections.sort ? 'max-h-40 opacity-100 pt-2' : 'max-h-0 opacity-0 pt-0'}`}
 						>
-							<div className="flex flex-col gap-0.1">
+							<div className="flex flex-col gap-1">
 								{['Manual', 'Best Selling', 'Price: Low-High', 'Price: High-Low', 'Date, new to old'].map(sort => (
 									<label key={sort} className="flex items-center gap-2 cursor-pointer text-sm">
 										<input
@@ -189,7 +191,7 @@ const ProductFilterSection = ({ onFilterChange }) => {
 											checked={sortBy === sort}
 											onChange={() => setSortBy(sort)}
 										/>
-										<span className={`inline-block px-2 py-1 capitalize text-gray-700 ${sortBy === sort ? 'bg-gray-200' : ''}`}>{sort}</span>
+										<span className={`inline-flex w-full items-center rounded-lg px-2 py-1 capitalize border ${sortBy === sort ? 'bg-black text-white border-black' : 'bg-white text-gray-800 border-black/10 hover:bg-gray-50'}`}>{sort}</span>
 									</label>
 								))}
 							</div>

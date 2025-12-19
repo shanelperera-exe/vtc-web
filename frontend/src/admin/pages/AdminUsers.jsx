@@ -143,8 +143,9 @@ export default function AdminUsers() {
             </div>
             {/* Table */}
             <div className="px-8 pb-20">
-                <div className="overflow-x-auto border-2 border-black/10 bg-whit">
-                    <table className="min-w-full text-sm">
+                <div className="rounded-xl border-2 border-black/10 bg-white overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm">
                         <thead className="bg-gray-50 text-gray-700">
                             <tr className="text-left">
                                 <Th>ID</Th>
@@ -157,14 +158,14 @@ export default function AdminUsers() {
                                 <Th></Th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-gray-100">
                             {loading ? (
                                 <tr><Td colSpan={8} className="py-10 text-center text-gray-500">Loading...</Td></tr>
                             ) : filtered.map(u => {
                                 const role = (u.roles || []).find(r => r.includes('MANAGER')) ? 'manager' : (u.roles || []).find(r => r.includes('ADMIN')) ? 'admin' : 'customer';
                                 const status = u.enabled ? 'active' : 'disabled';
                                 return (
-                                    <tr key={u.id} className="border-t border-gray-100 hover:bg-emerald-50/40 transition-colors">
+                                    <tr key={u.id} className="hover:bg-emerald-50/40 transition-colors">
                                         <Td className="text-sm font-medium text-gray-600">{u.userCode || u.id}</Td>
                                         <Td>
                                             <div className="flex flex-col">
@@ -180,7 +181,7 @@ export default function AdminUsers() {
                                         <Td className="text-right w-28">
                                             <button
                                                 onClick={() => navigate(`/admin/users/${encodeURIComponent(u.userCode || u.id)}`)}
-                                                className="inline-flex items-center gap-2 px-2 py-1 bg-black text-white border-2 border-white hover:bg-white hover:text-black hover:border-2 hover:border-black leading-none transition-colors duration-150"
+                                                className="inline-flex items-center gap-2 rounded-4xl px-3 py-1 bg-black text-white border-2 border-black leading-none transition-colors duration-150 hover:bg-white hover:border-2 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                                             >
                                                 <FiEye className="w-4 h-4" />
                                                 <span className="text-sm font-medium">View</span>
@@ -196,11 +197,12 @@ export default function AdminUsers() {
                             )}
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
 
-const Th = ({ children }) => <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">{children}</th>;
-const Td = ({ children, className = '', ...rest }) => <td className={`px-4 py-3 align-top ${className}`} {...rest}>{children}</td>;
+const Th = ({ children }) => <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase whitespace-nowrap">{children}</th>;
+const Td = ({ children, className = '', ...rest }) => <td className={`px-4 py-3 align-top text-gray-800 ${className}`} {...rest}>{children}</td>;

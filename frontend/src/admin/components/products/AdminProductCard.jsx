@@ -220,7 +220,7 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
     return (
         <div
             ref={cardRef}
-            className="relative w-full md:col-span-2 lg:col-span-2 xl:col-span-2 bg-white border-2 transition-all overflow-visible flex flex-col md:flex-row items-start"
+            className="relative w-full md:col-span-2 lg:col-span-2 xl:col-span-2 bg-white rounded-xl border border-black/10 shadow-sm hover:shadow-md transition-shadow overflow-visible flex flex-col md:flex-row items-start"
             style={{ minHeight: '23.5rem' }}
         >
             {/* Image area with padding */}
@@ -228,15 +228,17 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                 {/* Image occupies remaining space; actions sit at the bottom inside the same fixed-height column */}
                 <div className="w-full flex-1 md:h-full">
                     {imageUrl ? (
-                        <img src={imageUrl} alt={product.name || 'Product image'} className="block w-full h-full object-cover border-2" />
+                        <div className="w-full h-full rounded-lg overflow-hidden border border-black/10 bg-gray-50">
+                            <img src={imageUrl} alt={product.name || 'Product image'} className="block w-full h-full object-cover" />
+                        </div>
                     ) : (
-                        <div className="w-full h-full bg-gray-800 flex items-center justify-center text-xs text-gray-400">No Image</div>
+                        <div className="w-full h-full rounded-lg border border-black/10 bg-gray-100 flex items-center justify-center text-xs text-gray-500">No image</div>
                     )}
                 </div>
 
                 {/* Actions menu placed under the image but inside the same h-65 container so card size doesn't change */}
                 <div className="mt-4 w-full">
-                    <div className="text-sm text-gray-700 font-semibold mb-1">Actions</div>
+                    <div className="text-xs font-semibold uppercase tracking-wide text-black/60 mb-2">Actions</div>
                     <div className="grid grid-cols-2 gap-2">
                         <button
                             type="button"
@@ -244,11 +246,11 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                                 const id = product.sku || product.id || product._id;
                                 if (id) window.open(`/product/${id}`,'_blank','noopener,noreferrer');
                             }}
-                            className="w-full flex items-center font-medium justify-center gap-2 px-2 py-1 text-sm border-2 border-gray-200 bg-white transition-colors duration-150 ease-in-out hover:bg-gray-100 focus:outline-none"
+                            className="w-full inline-flex items-center justify-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold border border-black/10 bg-white text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                             aria-label="View product"
                             title="View"
                         >
-                            <FiEye className="w-4 h-4 text-gray-600" />
+                            <FiEye className="w-4 h-4" />
                             <span className="hidden sm:inline">View</span>
                         </button>
 
@@ -258,11 +260,11 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                                 const key = product.sku || product.SKU || product.skuCode || product.id || product._id;
                                 if (key) navigate(`/admin/products/${encodeURIComponent(key)}/stats`);
                             }}
-                            className="w-full flex items-center font-medium justify-center gap-2 px-2 py-1 text-sm border-2 border-gray-200 bg-white transition-colors duration-150 ease-in-out hover:bg-gray-100 focus:outline-none"
+                            className="w-full inline-flex items-center justify-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold border border-black/10 bg-white text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                             aria-label="Product stats"
                             title="Stats"
                         >
-                            <FiBarChart2 className="w-4 h-4 text-gray-600" />
+                            <FiBarChart2 className="w-4 h-4" />
                             <span className="hidden sm:inline">Stats</span>
                         </button>
 
@@ -281,11 +283,11 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                                 const id = product?.id || product?._id;
                                 if (id) navigate(`/admin/products?edit=${encodeURIComponent(id)}`);
                             }}
-                            className="w-full flex items-center font-medium justify-center gap-2 px-2 py-1 text-sm border-2 border-gray-200 bg-white transition-colors duration-150 ease-in-out hover:bg-gray-100 focus:outline-none"
+                            className="w-full inline-flex items-center justify-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold border border-black/10 bg-white text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                             aria-label="Edit product"
                             title="Edit"
                         >
-                            <FiEdit2 className="w-4 h-4 text-gray-600" />
+                            <FiEdit2 className="w-4 h-4" />
                             <span className="hidden sm:inline">Edit</span>
                         </button>
 
@@ -311,7 +313,7 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                                     alert(e?.message || 'Failed to delete product');
                                 }
                             }}
-                            className="w-full flex items-center font-medium justify-center gap-2 px-2 py-1 text-sm border-2 border-gray-200 bg-white text-red-600 transition-colors duration-150 ease-in-out hover:bg-red-50 focus:outline-none"
+                            className="w-full inline-flex items-center justify-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold border border-rose-300 bg-white text-rose-700 hover:bg-rose-700 hover:text-white hover:border-rose-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                             aria-label="Delete product"
                             title="Delete"
                         >
@@ -336,7 +338,7 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
                             onClick={handleCopyLink}
-                            className="relative inline-flex items-center justify-center p-2 text-gray-500 hover:text-black hidden group-hover:flex"
+                            className="relative hidden group-hover:inline-flex items-center justify-center rounded-lg p-2 text-gray-500 hover:text-black border border-transparent hover:border-black/10"
                             aria-label="Copy product link"
                         >
                             <FiLink className="w-4 h-4" />
@@ -349,11 +351,11 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                             {linkCopied ? 'Copied!' : 'Copy product link'}
                         </TooltipPortal>
                     </div>
-                    <hr className='pt-1 pb-1'/>
+                    <hr className="my-2 border-t border-gray-200" />
                     <div>
                         <div className="mt-1 flex items-center flex-wrap gap-2 text-sm text-gray-600">
-                            <span className="text-gray-800 font-medium">SKU:</span>
-                            <span className="break-all">{skuVal || '—'}</span>
+                            <span className="text-xs font-semibold uppercase tracking-wide text-black/60">SKU</span>
+                            <span className="text-sm font-semibold text-gray-900 break-all">{skuVal || '—'}</span>
 
                             <div className="relative group">
                                 <button
@@ -362,7 +364,7 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                                     onMouseEnter={() => setIsSkuHovered(true)}
                                     onMouseLeave={() => setIsSkuHovered(false)}
                                     onClick={handleCopySku}
-                                    className="relative inline-flex items-center justify-center p-1 rounded text-gray-500 hover:text-black"
+                                    className="relative inline-flex items-center justify-center rounded-lg p-1.5 text-gray-500 hover:text-black border border-transparent hover:border-black/10"
                                     aria-label="Copy SKU"
                                 >
                                     <FiCopy className="w-4 h-4" />
@@ -377,15 +379,15 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                             </div>
 
                             {categoryName && (
-                                <span className="ml-1 inline-block bg-gray-100 text-gray-800 text-[11px] px-1.5 py-0.5 font-semibold border border-gray-800">{String(categoryName).toUpperCase()}</span>
+                                <span className="ml-1 inline-flex items-center rounded-full bg-gray-50 text-gray-800 text-[11px] px-2 py-0.5 font-semibold border border-black/10">{String(categoryName).toUpperCase()}</span>
                             )}
 
                             {/* Status indicator moved next to category with icon */}
                             <span className="ml-2 text-gray-800 text-[12px] font-medium">Status:</span>
                             <span
                                 className={`inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0 rounded-full border ${isActive
-                                    ? 'border-green-600 text-green-700 bg-green-50'
-                                    : 'border-red-600 text-red-700 bg-red-50'
+                                    ? 'border-emerald-600 text-emerald-700 bg-emerald-50'
+                                    : 'border-rose-600 text-rose-700 bg-rose-50'
                                     }`}
                                 title={isActive ? 'Product is active' : 'Product is inactive'}
                             >
@@ -406,7 +408,7 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                         <div className="mt-3">
                             {/* Tabs header */}
                             <div className="mb-1 flex items-center justify-between">
-                                <div className="inline-flex border border-gray-200 overflow-hidden">
+                                <div className="inline-flex rounded-lg border border-black/10 overflow-hidden bg-white">
                                     <button
                                         type="button"
                                         onClick={() => setActiveTab('variants')}
@@ -419,7 +421,7 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                                     <button
                                         type="button"
                                         onClick={() => setActiveTab('stats')}
-                                        className={`px-3 py-1.5 text-xs font-semibold border-l border-gray-200 ${
+                                        className={`px-3 py-1.5 text-xs font-semibold border-l border-black/10 ${
                                             activeTab === 'stats' ? 'bg-black text-white' : 'bg-white text-gray-700 hover:bg-gray-50'
                                         }`}
                                     >
@@ -438,7 +440,7 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                             </div>
 
                             {activeTab === 'variants' ? (
-                                <div className="border border-gray-200 overflow-x-auto">
+                                <div className="rounded-lg border border-black/10 overflow-hidden">
                                     <div ref={variantsWrapperRef} className="w-full">
                                         <div
                                             ref={variantsInnerRef}
@@ -458,7 +460,7 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                                                             <th className="text-left font-semibold text-gray-700 px-2 py-1">Status</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody className="divide-y divide-gray-100">
                                                         {variants.map((v) => {
                                                             const stock = v?.stock ?? v?.stockLevel ?? 0;
                                                             const vThreshold = typeof v?.lowStockThreshold === 'number' ? v.lowStockThreshold : lowStockThreshold;
@@ -495,7 +497,7 @@ const AdminProductCard = ({ product = {}, onToggleStatus, onEdit, onDelete }) =>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="border border-gray-200 p-2">
+                                <div className="rounded-lg border border-black/10 bg-gray-50 p-2">
                                     {variantsLoading ? (
                                         <div className="text-xs text-gray-500">Loading stats…</div>
                                     ) : variantsError ? (
@@ -547,22 +549,30 @@ function QuickStatsPanel({ variants, defaultThreshold }) {
     }, [variants, defaultThreshold]);
 
     return (
-        <div className="grid grid-cols-2 gap-2">
-            <StatCard label="Total variants" value={totals.count} />
+        <div className="grid grid-cols-2 gap-1.5">
             <StatCard label="Total stock" value={totals.stockTotal} />
-            <StatCard label="In stock" value={totals.inStock} color="text-green-700" />
-            <StatCard label="Low stock" value={totals.lowStock} color="text-amber-700" />
-            <StatCard label="Out of stock" value={totals.outOfStock} color="text-red-700" />
             <StatCard label="Price range" value={formatRange(totals.minPrice, totals.maxPrice)} />
+            <StatCard label="In stock" value={totals.inStock} tone="good" />
+            <StatCard label="Low stock" value={totals.lowStock} tone="warn" />
+            <StatCard label="Out of stock" value={totals.outOfStock} tone="bad" />
+            <StatCard label="Variants" value={totals.count} />
         </div>
     );
 }
 
-function StatCard({ label, value, color }) {
+function StatCard({ label, value, tone }) {
+    const toneClass =
+        tone === 'good'
+            ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+            : tone === 'warn'
+                ? 'text-amber-800 bg-amber-50 border-amber-200'
+                : tone === 'bad'
+                    ? 'text-rose-700 bg-rose-50 border-rose-200'
+                    : 'text-gray-900 bg-white border-black/10';
     return (
-		<div className="border border-gray-200 rounded-xl bg-white/80 p-2">
-            <div className="text-[11px] text-gray-600">{label}</div>
-            <div className={`text-sm font-semibold ${color || 'text-gray-900'}`}>{value ?? '—'}</div>
+        <div className={`rounded-md border p-1.5 ${toneClass}`}>
+            <div className="text-[9px] font-semibold uppercase tracking-wide text-black/50 leading-none">{label}</div>
+            <div className="mt-0.5 text-xs font-semibold tabular-nums leading-tight">{value ?? '—'}</div>
         </div>
     );
 }

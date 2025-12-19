@@ -6,6 +6,7 @@ import ProductFilterSection from '../components/products/ProductFilterSection';
 import { useProducts } from '../api/hooks/useProducts';
 import { useCategories } from '../api/hooks/useCategories';
 import { slugifyCategory, deslugifyCategory } from '../utils/slugify';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 const ProductsByCategory = () => {
 	const { category } = useParams();
@@ -172,34 +173,34 @@ const ProductsByCategory = () => {
 
 				{/* Pagination controls (mirroring admin style) */}
 				<div className="mt-10 px-14 flex flex-col sm:flex-row items-center justify-between gap-3 mb-12">
-					<div className="flex items-center gap-2 text-sm">
+					<div className="flex items-center gap-2 text-sm text-gray-700">
 						<span>Rows per page</span>
 						<select
 							value={pageSize}
 							onChange={(e) => { setPageSize(parseInt(e.target.value)); setPage(1); }}
-							className="border-2 border-black px-2 py-1 bg-white"
+							className="rounded-lg border border-black/10 px-2 py-1.5 bg-white text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 						>
 							{[8, 12, 24].map((s) => (
 								<option key={s} value={s}>{s}</option>
 							))}
 						</select>
-						<span className="text-gray-600">Showing {showingFrom}-{showingTo} of {totalElements}</span>
+						<span className="text-gray-500">Showing <span className="font-semibold text-gray-900">{showingFrom}-{showingTo}</span> of <span className="font-semibold text-gray-900">{totalElements}</span></span>
 					</div>
-					<div className="inline-flex border-2 border-black">
+					<div className="inline-flex overflow-hidden rounded-xl border border-black/10 bg-white">
 						<button
-							className="px-3 py-2 bg-white hover:bg-[#23f47d]"
+							className="inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"
 							onClick={() => setPage(p => Math.max(1, p - 1))}
 							disabled={page <= 1}
 						>
-							Prev
+							<FiChevronLeft className="w-4 h-4" /> Prev
 						</button>
-						<div className="px-3 py-2 bg-black text-green-400 text-sm">{page} / {totalPages}</div>
+						<div className="px-3 py-2 bg-black text-white text-sm font-semibold">{page} / {totalPages}</div>
 						<button
-							className="px-3 py-2 bg-white hover:bg-[#23f47d]"
+							className="inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"
 							onClick={() => setPage(p => Math.min(totalPages, p + 1))}
 							disabled={page >= totalPages}
 						>
-							Next
+							Next <FiChevronRight className="w-4 h-4" />
 						</button>
 					</div>
 				</div>

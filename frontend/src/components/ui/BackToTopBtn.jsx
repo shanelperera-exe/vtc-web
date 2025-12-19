@@ -23,7 +23,6 @@ const StyledWrapper = styled.div`
     cursor: pointer;
     position: relative;
     border: 3px solid #000;
-    box-shadow: 3px 3px 0px #000;
   }
 
   .arrow path {

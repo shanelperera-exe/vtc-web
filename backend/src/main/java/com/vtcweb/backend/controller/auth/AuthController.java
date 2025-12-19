@@ -25,12 +25,23 @@ public class AuthController {
 
     private static final String REFRESH_COOKIE = "vtc_refresh";
 
-    private ResponseCookie buildRefreshCookie(String token) {
+    private boolean isAdminUser(AuthResponse auth) {
+        try {
+            return auth != null
+                    && auth.getUser() != null
+                    && auth.getUser().getRoles() != null
+                    && auth.getUser().getRoles().contains("ROLE_ADMIN");
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    private ResponseCookie buildRefreshCookie(String token, long maxAgeSeconds) {
         return ResponseCookie.from(REFRESH_COOKIE, token == null ? "" : token)
                 .httpOnly(true)
                 .secure(securityProperties.getCookie().getRefresh().isSecure())
                 .path("/")
-                .maxAge(token == null ? 0 : securityProperties.getJwt().getRefreshTtlSeconds())
+                .maxAge(token == null ? 0 : Math.max(0, maxAgeSeconds))
                 .sameSite(securityProperties.getCookie().getRefresh().getSameSite())
                 .build();
     }
@@ -40,7 +51,8 @@ public class AuthController {
             HttpServletResponse response) {
         AuthResponse auth = authService.register(req);
         if (auth.getRefreshToken() != null) {
-            response.addHeader(HttpHeaders.SET_COOKIE, buildRefreshCookie(auth.getRefreshToken()).toString());
+            long maxAge = securityProperties.getJwt().getRefreshTtlSeconds();
+            response.addHeader(HttpHeaders.SET_COOKIE, buildRefreshCookie(auth.getRefreshToken(), maxAge).toString());
         }
         return ResponseEntity.ok(auth);
     }
@@ -52,7 +64,10 @@ public class AuthController {
         String ip = request.getRemoteAddr();
         AuthResponse auth = authService.login(req, userAgent, ip);
         if (auth.getRefreshToken() != null) {
-            response.addHeader(HttpHeaders.SET_COOKIE, buildRefreshCookie(auth.getRefreshToken()).toString());
+            long maxAge = isAdminUser(auth)
+                    ? securityProperties.getJwt().getAdminRefreshTtlSeconds()
+                    : securityProperties.getJwt().getRefreshTtlSeconds();
+            response.addHeader(HttpHeaders.SET_COOKIE, buildRefreshCookie(auth.getRefreshToken(), maxAge).toString());
         }
         return ResponseEntity.ok(auth);
     }
@@ -85,7 +100,7 @@ public class AuthController {
         if (refreshCookie != null) {
             authService.logout(refreshCookie);
         }
-        response.addHeader(HttpHeaders.SET_COOKIE, buildRefreshCookie(null).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, buildRefreshCookie(null, 0).toString());
         return ResponseEntity.noContent().build();
     }
 

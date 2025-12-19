@@ -13,25 +13,31 @@ export default function BillingSummary({ billing }) {
   const format = (v) => (typeof v === 'number' ? `LKR ${v.toLocaleString()}` : v);
   return (
     <section aria-labelledby="summary-heading" className="mt-4">
-      <div className="bg-white shadow border-3 p-6 space-y-8">
+      <h3 id="summary-heading" className="sr-only">Billing summary</h3>
+
+      <div className="bg-white rounded-xl border border-black/10 shadow-sm p-6 space-y-6">
         {/* Billing Info */}
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div>
-            <dt className="text-sm font-medium text-gray-700">
+          <div className="rounded-lg border border-black/10 bg-gray-50 p-4">
+            <dt className="text-xs font-semibold uppercase tracking-wide text-black/60">
               Billing address
             </dt>
             <dd className="mt-2 text-gray-900 space-y-1 text-sm">
-              {address.map((line, idx) => (
-                <p key={idx}>{line}</p>
-              ))}
+              {Array.isArray(address) && address.length > 0 ? (
+                address.map((line, idx) => (
+                  <p key={idx}>{line}</p>
+                ))
+              ) : (
+                <p className="text-gray-500 italic">No billing address provided</p>
+              )}
             </dd>
           </div>
 
-          <div>
-            <dt className="text-sm font-medium text-gray-700">
+          <div className="rounded-lg border border-black/10 bg-gray-50 p-4">
+            <dt className="text-xs font-semibold uppercase tracking-wide text-black/60">
               Payment information
             </dt>
-            <dd className="mt-2 flex items-center gap-4">
+            <dd className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               {/* Card Brand Images */}
               {(() => {
                 const raw = (paymentType || '').toLowerCase();
@@ -50,43 +56,49 @@ export default function BillingSummary({ billing }) {
                 const altText = brand === 'amex' ? 'American Express' : (brand.charAt(0).toUpperCase() + brand.slice(1));
 
                 return (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <img
                       src={logoSrc}
                       alt={altText}
-                      width="40"
-                      height="24"
-                      className='border-2'
+                      width="44"
+                      height="28"
+                      className="border border-black/10 bg-white rounded-md p-1"
+                      loading="lazy"
+                      decoding="async"
                     />
-                    <p className="text-gray-900 font-medium ml-2">{payment.type}</p>
+                    <p className="text-gray-900 font-semibold">{paymentType}</p>
                   </div>
                 );
               })()}
 
               {/* Card Details */}
-              <div className="text-sm text-gray-600">
-                  <p>Ending with {paymentLast4}</p>
-                  <p>Expires {paymentExpires}</p>
+              <div className="text-sm text-gray-700">
+                <p>Ending with <span className="font-semibold">{paymentLast4}</span></p>
+                {paymentExpires ? (
+                  <p>Expires <span className="font-semibold">{paymentExpires}</span></p>
+                ) : (
+                  <p className="text-gray-500">Expires —</p>
+                )}
               </div>
             </dd>
           </div>
         </dl>
 
         {/* Order Summary */}
-        <dl className="divide-y divide-gray-200 text-md">
-          <div className="flex justify-between py-2">
+        <dl className="rounded-lg border border-black/10 bg-white divide-y divide-gray-100 text-md overflow-hidden">
+          <div className="flex justify-between py-3 px-4">
             <dt className="text-gray-600">Subtotal</dt>
-            <dd className="font-medium text-gray-900">{format(summary.subtotal)}</dd>
+            <dd className="font-semibold text-gray-900">{format(summary.subtotal)}</dd>
           </div>
-          <div className="flex justify-between py-2">
+          <div className="flex justify-between py-3 px-4">
             <dt className="text-gray-600">Shipping</dt>
-            <dd className="font-medium text-gray-900">{format(summary.shipping)}</dd>
+            <dd className="font-semibold text-gray-900">{format(summary.shipping)}</dd>
           </div>
-          <div className="flex justify-between py-2">
+          <div className="flex justify-between py-3 px-4">
             <dt className="text-gray-600">Tax</dt>
-            <dd className="font-medium text-gray-900">{format(summary.tax)}</dd>
+            <dd className="font-semibold text-gray-900">{format(summary.tax)}</dd>
           </div>
-          <div className="flex justify-between py-3 text-lg font-semibold">
+          <div className="flex justify-between py-3 px-4 bg-gray-50 text-lg font-bold">
             <dt className="text-gray-900">Order total</dt>
             <dd className="text-gray-900">{format(summary.total)}</dd>
           </div>

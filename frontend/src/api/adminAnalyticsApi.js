@@ -12,4 +12,13 @@ export async function getAdminDashboardAnalytics(params = {}) {
   }
 }
 
-export default { getAdminDashboardAnalytics };
+export async function getAdminSalesAnalytics(params = {}) {
+  try {
+    const res = await apiClient.get('/api/admin/analytics/sales', { params });
+    return unwrap(res);
+  } catch (e) {
+    throw normalizeError(e);
+  }
+}
+
+export default { getAdminDashboardAnalytics, getAdminSalesAnalytics };

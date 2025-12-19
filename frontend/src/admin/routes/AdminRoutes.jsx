@@ -14,6 +14,8 @@ import CategoryProductManager from '../pages/CategoryProductManager';
 import AdminSettings from '../pages/AdminSettings';
 import AdminLogin from '../../pages/AdminLogin';
 import ProductStats from '../pages/ProductStats';
+import SalesAnalyticsSalesOnly from '../pages/SalesAnalyticsSalesOnly';
+import AdminAnalytics from '../pages/AdminAnalytics';
 
 /**
  * Encapsulated admin routing segment. Mount inside main App router like:
@@ -29,14 +31,14 @@ export default function AdminRoutes() {
         <Route path="/admin" element={<AdminPanel />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="sales" element={<PlaceholderSection title="Sales" />} />
+          <Route path="sales" element={<SalesAnalyticsSalesOnly />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="orders/:orderNumber" element={<AdminOrderDetails />} />
           <Route path="products" element={<AllProductsManager />} />
           <Route path="products/:sku/stats" element={<ProductStats />} />
           <Route path="products/:categorySlug" element={<CategoryProductManager />} />
           <Route path="categories" element={<CategoryManagement />} />
-          <Route path="analytics" element={<PlaceholderSection title="Analytics" />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="users/:userCode" element={<AdminUserDetails />} />
           <Route path="settings" element={<AdminSettings />} />

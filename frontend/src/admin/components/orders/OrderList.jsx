@@ -71,27 +71,30 @@ const OrdersList = () => {
         <div className="px-4 py-2 text-sm text-gray-600">Loading orders...</div>
       )}
       {error && (
-        <div className="px-4 py-2 text-sm text-red-600 flex items-center justify-between">
-          <span>Failed to load orders</span>
-          <button onClick={reload} className="underline">Retry</button>
+        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 flex items-center justify-between">
+          <span className="font-semibold">Failed to load orders</span>
+          <button onClick={reload} className="inline-flex items-center gap-2 rounded-lg border border-rose-200 bg-white px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-100">
+            <FiRefreshCw className="w-4 h-4" />
+            Retry
+          </button>
         </div>
       )}
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 gap-3">
         {/* Search */}
-        <div className="relative w-full sm:w-1/3">
+        <div className="relative w-full lg:max-w-md">
           <input
             type="text"
             placeholder="Search by Order No. or Customer"
-            className="px-3 pr-10 py-2 border-3 w-full"
+            className="w-full h-11 rounded-xl border border-black/10 bg-white pl-10 pr-4 text-sm text-gray-900 placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <FiSearch
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-black"
-            size={20}
-            style={{ strokeWidth: 1.8 }}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-black/50"
+            size={18}
+            style={{ strokeWidth: 2 }}
           />
         </div>
 
@@ -100,27 +103,27 @@ const OrdersList = () => {
           <StatusDropdown value={statusFilter} onChange={setStatusFilter} />
           <button
             onClick={reload}
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium bg-white text-black border-2"
+            className="inline-flex items-center gap-2 h-11 px-4 rounded-xl border border-black/10 bg-white text-sm font-semibold text-gray-900 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             title="Reload orders"
           >
-            <FiRefreshCw />
+            <FiRefreshCw className="w-4 h-4" />
             <span>Refresh</span>
           </button>
         </div>
       </div>
 
       {/* Orders Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-2 border-gray-900 overflow-hidden">
+      <div className="overflow-x-auto rounded-2xl border border-black/10 bg-white">
+        <table className="w-full">
           <thead>
-            <tr className="bg-gray-100 text-left text-sm text-gray-600 uppercase">
-              <th className="p-3">Order No.</th>
-              <th className="p-3">Customer</th>
-              <th className="p-3">Date & Time</th>
-              <th className="p-3">Payment</th>
-              <th className="p-3">Total (LKR)</th>
-              <th className="p-3">Status</th>
-              <th className="p-3">Action</th>
+            <tr className="bg-gray-50 text-left text-xs text-gray-600 uppercase tracking-wide">
+              <th className="p-4">Order No.</th>
+              <th className="p-4">Customer</th>
+              <th className="p-4">Date & Time</th>
+              <th className="p-4">Payment</th>
+              <th className="p-4">Total (LKR)</th>
+              <th className="p-4">Status</th>
+              <th className="p-4">Action</th>
             </tr>
           </thead>
           <tbody className="text-sm text-gray-700">
@@ -128,12 +131,12 @@ const OrdersList = () => {
               filteredOrders.map((order) => (
                 <tr
                   key={order.id}
-                  className="border-t hover:bg-gray-50 transition"
+                  className="border-t border-black/5 hover:bg-gray-50/60 transition-colors"
                 >
-                  <td className="p-3 font-medium">
+                  <td className="p-4 font-semibold text-gray-900">
                     {order.orderNumber ? `#${order.orderNumber}` : `#${order.id}`}
                   </td>
-                  <td className="p-3">
+                  <td className="p-4">
                     <div className="flex flex-col">
                       <span className="text-sm font-medium">{order.customerName || 'Unknown'}</span>
                       {order.userCode && (
@@ -141,22 +144,22 @@ const OrdersList = () => {
                       )}
                     </div>
                   </td>
-                  <td className="p-3">
+                  <td className="p-4 text-gray-700">
                     {order.placed || order.placedTime ? (
                       <span>{[order.placed, order.placedTime].filter(Boolean).join(' ')}</span>
                     ) : (
                       <span>-</span>
                     )}
                   </td>
-                  <td className="p-3">
+                  <td className="p-4">
                     {(() => {
                       const type = order.payment?.type || '';
                       const cardType = (order.payment?.cardType || '').toString().toUpperCase();
                       if (type.toLowerCase().includes('cash')) {
                         return (
                           <span className="inline-flex items-center gap-2">
-                            <FiDollarSign />
-                            <span>Cash on Delivery</span>
+                            <FiDollarSign className="w-4 h-4 text-black/60" />
+                            <span className="text-sm">Cash on Delivery</span>
                           </span>
                         );
                       }
@@ -182,8 +185,8 @@ const OrdersList = () => {
                       );
                     })()}
                   </td>
-                  <td className="p-3">Rs. {Number(order.total || 0).toFixed(2)}</td>
-                  <td className="p-3">
+                  <td className="p-4 font-semibold text-gray-900">Rs. {Number(order.total || 0).toFixed(2)}</td>
+                  <td className="p-4">
                     {(() => {
                       const getIconForStatus = (s) => {
                         if (!s) return FiCheck;
@@ -198,32 +201,32 @@ const OrdersList = () => {
                       const Icon = getIconForStatus(order.status);
                       const sLower = String(order.status || '').toLowerCase();
                       const badgeClasses = sLower.includes('pending')
-                        ? 'bg-yellow-100 text-yellow-700'
+                        ? 'bg-amber-50 text-amber-800 border-amber-200'
                         : sLower.includes('placed')
-                          ? 'bg-teal-100 text-teal-800'
+                          ? 'bg-sky-50 text-sky-800 border-sky-200'
                           : sLower.includes('processing')
-                            ? 'bg-blue-100 text-blue-700'
+                            ? 'bg-indigo-50 text-indigo-800 border-indigo-200'
                             : sLower.includes('shipped')
-                              ? 'bg-purple-100 text-purple-700'
+                              ? 'bg-violet-50 text-violet-800 border-violet-200'
                               : sLower.includes('delivered')
-                                ? 'bg-green-100 text-green-700'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                                 : sLower.includes('cancel')
-                                  ? 'bg-red-100 text-red-700'
-                                  : 'bg-red-100 text-red-700';
+                                  ? 'bg-rose-50 text-rose-800 border-rose-200'
+                                  : 'bg-gray-50 text-gray-700 border-black/10';
                       return (
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${badgeClasses}`}>
-                          <Icon className="inline-block mr-2 text-sm" />
+                        <span className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold border ${badgeClasses}`}>
+                          <Icon className="w-3.5 h-3.5" />
                           {order.status}
                         </span>
                       );
                     })()}
                   </td>
-                  <td className="p-3">
+                  <td className="p-4">
                     <button
                       onClick={() => navigate(`/admin/orders/${order.orderNumber || order.id}`)}
-                      className="flex items-center gap-2 px-3 py-1 text-sm font-medium bg-[#00bf63] text-black border-2 border-black hover:bg-black hover:text-white"
+                      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-black/10 bg-white text-sm font-semibold text-gray-900 hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                     >
-                      <FiEye />
+                      <FiEye className="w-4 h-4" />
                       <span>View</span>
                     </button>
                   </td>
@@ -231,7 +234,7 @@ const OrdersList = () => {
               ))
             ) : (
               <tr>
-                <td className="p-3 text-center text-gray-500" colSpan="7">
+                <td className="p-10 text-center text-gray-500" colSpan="7">
                   No orders found
                 </td>
               </tr>
@@ -261,11 +264,11 @@ const StatusDropdown = ({ value, onChange }) => {
       <motion.div animate={open ? "open" : "closed"} className="relative">
         <button
           onClick={() => setOpen((pv) => !pv)}
-          className="flex items-center gap-2 px-3 py-2 text-black bg-white border-2"
+          className="inline-flex items-center gap-2 h-11 px-4 rounded-xl border border-black/10 bg-white text-sm font-semibold text-gray-900 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         >
           <span className="font-medium text-sm">{value}</span>
           <motion.span variants={iconVariants}>
-            <FiChevronDown />
+            <FiChevronDown className="w-4 h-4 text-black/60" />
           </motion.span>
         </button>
 
@@ -273,7 +276,7 @@ const StatusDropdown = ({ value, onChange }) => {
           initial={wrapperVariants.closed}
           variants={wrapperVariants}
           style={{ originY: "top", translateX: "-70%" }}
-          className="flex flex-col gap-1 p-2 bg-white shadow-xl absolute top-[120%] left-[50%] w-32 border-2 border-black overflow-hidden z-50"
+          className="flex flex-col gap-1 p-2 bg-white shadow-sm absolute top-[120%] left-[50%] w-36 rounded-xl border border-black/10 overflow-hidden z-50"
         >
           {options.map((opt) => (
             <Option key={opt.label} setOpen={setOpen} Icon={opt.Icon} text={opt.label} onClick={() => { onChange(opt.label); setOpen(false); }} />
@@ -289,7 +292,7 @@ const Option = ({ text, Icon, setOpen, onClick }) => {
     <motion.li
       variants={itemVariants}
       onClick={onClick}
-      className="flex items-center gap-2 w-full p-2 text-xs font-medium whitespace-nowrap text-slate-700 transition-colors cursor-pointer hover:bg-[#23f47d] hover:bg-opacity-20 hover:text-black"
+      className="flex items-center gap-2 w-full p-2 text-xs font-semibold whitespace-nowrap text-slate-700 transition-colors cursor-pointer rounded-lg hover:bg-gray-50 hover:text-black"
     >
       <motion.span variants={actionIconVariants} className="text-sm">
         <Icon />

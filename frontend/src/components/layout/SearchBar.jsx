@@ -37,6 +37,7 @@ const StyledWrapper = styled.div`
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
+    color: rgba(0, 0, 0, 0.55);
   }
 
   .input {
@@ -44,13 +45,21 @@ const StyledWrapper = styled.div`
     height: 40px;
     padding: 10px 10px 10px 36px; /* extra left padding for icon */
     transition: .2s linear;
-    border: 2.5px solid black;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    background: #fff;
     font-size: 14px;
     letter-spacing: 0px;
   }
 
   .input:focus {
     outline: none;
+    border-color: rgba(0, 0, 0, 0.35);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.10);
+  }
+
+  .input::placeholder {
+    color: rgba(0, 0, 0, 0.45);
   }
 
 `;

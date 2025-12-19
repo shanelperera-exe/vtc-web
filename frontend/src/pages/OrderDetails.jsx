@@ -15,13 +15,13 @@ import BackToTopBtn from "../components/ui/BackToTopBtn";
 import PopupModal from "../components/ui/PopupModal";
 import ReviewForm from "../components/reviews/ReviewForm";
 import { createReview } from '../api/reviewApi';
-import { FiEdit } from 'react-icons/fi';
+import { FiEdit, FiShoppingBag, FiTruck, FiCreditCard, FiFileText, FiPackage } from 'react-icons/fi';
 
 const OrderDetails = () => {
     const { orderNumber } = useParams();
     const navigate = useNavigate();
     const { isAuthenticated, loading: authLoading } = useAuth() || {};
-    const { order, loading: ordersLoading } = useOrders({ orderNumber });
+    const { order, loading: ordersLoading, reload } = useOrders({ orderNumber });
     const [fallbackOrder, setFallbackOrder] = useState(null);
     const [loadingOrder, setLoadingOrder] = useState(false);
     const [productCache, setProductCache] = useState({});
@@ -57,12 +57,22 @@ const OrderDetails = () => {
             <>
                 <Navbar />
                 <main className="mx-auto max-w-3xl py-16 px-8">
-                    <div className="bg-white shadow-sm border p-8 text-center">
+                    <div className="bg-white shadow-sm border border-black/10 rounded-xl p-8 text-center">
                         <h1 className="text-2xl font-semibold mb-4">Access denied</h1>
                         <p className="text-gray-600 mb-6">You must be signed in to view order details. Please sign in with the account that placed this order.</p>
                         <div className="flex justify-center gap-4">
-                            <button onClick={() => navigate('/login')} className="px-4 py-2 bg-[#00bf63] text-black font-medium border-2 border-black">Sign in</button>
-                            <button onClick={() => navigate('/')} className="px-4 py-2 border-2 border-gray-300">Go to home</button>
+                            <button
+                                onClick={() => navigate('/login')}
+                                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold border border-emerald-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                            >
+                                Sign in
+                            </button>
+                            <button
+                                onClick={() => navigate('/')}
+                                className="px-4 py-2 rounded-lg bg-white border border-black/10 text-gray-900 font-semibold hover:bg-gray-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                            >
+                                Go to home
+                            </button>
                         </div>
                     </div>
                 </main>
@@ -123,7 +133,7 @@ const OrderDetails = () => {
                         <h1 className="text-3xl font-bold">Order not found</h1>
                         <button
                             onClick={() => navigate(-1)}
-                            className="mt-4 text-sm font-medium text-[#09a84e] hover:underline hover:text-[#0bd964]"
+                            className="mt-4 text-sm font-semibold text-emerald-700 hover:underline"
                         >
                             Go back
                         </button>
@@ -201,23 +211,61 @@ const OrderDetails = () => {
         console.debug('OrderDetails - enrichedProducts', enrichedProducts);
     }
 
+    const onViewInvoice = (e) => {
+        if (e?.preventDefault) e.preventDefault();
+        const id = effectiveOrder?.id;
+        if (!id) return;
+        // best-effort: open invoice endpoint in a new tab
+        try { window.open(`/api/orders/${id}/invoice`, '_blank'); } catch {}
+    };
+
+    const canCancel = (() => {
+        const st = String(effectiveOrder?.status || '').toUpperCase();
+        return st === 'PLACED' || st === 'PROCESSING';
+    })();
+
+    const onCancelOrder = async () => {
+        const id = effectiveOrder?.id;
+        if (!id) return;
+        // keep it simple; avoid accidental cancels
+        try {
+            const ok = window.confirm('Cancel this order?');
+            if (!ok) return;
+        } catch {
+            // if confirm is blocked, proceed without it
+        }
+        try {
+            await orderApi.cancelOrder(id);
+            await reload();
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('Failed to cancel order', e);
+        }
+    };
+
     // Compute order-level progress based on backend order.status enum
     const mapOrderStatusToProgress = (s) => {
         if (!s) return 0;
         const str = String(s).toUpperCase();
+        if (str === 'CANCELLED') return -1;
         if (str === 'DELIVERED') return 3;
         if (str === 'SHIPPED') return 2;
         if (str === 'PROCESSING') return 1;
-        // CANCELLED and PLACED map to 0
+        // PLACED maps to 0
         return 0;
     };
     const orderProgress = mapOrderStatusToProgress(effectiveOrder?.status);
 
     // Derive a human-friendly order status label and detail (date/text)
     const statusSteps = ["Order placed", "Processing", "Shipped", "Delivered"];
-    const statusLabel = statusSteps[orderProgress] ?? effectiveOrder.status;
+    const statusLabel = orderProgress === -1 ? 'Cancelled' : (statusSteps[orderProgress] ?? effectiveOrder.status);
     const statusDetail = (() => {
         const times = effectiveOrder?.statusTimes || {};
+        if (orderProgress === -1) {
+            const dt = times.cancelled;
+            if (dt?.date) return `Order cancelled on ${dt.date}${dt.time ? ` ${dt.time}` : ''}`;
+            return 'Order cancelled';
+        }
         if (orderProgress === 0) {
             const dt = times.placed;
             if (dt?.date) return `Order placed on ${dt.date}${dt.time ? ` ${dt.time}` : ''}`;
@@ -251,13 +299,31 @@ const OrderDetails = () => {
             <main className="mx-auto max-w-7xl py-8 px-8 relative">
                 <div className="flex items-baseline justify-between mb-8 pb-2 px-0">
                     <div className="flex flex-col md:flex-row items-baseline gap-0 md:gap-4">
-                        <h1 className="text-6xl font-extrabold tracking-tight text-gray-900">Order {effectiveOrder?.orderNumber ? `#${effectiveOrder.orderNumber}` : `#${effectiveOrder?.id}`}</h1>
-                        <a
-                            href="#"
-                            className="text-sm font-medium text-[#09a84e] hover:underline hover:text-[#0bd964] flex items-center gap-1 mt-2 md:mt-0"
-                        >
-                            View invoice <span aria-hidden="true">→</span>
-                        </a>
+                        <h1 className="text-6xl font-extrabold tracking-tight text-gray-900 inline-flex items-center gap-3">
+                            <FiPackage className="w-7 h-7 text-emerald-700" aria-hidden="true" />
+                            <span>Order {effectiveOrder?.orderNumber ? `#${effectiveOrder.orderNumber}` : `#${effectiveOrder?.id}`}</span>
+                        </h1>
+                        <div className="flex items-center gap-2 mt-3 md:mt-0">
+                            <button
+                                type="button"
+                                onClick={onViewInvoice}
+                                className="inline-flex w-fit items-center gap-2 rounded-xl px-4 py-2 bg-white border border-black/10 text-sm font-semibold text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                                title="View invoice"
+                            >
+                                <span>View invoice</span>
+                                <span aria-hidden="true">→</span>
+                            </button>
+                            {canCancel && (
+                                <button
+                                    type="button"
+                                    onClick={onCancelOrder}
+                                    className="inline-flex w-fit items-center gap-2 rounded-xl px-4 py-2 bg-white border border-rose-200 text-sm font-semibold text-rose-700 hover:bg-rose-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                                    title="Cancel order"
+                                >
+                                    Cancel order
+                                </button>
+                            )}
+                        </div>
                     </div>
                     <div className="flex items-baseline gap-4 justify-end">
                         <div className="text-md text-gray-500 text-right">
@@ -281,7 +347,12 @@ const OrderDetails = () => {
 
                 {/* Products in order */}
                 <section aria-labelledby="products-heading" className="mb-12">
-                    <h2 id="products-heading" className="text-3xl font-semibold mb-6">Products purchased</h2>
+                    <h2 id="products-heading" className="text-3xl font-semibold mb-6">
+                        <span className="inline-flex items-center gap-2">
+                            <FiShoppingBag className="w-6 h-6 text-emerald-700" aria-hidden="true" />
+                            <span>Products purchased</span>
+                        </span>
+                    </h2>
                     <div className="grid grid-cols-12 gap-8">
                         {enrichedProducts.map((product, idx) => {
                             const safeKey = `${product.name || 'product'}|${product.color || ''}|${product.size || ''}|${idx}`;
@@ -292,14 +363,14 @@ const OrderDetails = () => {
                                         shippingUpdates={effectiveOrder.shippingUpdates}
                                         showStatus={false}
                                     >
-                                        <hr className="-mt-3 mb-3 border-t-2 border-gray-300" />
+                                        <hr className="-mt-3 mb-3 border-t border-gray-200" />
                                         <div>
                                             <div className="flex items-start justify-between gap-4">
                                                 <h3 className="text-md font-semibold text-gray-900">Share your thoughts</h3>
                                                 <a
                                                     href="#"
                                                     onClick={(e) => { e.preventDefault(); setActiveReviewProductId(product.id); }}
-                                                    className="inline-flex items-center gap-2 bg-black border-2 text-white text-sm font-medium px-4 py-2 hover:bg-white hover:text-black hover:border-2 group"
+                                                    className="inline-flex items-center gap-2 rounded-lg bg-black border border-black text-white text-sm font-semibold px-4 py-2 hover:bg-white hover:text-black transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                                                 >
                                                     <FiEdit className="text-white group-hover:text-black" aria-hidden />
                                                     <span>Write a review</span>
@@ -370,8 +441,13 @@ const OrderDetails = () => {
 
                 {/* Delivery details (order-level) */}
                 <section aria-labelledby="delivery-details-heading" className="mb-12">
-                    <h2 id="delivery-details-heading" className="text-3xl font-semibold mb-4">Delivery details</h2>
-                    <div className="bg-white shadow-sm border-3 p-6">
+                    <h2 id="delivery-details-heading" className="text-3xl font-semibold mb-4">
+                        <span className="inline-flex items-center gap-2">
+                            <FiTruck className="w-6 h-6 text-emerald-700" aria-hidden="true" />
+                            <span>Delivery details</span>
+                        </span>
+                    </h2>
+                    <div className="bg-white shadow-sm border border-black/10 rounded-xl p-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <h3 className="text-sm font-semibold text-gray-700 mb-2">Delivery address</h3>
@@ -392,15 +468,25 @@ const OrderDetails = () => {
                 </section>
                 {/* Billing Summary */}
                 <section aria-labelledby="billing-summary-heading" className="mb-12">
-                    <h2 id="billing-summary-heading" className="text-3xl font-semibold mb-6">Billing Summary</h2>
+                    <h2 id="billing-summary-heading" className="text-3xl font-semibold mb-6">
+                        <span className="inline-flex items-center gap-2">
+                            <FiCreditCard className="w-6 h-6 text-emerald-700" aria-hidden="true" />
+                            <span>Billing Summary</span>
+                        </span>
+                    </h2>
                     <BillingSummary billing={effectiveOrder.billing || { address: [], payment: {}, summary: {} }} />
                 </section>
 
                 {/* Order Notes */}
                 {effectiveOrder.orderNotes && (
                     <section aria-labelledby="order-notes-heading" className="mb-12">
-                        <h2 id="order-notes-heading" className="text-3xl font-semibold mb-4">Order notes</h2>
-                        <div className="bg-white shadow-sm border-3 p-6">
+                        <h2 id="order-notes-heading" className="text-3xl font-semibold mb-4">
+                            <span className="inline-flex items-center gap-2">
+                                <FiFileText className="w-6 h-6 text-emerald-700" aria-hidden="true" />
+                                <span>Order notes</span>
+                            </span>
+                        </h2>
+                        <div className="bg-white shadow-sm border border-black/10 rounded-xl p-6">
                             <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">{effectiveOrder.orderNotes}</p>
                         </div>
                     </section>

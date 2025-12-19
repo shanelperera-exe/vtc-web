@@ -13,16 +13,20 @@ export default function SecuritySection({
   handleChangePassword,
 }) {
   return (
-  <div className="space-y-4 border-2 border-neutral-900 p-6 bg-white">
-      <h2 className="text-xl font-semibold">Password</h2>
-      <div className="space-y-3 bg-gray-50 p-3 border border-gray-200 max-w-md">
+  <div className="rounded-2xl border border-black/10 bg-white p-6">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-gray-900">Security</h2>
+        <p className="mt-1 text-sm text-gray-600">Update your password.</p>
+      </div>
+
+      <div className="space-y-4 rounded-xl border border-black/10 bg-white p-4 max-w-lg">
         <div className="space-y-1">
-          <label className="text-xs text-gray-700" htmlFor="currentPassword">Current password</label>
+          <label className="text-sm font-semibold text-gray-700" htmlFor="currentPassword">Current password</label>
           <input id="currentPassword" type="password" placeholder="Current password" className={`${inputBase} text-sm px-2 py-1 ${pwdErr.current ? 'border-red-500' : ''}`} value={pwd.current} onChange={(e) => setPwd((p) => ({ ...p, current: e.target.value }))} />
           {pwdErr.current ? <p className="text-sm text-red-600">{pwdErr.current}</p> : null}
         </div>
         <div className="space-y-1">
-          <label className="text-xs text-gray-700" htmlFor="newPassword">New password</label>
+          <label className="text-sm font-semibold text-gray-700" htmlFor="newPassword">New password</label>
           <input id="newPassword" type="password" placeholder="New password" className={`${inputBase} text-sm px-2 py-1 ${pwdErr.next ? 'border-red-500' : ''}`} value={pwd.next} onChange={(e) => setPwd((p) => ({ ...p, next: e.target.value }))} />
           {pwd.next && (
             <div className="space-y-1">
@@ -43,7 +47,7 @@ export default function SecuritySection({
           {pwdErr.next ? <p className="text-sm text-red-600">{pwdErr.next}</p> : null}
         </div>
         <div className="space-y-1">
-          <label className="text-xs text-gray-700" htmlFor="confirmPassword">Confirm new password</label>
+          <label className="text-sm font-semibold text-gray-700" htmlFor="confirmPassword">Confirm new password</label>
           <input id="confirmPassword" type="password" placeholder="Confirm new password" className={`${inputBase} text-sm px-2 py-1 ${pwdErr.confirm ? 'border-red-500' : ''}`} value={pwd.confirm} onChange={(e) => setPwd((p) => ({ ...p, confirm: e.target.value }))} />
           {pwdErr.confirm ? <p className="text-sm text-red-600">{pwdErr.confirm}</p> : null}
         </div>

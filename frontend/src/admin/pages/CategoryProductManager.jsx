@@ -39,31 +39,37 @@ export default function CategoryProductManager() {
 
   if (error) {
     return (
-      <div className="w-full px-4 py-10 text-sm text-red-600">
-        Failed to load categories: {error.message || "Unknown error"}
+      <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 py-10">
+        <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          Failed to load categories: {error.message || "Unknown error"}
+        </div>
       </div>
     );
   }
 
   if (!hasLoaded) {
     return (
-      <div className="w-full px-4 py-10 text-sm text-gray-600">
-        Loading category details…
+      <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 py-10">
+        <div className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-gray-600 shadow-sm">
+          Loading category details…
+        </div>
       </div>
     );
   }
 
   if (!activeCategory) {
     return (
-      <div className="w-full px-4 py-10 text-sm text-gray-600">
-        The requested category could not be found.
-        <button
-          type="button"
-          onClick={() => navigate("/admin/products")}
-          className="ml-3 inline-flex items-center gap-2 border-2 border-black px-3 py-1 text-xs font-medium text-black hover:bg-black hover:text-white"
-        >
-          <FiArrowLeft /> Back to all products
-        </button>
+      <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 py-10">
+        <div className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-gray-600 shadow-sm">
+          The requested category could not be found.
+          <button
+            type="button"
+            onClick={() => navigate("/admin/products")}
+            className="ml-3 inline-flex items-center gap-2 rounded-lg border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          >
+            <FiArrowLeft /> Back to all products
+          </button>
+        </div>
       </div>
     );
   }
@@ -71,19 +77,21 @@ export default function CategoryProductManager() {
   return (
     <div className="w-full">
       <div className="w-full px-2 py-6 sm:px-4 md:px-6 lg:px-8">
-        <button
-          type="button"
-          onClick={() => navigate("/admin/products")}
-          className="mb-4 inline-flex items-center gap-2 border-2 border-black bg-white px-3 py-1 text-sm font-medium text-black transition hover:bg-black hover:text-white"
-        >
-          <FiArrowLeft /> All Products
-        </button>
-        <h1 className="text-4xl font-bold text-black sm:text-5xl md:text-6xl">
-          {activeCategory.name}
-        </h1>
-        <p className="pt-3 text-sm text-gray-600 sm:text-base">
-          Manage the product catalog for the {activeCategory.name} category.
-        </p>
+        <div className="rounded-xl border border-black/10 bg-white p-4 sm:p-5 shadow-sm">
+          <button
+            type="button"
+            onClick={() => navigate("/admin/products")}
+            className="inline-flex items-center gap-2 rounded-lg border border-black/10 bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          >
+            <FiArrowLeft /> All Products
+          </button>
+          <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl font-semibold text-black">
+            {activeCategory.name}
+          </h1>
+          <p className="pt-2 text-sm text-gray-600 sm:text-base">
+            Manage the product catalog for the {activeCategory.name} category.
+          </p>
+        </div>
       </div>
 
       <AllProductsManager

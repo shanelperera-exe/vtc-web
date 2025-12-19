@@ -77,35 +77,35 @@ export default function CategoryForm({ initial, onCancel, onSubmit, existing = [
           setSubmitting(false);
         }
       }}
-      className="w-full max-w-[1200px] mx-auto bg-white rounded-xl p-6 min-h-[70vh]"
+      className="w-full max-w-[1200px] mx-auto bg-white rounded-2xl p-6 min-h-[70vh]"
       noValidate
     >
       {/* Header */}
       <div className="mb-6 border-b border-gray-200 pb-4">
-        <h3 className="text-4xl font-semibold text-gray-900">
-          {form.id ? "Edit Category" : "Create Category"}
-        </h3>
-        <p className="text-sm text-gray-500 mt-1">
-          Fill in the details below.
-        </p>
+        <div className="min-w-0">
+          <h3 className="text-3xl sm:text-4xl font-semibold text-gray-900">
+            {form.id ? "Edit Category" : "Create Category"}
+          </h3>
+          <p className="text-sm text-gray-600 mt-1">Fill in the details below.</p>
+        </div>
       </div>
 
       {submitError && (
-        <div className="mb-5 border-2 border-red-500 bg-gradient-to-br from-red-50 to-red-100/70 text-red-800 px-4 py-3 text-sm" role="alert">
+        <div className="mb-5 rounded-xl border border-rose-200 bg-rose-50 text-rose-800 px-4 py-3 text-sm" role="alert">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 mt-0.5">
-              <span className="inline-flex items-center justify-center w-9 h-9 bg-red-600 text-white border-2 border-black">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-rose-600 text-white border border-black/10">
                 <FiAlertTriangle className="w-5 h-5" />
               </span>
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-semibold tracking-wide leading-snug">There was a problem</p>
-              <p className="mt-0.5 text-red-700 break-words">{submitError}</p>
+              <p className="mt-0.5 text-rose-700 break-words">{submitError}</p>
             </div>
             <button
               type="button"
               onClick={() => setSubmitError(null)}
-              className="ml-2 self-center inline-flex items-center justify-center w-7 h-7 text-red-600 hover:text-red-800 focus:outline-none"
+              className="ml-2 self-center inline-flex items-center justify-center w-8 h-8 rounded-lg border border-rose-200 bg-white text-rose-700 hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               aria-label="Dismiss error"
             >
               <FiXCircle className="w-5 h-5" />
@@ -130,7 +130,7 @@ export default function CategoryForm({ initial, onCancel, onSubmit, existing = [
                       : slugify(e.target.value),
                 }))
               }
-              className={`w-full h-11 px-3 border ${errors.name ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-green-400'} focus:ring-2 focus:outline-none`}
+              className={`w-full h-11 px-3 rounded-lg border ${errors.name ? 'border-rose-300' : 'border-black/10'} bg-white text-sm placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white`}
               placeholder="e.g., Homeware"
             />
           </Field>
@@ -145,7 +145,7 @@ export default function CategoryForm({ initial, onCancel, onSubmit, existing = [
               onChange={(e) =>
                 setForm((f) => ({ ...f, slug: e.target.value }))
               }
-              className={`w-full h-11 px-3 border ${errors.slug ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-green-400'} focus:ring-2 focus:outline-none`}
+              className={`w-full h-11 px-3 rounded-lg border ${errors.slug ? 'border-rose-300' : 'border-black/10'} bg-white text-sm placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white`}
               placeholder="homeware"
             />
           </Field>
@@ -159,7 +159,7 @@ export default function CategoryForm({ initial, onCancel, onSubmit, existing = [
               setForm((f) => ({ ...f, description: e.target.value }))
             }
             rows={3}
-            className={`w-full px-3 py-2 border ${errors.description ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-green-400'} focus:ring-2 focus:outline-none`}
+            className={`w-full px-3 py-2 rounded-lg border ${errors.description ? 'border-rose-300' : 'border-black/10'} bg-white text-sm placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white`}
             placeholder="Short description..."
           />
         </Field>
@@ -169,15 +169,15 @@ export default function CategoryForm({ initial, onCancel, onSubmit, existing = [
           <div className="inline-flex items-center gap-2">
             {["active", "inactive"].map((s) => {
               const isActive = s === 'active';
-              const bg = form.status === s ? (isActive ? 'bg-green-100' : 'bg-red-100') : 'bg-white';
-              const txt = form.status === s ? (isActive ? 'text-green-800' : 'text-red-800') : 'text-gray-700';
+              const bg = form.status === s ? (isActive ? 'bg-emerald-50' : 'bg-rose-50') : 'bg-white';
+              const txt = form.status === s ? (isActive ? 'text-emerald-800' : 'text-rose-800') : 'text-gray-700';
               const Icon = isActive ? FiCheckCircle : FiXCircle;
               return (
                 <button
                   key={s}
                   type="button"
                   onClick={() => setForm((f) => ({ ...f, status: s }))}
-                  className={`${bg} ${txt} inline-flex items-center text-sm font-semibold px-3 py-1 rounded-full border border-gray-200 hover:opacity-90 transition`}
+                  className={`${bg} ${txt} inline-flex items-center text-sm font-semibold px-3 py-1 rounded-full border border-black/10 hover:bg-gray-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2 focus-visible:ring-offset-white`}
                 >
                   <Icon className="w-3.5 h-3.5 mr-1" />
                   {cap(s)}
@@ -191,7 +191,7 @@ export default function CategoryForm({ initial, onCancel, onSubmit, existing = [
         <div className="pt-2">
           <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
             <div>
-              <h4 className="text-xl font-semibold text-gray-900 tracking-tight">Images</h4>
+              <h4 className="text-xl font-semibold text-gray-900 tracking-tight flex items-center gap-2"><FiImage className="w-5 h-5 text-black/60" />Images</h4>
               <p className="text-xs text-gray-500 mt-1">Upload or link images used across the storefront UI.</p>
             </div>
             <ImageGuidelines />
@@ -225,9 +225,13 @@ export default function CategoryForm({ initial, onCancel, onSubmit, existing = [
 
       {/* Actions */}
       <div className="mt-6 flex items-center justify-end gap-3">
-        <button type="button" onClick={handleCancel} className="px-4 py-2 text-sm border-2 border-black rounded-none text-black bg-white hover:bg-gray-50" disabled={submitting}>Cancel</button>
-        <button type="submit" disabled={!canSave || submitting} className="px-4 py-2 text-sm border-2 border-black bg-[#00bf63] font-medium text-black hover:bg-black hover:text-white disabled:opacity-50 flex items-center gap-2">
-          {submitting && <span className="inline-block w-3 h-3 border-2 border-black border-t-transparent animate-spin rounded-full" aria-hidden="true" />}
+        <button type="button" onClick={handleCancel} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border border-black/10 bg-white text-gray-900 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50" disabled={submitting}>
+          <FiXCircle className="w-4 h-4" />
+          Cancel
+        </button>
+        <button type="submit" disabled={!canSave || submitting} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border border-black/10 bg-black text-white hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50">
+          {submitting && <span className="inline-block w-3 h-3 border-2 border-white/70 border-t-transparent animate-spin rounded-full" aria-hidden="true" />}
+          {!submitting && <FiCheckCircle className="w-4 h-4" />}
           {form.id ? (submitting ? 'Saving...' : 'Save Changes') : (submitting ? 'Creating...' : 'Create')}
         </button>
       </div>
@@ -275,7 +279,7 @@ function ImageGuidelines() {
         <span className="text-xs font-medium text-gray-700">Image guidelines</span>
       </button>
       {open && (
-        <div className="absolute right-0 z-20 mt-2 w-80 bg-gray-50 border border-gray-200 p-3 text-gray-600 text-xs shadow-lg" role="dialog" aria-label="Image guidelines">
+        <div className="absolute right-0 z-20 mt-2 w-80 bg-white rounded-xl border border-black/10 p-3 text-gray-600 text-xs shadow-sm" role="dialog" aria-label="Image guidelines">
           <div className="flex items-center gap-2 font-semibold text-sm text-gray-700 mb-1">
             <FiInfo className="w-4 h-4 text-gray-500" />
             <span>Image guidelines</span>
@@ -407,7 +411,7 @@ function ImageField({ label, helper, value, onChange, previewSize }) {
   };
 
   return (
-    <div className="relative group bg-white border-2 border-gray-200 p-4 flex flex-col hover:shadow-md transition">
+    <div className="relative group bg-white rounded-xl border border-black/10 p-4 flex flex-col hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between gap-2 mb-3">
         <div>
           <h5 className="text-sm font-semibold text-gray-900 leading-tight">{label}</h5>
@@ -417,7 +421,7 @@ function ImageField({ label, helper, value, onChange, previewSize }) {
           <button
             type="button"
             onClick={clearImage}
-            className="opacity-0 group-hover:opacity-100 transition inline-flex items-center justify-center w-7 h-7 rounded-md border border-gray-300 text-gray-500 hover:text-red-600 hover:border-red-400 bg-white"
+            className="opacity-0 group-hover:opacity-100 transition inline-flex items-center justify-center w-8 h-8 rounded-lg border border-black/10 text-gray-500 hover:text-rose-700 hover:border-rose-200 bg-white"
             title="Remove image"
           >
             <FiTrash2 className="w-4 h-4" />
@@ -426,7 +430,7 @@ function ImageField({ label, helper, value, onChange, previewSize }) {
       </div>
 
       {/* Preview */}
-      <div className={`relative mb-3 overflow-hidden bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center ${previewSize || ''}`}>
+      <div className={`relative mb-3 overflow-hidden bg-gray-50 rounded-lg border border-dashed border-black/20 flex items-center justify-center ${previewSize || ''}`}>
         {value ? (
           <>
             <img src={value} alt={label} className="w-full h-full object-cover" />
@@ -435,7 +439,7 @@ function ImageField({ label, helper, value, onChange, previewSize }) {
                 <button
                   type="button"
                   onClick={() => { if (mode === 'upload') { fileRef.current?.click(); } else { setMode('upload'); } }}
-                  className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-2 px-3 py-1.5 bg-white/95 text-xs font-medium text-gray-800 shadow-sm hover:bg-white"
+                  className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/95 text-xs font-semibold text-gray-800 shadow-sm hover:bg-white"
                 >
                   <FiUpload className="w-4 h-4" />
                   <span>Change</span>
@@ -444,7 +448,7 @@ function ImageField({ label, helper, value, onChange, previewSize }) {
                 <button
                   type="button"
                   onClick={() => setCropOpen(true)}
-                  className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-2 px-3 py-1.5 bg-white/95 text-xs font-medium text-gray-800 shadow-sm hover:bg-white"
+                  className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/95 text-xs font-semibold text-gray-800 shadow-sm hover:bg-white"
                 >
                   <FiImage className="w-4 h-4" />
                   <span>Crop</span>
@@ -488,7 +492,7 @@ function ImageField({ label, helper, value, onChange, previewSize }) {
         <input
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full h-9 px-3 border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none text-xs"
+          className="w-full h-9 px-3 rounded-lg border border-black/10 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white text-xs"
           placeholder="https://.../image.jpg"
         />
       ) : (
@@ -503,7 +507,7 @@ function ImageField({ label, helper, value, onChange, previewSize }) {
           <button
             type="button"
             onClick={() => fileRef.current && fileRef.current.click()}
-            className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-black text-white text-xs font-medium hover:bg-black/90"
+            className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-black/10 bg-black text-white text-xs font-semibold hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           >
             <FiUpload className="w-4 h-4" />
             <span>{value ? 'Replace image' : 'Upload image'}</span>

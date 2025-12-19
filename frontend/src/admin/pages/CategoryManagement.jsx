@@ -161,12 +161,12 @@ export default function CategoryManagement() {
 			{/* Header */}
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
 				<div>
-					<h1 className="text-6xl font-semibold text-black">Categories</h1>
-					<p className="text-md text-gray-600 pt-4">Create, edit, and organize product categories.</p>
+					<h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold text-black">Categories</h1>
+					<p className="text-sm sm:text-base text-gray-600 pt-2">Create, edit, and organize product categories.</p>
 				</div>
 				<button
 					onClick={openCreate}
-					className="group relative inline-flex items-center justify-center h-11 px-4 border-2 border-black bg-black text-white hover:bg-[#23f47d] hover:text-black transition-colors"
+					className="inline-flex items-center justify-center h-11 px-4 rounded-xl border border-black/10 bg-black text-white font-semibold hover:bg-black/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 				>
 					<FiPlus className="mr-2" />
 					<span className="text-sm font-medium">Add Category</span>
@@ -188,14 +188,14 @@ export default function CategoryManagement() {
 
 					<div className="flex items-center gap-3">
 						<div className="flex items-center space-x-2">
-							<span className="text-md text-gray-700 hidden md:inline">Status</span>
-							<div className="inline-flex rounded-full border-2 border-black overflow-hidden mr-2">
+							<span className="text-xs font-semibold text-black/60 hidden md:inline">Status</span>
+							<div className="inline-flex rounded-full border border-black/10 overflow-hidden mr-2 bg-white">
 								{(['all', 'active', 'inactive']).map((s, idx) => (
 									<button
 										key={s}
 										onClick={() => setStatusFilter(s)}
 										aria-pressed={statusFilter === s}
-										className={`px-3 py-2 text-sm ${statusFilter === s ? 'bg-black text-white' : 'bg-white text-black hover:bg-[#23f47d]'} ${idx === 0 ? 'rounded-l-full' : ''} ${idx === 2 ? 'rounded-r-full' : ''}`}
+										className={`px-3 py-1.5 text-xs font-semibold transition-colors ${statusFilter === s ? (s === 'active' ? 'bg-emerald-600 text-white' : s === 'inactive' ? 'bg-rose-600 text-white' : 'bg-black text-white') : 'bg-white text-gray-900 hover:bg-gray-50'} ${idx === 0 ? 'rounded-l-full' : ''} ${idx === 2 ? 'rounded-r-full' : ''}`}
 									>
 										{cap(s)}
 									</button>
@@ -204,8 +204,8 @@ export default function CategoryManagement() {
 						</div>
 
 						<div className="flex items-center gap-2">
-							<FiFilter className="text-black" />
-							<div className="text-sm bg-gray-100 border border-gray-200 text-gray-800 px-3 py-1">{filtered.length} result(s)</div>
+							<FiFilter className="text-black/60" />
+							<div className="text-xs font-semibold text-gray-700">{filtered.length} result(s)</div>
 						</div>
 					</div>
 				</div>
@@ -216,34 +216,34 @@ export default function CategoryManagement() {
 
 			{/* Pagination */}
 			<div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-				<div className="flex items-center gap-2 text-sm">
+				<div className="flex items-center gap-2 text-sm text-gray-700">
 					<span>Rows per page</span>
 					<select
 						value={pageSize}
 						onChange={(e) => setPageSize(parseInt(e.target.value))}
-						className="border-2 border-black px-2 py-1 bg-white"
+						className="rounded-lg border border-black/10 px-2 py-1.5 bg-white text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 					>
 						{[5, 10, 20].map((s) => (
 							<option key={s} value={s}>{s}</option>
 						))}
 					</select>
-					<span className="text-gray-600">Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, filtered.length)} of {filtered.length}</span>
+					<span className="text-gray-500">Showing <span className="font-semibold text-gray-900">{(page - 1) * pageSize + 1}-{Math.min(page * pageSize, filtered.length)}</span> of <span className="font-semibold text-gray-900">{filtered.length}</span></span>
 				</div>
-				<div className="inline-flex border-2 border-black">
+				<div className="inline-flex overflow-hidden rounded-xl border border-black/10 bg-white">
 					<button
-						className="px-3 py-2 bg-white hover:bg-[#23f47d]"
+						className="inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"
 						onClick={() => setPage((p) => Math.max(1, p - 1))}
 						disabled={page === 1}
 					>
-						<FiChevronLeft />
+						<FiChevronLeft className="w-4 h-4" /> Prev
 					</button>
-					<div className="px-3 py-2 bg-black text-green-400 text-sm">{page} / {totalPages}</div>
+					<div className="px-3 py-2 bg-black text-white text-sm font-semibold">{page} / {totalPages}</div>
 					<button
-						className="px-3 py-2 bg-white hover:bg-[#23f47d]"
+						className="inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"
 						onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 						disabled={page === totalPages}
 					>
-						<FiChevronRight />
+						Next <FiChevronRight className="w-4 h-4" />
 					</button>
 				</div>
 			</div>

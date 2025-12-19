@@ -7,10 +7,11 @@ import zxcvbn from 'zxcvbn'
 import AccountSettingsSection from '../components/settings/AccountSettingsSection'
 import SecuritySection from '../components/settings/SecuritySection'
 import NotificationsSection from '../components/settings/NotificationsSection'
+import PreferencesSection from '../components/settings/PreferencesSection'
 
 export default function AdminSettings() {
   const { user, refreshProfile } = useAuth() || {}
-  const [activeTab, setActiveTab] = useState('account') // 'account' | 'security' | 'notifications'
+  const [activeTab, setActiveTab] = useState('account') // 'account' | 'security' | 'notifications' | 'preferences'
   const [values, setValues] = useState({ firstName: '', lastName: '', email: '', phone: '' })
   const [touched, setTouched] = useState({ email: false, phone: false })
   const [errors, setErrors] = useState({ email: '', phone: '' })
@@ -48,7 +49,7 @@ export default function AdminSettings() {
     }
   }, [user])
 
-  const inputBase = 'w-full rounded-none border-[3px] border-gray-300 px-3 py-2 outline-none focus:border-[#0bd964]'
+  const inputBase = 'w-full h-11 rounded-xl border border-black/10 bg-white px-4 text-sm text-gray-900 placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
   const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-600']
 
   const validateEmail = (email) => {
@@ -139,93 +140,102 @@ export default function AdminSettings() {
     }
   }
 
-  const emailInvalid = touched.email && Boolean(errors.email)
-  const phoneInvalid = touched.phone && Boolean(errors.phone)
+  const sections = [
+    { key: 'account', label: 'Account', Icon: FiUser, description: 'Profile and contact details' },
+    { key: 'security', label: 'Security', Icon: FiLock, description: 'Password and access' },
+    { key: 'notifications', label: 'Notifications', Icon: FiBell, description: 'Alerts and updates' },
+    { key: 'preferences', label: 'Preferences', Icon: FiSliders, description: 'UI preferences' },
+  ]
 
   return (
-    <div className="px-2 md:px-6 py-6">
-      <div className="mb-6">
-        <h1 className="text-6xl font-semibold text-gray-900 ml-3">Settings</h1>
-        <p className="mt-2 text-sm text-gray-500 ml-3">Manage your admin account and security settings</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-
-        <form onSubmit={async (e) => { e.preventDefault(); try { await saveProfile(); } catch {} }} className="lg:col-span-3 bg-white p-4">
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
-            {/* Subsection menu */}
-            <aside className="md:col-span-1">
-              <nav aria-label="Settings sections" className="border-2 border-neutral-900">
-                <ul className="divide-y-2 divide-neutral-900">
-                  <li>
-                    <button type="button" onClick={() => setActiveTab('account')} className={`w-full flex items-center gap-3 px-4 py-3 text-base font-semibold ${activeTab==='account' ? 'bg-black text-green-400' : 'bg-white text-black hover:bg-neutral-100'}`} aria-current={activeTab==='account' ? 'page' : undefined}>
-                      <FiUser /> <span>Account</span>
-                    </button>
-                  </li>
-                  <li>
-                    <button type="button" onClick={() => setActiveTab('security')} className={`w-full flex items-center gap-3 px-4 py-3 text-base font-semibold ${activeTab==='security' ? 'bg-black text-green-400' : 'bg-white text-black hover:bg-neutral-100'}`}>
-                      <FiLock /> <span>Security</span>
-                    </button>
-                  </li>
-                  <li>
-                    <button type="button" onClick={() => setActiveTab('notifications')} className={`w-full flex items-center gap-3 px-4 py-3 text-base font-semibold ${activeTab==='notifications' ? 'bg-black text-green-400' : 'bg-white text-black hover:bg-neutral-100'}`}>
-                      <FiBell /> <span>Notifications</span>
-                    </button>
-                  </li>
-                  {/* Preferences removed */}
-                </ul>
-              </nav>
-            </aside>
-
-            {/* Section content */}
-            <section className="md:col-span-5 space-y-4 px-0">
-              {activeTab === 'account' && (
-                <AccountSettingsSection
-                  values={{ ...values, roles }}
-                  errors={errors}
-                  touched={touched}
-                  emailEditing={emailEditing}
-                  emailDraft={emailDraft}
-                  setEmailEditing={setEmailEditing}
-                  setEmailDraft={setEmailDraft}
-                  setErrors={setErrors}
-                  setTouched={setTouched}
-                  setValues={setValues}
-                  validateEmail={validateEmail}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                  saveMsg={saveMsg}
-                  saveProfile={saveProfile}
-                  inputBase={inputBase}
-                />
-              )}
-
-              {activeTab === 'security' && (
-                <SecuritySection
-                  inputBase={inputBase}
-                  pwd={pwd}
-                  setPwd={setPwd}
-                  pwdErr={pwdErr}
-                  pwdMsg={pwdMsg}
-                  pwdSaving={pwdSaving}
-                  pwdStrength={pwdStrength}
-                  strengthColors={strengthColors}
-                  handleChangePassword={handleChangePassword}
-                />
-              )}
-
-              {activeTab === 'notifications' && (
-                <NotificationsSection />
-              )}
-
-              {/* Preferences removed */}
-            </section>
+    <div className="mx-auto w-full max-w-screen-2xl px-5 md:px-10 py-8">
+      <header className="mb-8">
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">Settings</h1>
+            <p className="mt-2 text-sm text-gray-600">Manage your admin account, security, and preferences.</p>
           </div>
-        </form>
+        </div>
+      </header>
 
-        {/* desktop save moved into AccountSettingsSection */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Sidebar */}
+        <aside className="lg:col-span-4 xl:col-span-3">
+          <nav aria-label="Settings sections" className="sticky top-6 rounded-2xl border border-black/10 bg-white p-2">
+            <ul className="space-y-1">
+              {sections.map(({ key, label, Icon, description }) => {
+                const active = activeTab === key
+                return (
+                  <li key={key}>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab(key)}
+                      className={`w-full rounded-xl px-3 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${active ? 'bg-black text-white' : 'bg-white text-gray-900 hover:bg-gray-50'}`}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon className={`w-4 h-4 ${active ? 'text-white' : 'text-black/60'}`} aria-hidden="true" />
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold">{label}</div>
+                          <div className={`text-xs ${active ? 'text-white/70' : 'text-gray-500'}`}>{description}</div>
+                        </div>
+                      </div>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
+        </aside>
+
+        {/* Content */}
+        <div className="lg:col-span-8 xl:col-span-9">
+          <form onSubmit={async (e) => { e.preventDefault(); try { await saveProfile(); } catch {} }} className="space-y-6">
+            {activeTab === 'account' && (
+              <AccountSettingsSection
+                values={{ ...values, roles }}
+                errors={errors}
+                touched={touched}
+                emailEditing={emailEditing}
+                emailDraft={emailDraft}
+                setEmailEditing={setEmailEditing}
+                setEmailDraft={setEmailDraft}
+                setErrors={setErrors}
+                setTouched={setTouched}
+                setValues={setValues}
+                validateEmail={validateEmail}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                saveMsg={saveMsg}
+                saveProfile={saveProfile}
+                inputBase={inputBase}
+              />
+            )}
+
+            {activeTab === 'security' && (
+              <SecuritySection
+                inputBase={inputBase}
+                pwd={pwd}
+                setPwd={setPwd}
+                pwdErr={pwdErr}
+                pwdMsg={pwdMsg}
+                pwdSaving={pwdSaving}
+                pwdStrength={pwdStrength}
+                strengthColors={strengthColors}
+                handleChangePassword={handleChangePassword}
+              />
+            )}
+
+            {activeTab === 'notifications' && (
+              <NotificationsSection />
+            )}
+
+            {activeTab === 'preferences' && (
+              <PreferencesSection />
+            )}
+          </form>
+        </div>
       </div>
-      
     </div>
   )
 }

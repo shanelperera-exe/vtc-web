@@ -59,7 +59,10 @@ const OrderStatusBar = ({ progress = 0, statusLabel, statusDetail, orderStatus, 
         <section aria-labelledby="order-status-heading" className="mb-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <h2 id="order-status-heading" className="text-3xl font-semibold">Order status</h2>
+              <h2 id="order-status-heading" className="text-3xl font-semibold inline-flex items-center gap-2">
+                <FiCheckCircle className="w-6 h-6 text-emerald-700" aria-hidden="true" />
+                <span>Order status</span>
+              </h2>
               {renderBadge()}
             </div>
             {headerActions ? (

@@ -53,4 +53,14 @@ public interface ProductVariationRepository extends JpaRepository<ProductVariati
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<ProductVariation> findWithLockingById(Long id);
+
+    // --- Admin analytics helpers ---
+
+    /** Total stock by product id across all variations. */
+    @org.springframework.data.jpa.repository.Query("select pv.product.id, coalesce(sum(pv.stock),0) from ProductVariation pv group by pv.product.id")
+    List<Object[]> sumStockByProduct();
+
+    /** Total stock for a subset of products. */
+    @org.springframework.data.jpa.repository.Query("select pv.product.id, coalesce(sum(pv.stock),0) from ProductVariation pv where pv.product.id in :productIds group by pv.product.id")
+    List<Object[]> sumStockByProductIds(@org.springframework.data.repository.query.Param("productIds") List<Long> productIds);
 }

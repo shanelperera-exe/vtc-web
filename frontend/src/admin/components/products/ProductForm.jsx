@@ -164,22 +164,27 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
           onSubmit(payload);
         }
       }}
-      className="w-full max-w-[1200px] mx-auto bg-white rounded-xl p-6 min-h-[70vh]"
+      className="w-full max-w-[1200px] mx-auto bg-white rounded-2xl p-6 min-h-[70vh]"
     >
       {/* Header */}
       <div className="mb-6 border-b border-gray-200 pb-4">
-        <h3 className="text-4xl font-semibold text-gray-900">{form.id ? 'Edit Product' : 'Add Product'}</h3>
-        <p className="text-sm text-gray-500 mt-1">Fill in the product details below.</p>
+        <div className="min-w-0">
+          <h3 className="text-3xl sm:text-4xl font-semibold text-gray-900">{form.id ? 'Edit Product' : 'Add Product'}</h3>
+          <p className="text-sm text-gray-600 mt-1">Fill in the product details below.</p>
+        </div>
       </div>
 
       <div className="space-y-6">
         <div>
-          <h4 className="text-xl font-semibold text-gray-900">Basic Product Data</h4>
+          <h4 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <FiInfo className="w-5 h-5 text-black/60" />
+            Basic product data
+          </h4>
           <p className="text-xs text-gray-500 mt-1">Core product identifiers and settings.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Field label="Name" required helper="Product display name">
-            <input value={form.name || ''} onChange={e => update({ name: e.target.value })} placeholder="Product name" className="w-full h-11 px-3 border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none" />
+            <input value={form.name || ''} onChange={e => update({ name: e.target.value })} placeholder="Product name" className="w-full h-11 px-3 rounded-lg border border-black/10 bg-white text-sm text-gray-900 placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white" />
           </Field>
 
           <Field label="SKU" required helper="Auto-generated from category (read-only)">
@@ -189,7 +194,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                 value={form.sku || ''}
                 readOnly
                 placeholder={skuLoading ? 'Generating…' : 'Select a category'}
-                className="w-full h-11 pl-10 pr-10 border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none tracking-wide bg-gray-50 text-gray-800"
+                className="w-full h-11 pl-10 pr-10 rounded-lg border border-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white tracking-wide bg-gray-50 text-gray-800"
               />
               {skuLoading && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 inline-block w-3.5 h-3.5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
@@ -203,7 +208,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
               value={form.categoryId || ''}
               onChange={(v) => update({ categoryId: v })}
               options={[{ value: '', label: 'Select category...' }, ...categoryOptions]}
-              className="w-full h-11 px-3"
+              className="w-full h-11 px-3 rounded-lg border border-black/10 bg-white text-sm"
             />
           </Field>
 
@@ -226,7 +231,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                   }
                 }}
                 placeholder="000000.00"
-                className={`w-full h-11 pl-14 pr-3 border ${basePriceValid || basePriceStr === '' ? 'border-gray-300' : 'border-red-400'} focus:ring-2 focus:ring-green-400 focus:outline-none`}
+                className={`w-full h-11 pl-14 pr-3 rounded-lg border ${basePriceValid || basePriceStr === '' ? 'border-black/10' : 'border-rose-300'} bg-white text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white`}
               />
             </div>
             {!basePriceValid && basePriceStr !== '' && (
@@ -238,15 +243,15 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
             <div className="inline-flex items-center gap-2">
               {['active', 'inactive'].map(s => {
                 const isActive = form.status === s;
-                const bg = isActive ? (s === 'active' ? 'bg-green-100' : 'bg-red-100') : 'bg-white';
-                const txt = isActive ? (s === 'active' ? 'text-green-800' : 'text-red-800') : 'text-gray-700';
+                const bg = isActive ? (s === 'active' ? 'bg-emerald-50' : 'bg-rose-50') : 'bg-white';
+                const txt = isActive ? (s === 'active' ? 'text-emerald-800' : 'text-rose-800') : 'text-gray-700';
                 const Icon = s === 'active' ? FiCheckCircle : FiXCircle;
                 return (
                   <button
                     key={s}
                     type="button"
                     onClick={() => update({ status: s })}
-                    className={`${bg} ${txt} inline-flex items-center text-sm font-semibold px-3 py-1 rounded-full border border-gray-200 hover:opacity-90 transition`}
+                    className={`${bg} ${txt} inline-flex items-center text-sm font-semibold px-3 py-1 rounded-full border border-black/10 hover:bg-gray-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2 focus-visible:ring-offset-white`}
                   >
                     <Icon className="w-3.5 h-3.5 mr-1" />
                     {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -257,12 +262,12 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
           </Field>
 
           <Field label="Description" helper="Short description of the product">
-            <textarea rows={3} value={form.description || ''} onChange={e => update({ description: e.target.value })} className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none" placeholder="Short description..." />
+            <textarea rows={3} value={form.description || ''} onChange={e => update({ description: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-black/10 bg-white text-sm placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white" placeholder="Short description..." />
           </Field>
 
           <div className="col-span-1 md:col-span-2">
             <Field label="Detailed Description" helper="Long form description for product page (supports basic HTML)">
-              <textarea rows={6} value={form.detailedDescription || ''} onChange={e => update({ detailedDescription: e.target.value })} className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none" placeholder="Detailed description for product page..." />
+              <textarea rows={6} value={form.detailedDescription || ''} onChange={e => update({ detailedDescription: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-black/10 bg-white text-sm placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white" placeholder="Detailed description for product page..." />
             </Field>
           </div>
 
@@ -270,10 +275,10 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
             <div>
               <div className="flex items-center justify-between">
                 <div>
-                  <h5 className="text-sm font-semibold text-gray-900">Highlights</h5>
+                  <h5 className="text-sm font-semibold text-gray-900 flex items-center gap-2"><FiCheckCircle className="w-4 h-4 text-black/60" />Highlights</h5>
                   <p className="text-xs text-gray-500">Short bullet-point highlights (used in product listing/quick info).</p>
                 </div>
-                <button type="button" onClick={() => update({ highlights: [...(form.highlights || []), ''] })} className="inline-flex items-center gap-2 px-3 py-1.5 bg-black text-white text-xs font-medium hover:bg-black/90">
+                <button type="button" onClick={() => update({ highlights: [...(form.highlights || []), ''] })} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-black/10 bg-black text-white text-xs font-semibold hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
                   <FiPlus className="w-4 h-4" />
                   <span>Add Highlight</span>
                 </button>
@@ -291,10 +296,10 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                       onChange={e => {
                         const arr = (form.highlights || []).slice(); arr[idx] = e.target.value; update({ highlights: arr });
                       }}
-                      className="flex-1 px-3 py-2 text-sm border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                      className="flex-1 px-3 py-2 text-sm rounded-lg border border-black/10 bg-white placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                       placeholder={`Highlight ${idx + 1}`}
                     />
-                    <button type="button" onClick={() => { const arr = (form.highlights || []).slice(); arr.splice(idx, 1); update({ highlights: arr }); }} className="inline-flex items-center justify-center w-8 h-8 text-gray-500 hover:text-red-600">
+                    <button type="button" onClick={() => { const arr = (form.highlights || []).slice(); arr.splice(idx, 1); update({ highlights: arr }); }} className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-black/10 bg-white text-gray-500 hover:text-rose-700 hover:border-rose-200 transition-colors" title="Remove highlight">
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -309,9 +314,9 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
         {/* Variants Section */}
 
         <div className="pt-2">
-          <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
             <div>
-              <h4 className="text-xl font-semibold text-gray-900 tracking-tight">Variants</h4>
+              <h4 className="text-xl font-semibold text-gray-900 tracking-tight flex items-center gap-2"><FiPlus className="w-5 h-5 text-black/60" />Variants</h4>
               <p className="text-xs text-gray-500 mt-1">Define product variations (color, size, individual stock & price).</p>
             </div>
             <button
@@ -321,7 +326,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                 const next = { id: Date.now() + Math.random(), color: '', size: '', stock: 0, price: base };
                 update({ variants: [...(form.variants || []), next] });
               }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 bg-black text-white text-xs font-medium hover:bg-black/90"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-black/10 bg-black text-white text-xs font-semibold hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             >
               <FiPlus className="w-4 h-4" />
               <span>Add Variant</span>
@@ -329,7 +334,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
           </div>
 
           {/* Bulk colors/sizes to auto-generate combinations */}
-          <div className="border border-gray-200 bg-gray-50 p-3 mb-3">
+          <div className="rounded-xl border border-black/10 bg-gray-50 p-3 mb-3">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
               <div className="md:col-span-5">
                 <label className="block text-[11px] font-medium text-gray-600 mb-1">Colors</label>
@@ -337,7 +342,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                   value={colorsInput}
                   onChange={(e) => setColorsInput(e.target.value)}
                   placeholder="e.g. Red, Blue, Green"
-                  className="w-full h-9 px-3 text-sm border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                  className="w-full h-9 px-3 text-sm rounded-lg border border-black/10 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 />
                 <p className="text-[10px] text-gray-500 mt-1">Separate multiple colors with commas.</p>
               </div>
@@ -347,11 +352,12 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                   value={sizesInput}
                   onChange={(e) => setSizesInput(e.target.value)}
                   placeholder="e.g. S, M, L"
-                  className="w-full h-9 px-3 text-sm border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                  className="w-full h-9 px-3 text-sm rounded-lg border border-black/10 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 />
                 <p className="text-[10px] text-gray-500 mt-1">Separate multiple sizes with commas. Leave empty if not applicable.</p>
               </div>
               <div className="md:col-span-2">
+                <span className="block text-[11px] font-medium text-transparent mb-1 select-none">Generate</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -402,11 +408,12 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                       update({ variants: [...existing, ...next] });
                     }
                   }}
-                  className="w-full h-9 inline-flex items-center justify-center gap-2 px-3 bg-black text-white text-xs font-medium hover:bg-black/90"
+                  className="w-full h-9 inline-flex items-center justify-center gap-2 px-3 rounded-lg border border-black/10 bg-black text-white text-xs font-semibold hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 >
                   <FiPlus className="w-4 h-4" />
                   <span>Generate Variants</span>
                 </button>
+                <span className="block text-[10px] text-transparent mt-1 select-none">.</span>
               </div>
             </div>
           </div>
@@ -418,7 +425,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
           {(form.variants || []).length > 0 && (
             <div className="space-y-3">
               {(form.variants || []).map((v, idx) => (
-                <div key={v.id || idx} className="grid grid-cols-12 gap-3 items-end p-3">
+                <div key={v.id || idx} className="grid grid-cols-12 gap-3 items-end p-3 rounded-xl border border-black/10 bg-white">
                   <div className="col-span-12 sm:col-span-3">
                     <label className="block text-[11px] font-medium text-gray-600 mb-1">Color</label>
                     <input
@@ -427,7 +434,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                         const variants = [...(form.variants || [])]; variants[idx] = { ...variants[idx], color: e.target.value }; update({ variants });
                       }}
                       placeholder="e.g. Red"
-                      className="w-full h-8 px-2 text-xs border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                      className="w-full h-9 px-3 text-sm rounded-lg border border-black/10 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-2">
@@ -438,7 +445,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                         const variants = [...(form.variants || [])]; variants[idx] = { ...variants[idx], size: e.target.value }; update({ variants });
                       }}
                       placeholder="M / 32 / 1L"
-                      className="w-full h-8 px-2 text-xs border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                      className="w-full h-9 px-3 text-sm rounded-lg border border-black/10 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-2">
@@ -450,7 +457,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                       onChange={e => {
                         const variants = [...(form.variants || [])]; variants[idx] = { ...variants[idx], stock: e.target.value }; update({ variants });
                       }}
-                      className="w-full h-8 px-2 text-xs border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                      className="w-full h-9 px-3 text-sm rounded-lg border border-black/10 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-2">
@@ -475,7 +482,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                         }
                       }}
                       placeholder="000000.00"
-                      className={`w-full h-8 px-2 text-xs border ${PRICE_FULL.test(String(v.price ?? '')) || String(v.price ?? '') === '' ? 'border-gray-300' : 'border-red-400'} focus:ring-2 focus:ring-green-400 focus:outline-none`}
+                      className={`w-full h-9 px-3 text-sm rounded-lg border ${PRICE_FULL.test(String(v.price ?? '')) || String(v.price ?? '') === '' ? 'border-black/10' : 'border-rose-300'} bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white`}
                     />
                     {!(PRICE_FULL.test(String(v.price ?? '')) || String(v.price ?? '') === '') && (
                       <p className="text-[10px] text-red-600 mt-1">Use format LKR 000000.00</p>
@@ -487,7 +494,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                       onClick={() => {
                         const variants = [...(form.variants || [])]; variants.splice(idx, 1); update({ variants });
                       }}
-                      className="inline-flex items-center gap-1 h-8 px-2 text-[11px] font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 w-full justify-center rounded-full"
+                      className="inline-flex items-center gap-1 h-9 px-2 text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 w-full justify-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                       title="Remove variant"
                     >
                       <FiTrash2 className="w-3.5 h-3.5" />
@@ -506,7 +513,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
         <div className="pt-4">
           <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
             <div>
-              <h4 className="text-xl font-semibold text-gray-900 tracking-tight">Images</h4>
+              <h4 className="text-xl font-semibold text-gray-900 tracking-tight flex items-center gap-2"><FiImage className="w-5 h-5 text-black/60" />Images</h4>
               <p className="text-xs text-gray-500 mt-1">Primary thumbnail (1:1) and optional secondary (gallery) images.</p>
             </div>
             <ImageGuidelines />
@@ -514,7 +521,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
 
           <div className="grid gap-6 md:grid-cols-3 items-start">
             {/* Primary image subsection (left column) */}
-            <div className="md:col-span-1 border bg-white border-gray-100 p-4">
+            <div className="md:col-span-1 rounded-xl border border-black/10 bg-white p-4">
               <div className="mb-3">
                 <h5 className="text-sm font-semibold text-gray-900">Primary Image</h5>
                 <p className="text-xs text-gray-500">Used as the product thumbnail (1:1)</p>
@@ -530,7 +537,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
             </div>
 
             {/* Secondary images subsection (right, spans two columns) */}
-            <div className="md:col-span-2 bg-white border border-gray-100 p-4">
+            <div className="md:col-span-2 rounded-xl border border-black/10 bg-white p-4">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <h5 className="text-sm font-semibold text-gray-900">Secondary Images</h5>
@@ -539,7 +546,7 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
                 <button
                   type="button"
                   onClick={() => update({ secondaryImages: [...(form.secondaryImages || []), ''] })}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 bg-black text-white text-xs font-medium hover:bg-black/90"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-black/10 bg-black text-white text-xs font-semibold hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 >
                   <FiPlus className="w-4 h-4" />
                   <span>Add Image</span>
@@ -576,9 +583,13 @@ export default function ProductForm({ initial, onSubmit, onCancel, categories = 
 
         {/* Actions */}
         <div className="mt-6 flex items-center justify-end gap-3">
-          <button type="button" onClick={() => { setForm(normalizeInitialProduct(initial)); if (typeof onCancel === 'function') onCancel(); }} className="px-4 py-2 text-sm border-2 border-black rounded-none text-black bg-white hover:bg-gray-50 disabled:opacity-50" disabled={saving}>Cancel</button>
-          <button type="submit" disabled={!canSave || saving} className="px-4 py-2 text-sm border-2 border-black bg-[#00bf63] font-medium text-black hover:bg-black hover:text-white disabled:opacity-50 flex items-center gap-2">
+          <button type="button" onClick={() => { setForm(normalizeInitialProduct(initial)); if (typeof onCancel === 'function') onCancel(); }} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border border-black/10 bg-white text-gray-900 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50" disabled={saving}>
+            <FiXCircle className="w-4 h-4" />
+            Cancel
+          </button>
+          <button type="submit" disabled={!canSave || saving} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border border-black/10 bg-black text-white hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50">
             {saving && <span className="inline-block w-3 h-3 border-2 border-black border-t-transparent animate-spin rounded-full" aria-hidden="true" />}
+            {!saving && <FiCheckCircle className="w-4 h-4" />}
             {form.id ? (saving ? 'Saving…' : 'Save Changes') : (saving ? 'Creating…' : 'Create Product')}
           </button>
         </div>
@@ -675,7 +686,7 @@ function ProductImageCard({ label, helper, value, onChange, onRemove, required, 
   const aspectClass = aspect === 'square' ? 'aspect-square' : (aspect === 'video' ? 'aspect-video' : '');
 
   return (
-    <div className="relative group bg-white border-2 border-gray-200 p-4 flex flex-col hover:shadow-md transition">
+    <div className="relative group bg-white rounded-xl border border-black/10 p-4 flex flex-col hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between gap-2 mb-3">
         <div>
           <h5 className="text-sm font-semibold text-gray-900 leading-tight flex items-center gap-1">{label} {required && <span className="text-red-500">*</span>}</h5>
@@ -688,7 +699,7 @@ function ProductImageCard({ label, helper, value, onChange, onRemove, required, 
         )}
       </div>
 
-      <div className={`relative mb-3 overflow-hidden bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center ${aspectClass} w-full`}>
+      <div className={`relative mb-3 overflow-hidden bg-gray-50 border border-dashed border-black/20 rounded-lg flex items-center justify-center ${aspectClass} w-full`}>
         {value ? (
           <>
             <img src={value} alt={label} className="w-full h-full object-cover" />
@@ -741,11 +752,11 @@ function ProductImageCard({ label, helper, value, onChange, onRemove, required, 
       </div>
 
       {mode === 'url' ? (
-        <input value={value || ''} onChange={(e) => onChange(e.target.value)} className="w-full h-9 px-3 border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none text-xs" placeholder="https://.../image.jpg" />
+        <input value={value || ''} onChange={(e) => onChange(e.target.value)} className="w-full h-9 px-3 rounded-lg border border-black/10 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white text-xs" placeholder="https://.../image.jpg" />
       ) : (
         <div>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelect(e.target.files && e.target.files[0])} />
-          <button type="button" onClick={() => fileRef.current && fileRef.current.click()} className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-black text-white text-xs font-medium hover:bg-black/90">
+          <button type="button" onClick={() => fileRef.current && fileRef.current.click()} className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-black/10 bg-black text-white text-xs font-semibold hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
             <FiUpload className="w-4 h-4" />
             <span>{value ? 'Replace image' : 'Upload image'}</span>
           </button>

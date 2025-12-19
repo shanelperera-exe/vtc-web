@@ -49,4 +49,43 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "group by oi.categoryId " +
             "order by coalesce(sum(oi.quantity),0) desc")
         List<Object[]> topCategoriesByUnitsBetween(LocalDateTime start, LocalDateTime end);
+
+        /** Top products by revenue with units sold (excludes cancelled). */
+        @Query("select oi.productId, max(oi.productName), max(oi.categoryId), max(oi.categoryName), max(oi.imageUrl), " +
+            "coalesce(sum(oi.totalPrice),0), coalesce(sum(oi.quantity),0) " +
+            "from OrderItem oi " +
+            "where oi.order.placedAt >= :start and oi.order.placedAt < :end " +
+            "and oi.order.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED " +
+            "group by oi.productId " +
+            "order by coalesce(sum(oi.totalPrice),0) desc")
+        List<Object[]> topProductsByRevenueAndUnitsBetween(LocalDateTime start, LocalDateTime end);
+
+        /** Worst products by revenue (ascending), limited by caller (excludes cancelled). */
+        @Query("select oi.productId, max(oi.productName), max(oi.categoryId), max(oi.categoryName), max(oi.imageUrl), " +
+            "coalesce(sum(oi.totalPrice),0), coalesce(sum(oi.quantity),0) " +
+            "from OrderItem oi " +
+            "where oi.order.placedAt >= :start and oi.order.placedAt < :end " +
+            "and oi.order.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED " +
+            "group by oi.productId " +
+            "order by coalesce(sum(oi.totalPrice),0) asc")
+        List<Object[]> worstProductsByRevenueAndUnitsBetween(LocalDateTime start, LocalDateTime end);
+
+        /** Category revenue contribution (excludes cancelled). */
+        @Query("select oi.categoryId, max(oi.categoryName), coalesce(sum(oi.totalPrice),0), coalesce(sum(oi.quantity),0) " +
+            "from OrderItem oi " +
+            "where oi.order.placedAt >= :start and oi.order.placedAt < :end " +
+            "and oi.order.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED " +
+            "and oi.categoryId is not null " +
+            "group by oi.categoryId " +
+            "order by coalesce(sum(oi.totalPrice),0) desc")
+        List<Object[]> categoryRevenueBetween(LocalDateTime start, LocalDateTime end);
+
+        /** Daily units sold (excludes cancelled). */
+        @Query("select function('date', oi.order.placedAt), coalesce(sum(oi.quantity),0) " +
+            "from OrderItem oi " +
+            "where oi.order.placedAt >= :start and oi.order.placedAt < :end " +
+            "and oi.order.status <> com.vtcweb.backend.model.entity.order.OrderStatus.CANCELLED " +
+            "group by function('date', oi.order.placedAt) " +
+            "order by function('date', oi.order.placedAt) asc")
+        List<Object[]> dailyUnitsSoldBetween(LocalDateTime start, LocalDateTime end);
 }

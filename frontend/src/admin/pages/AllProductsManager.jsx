@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { motion } from 'framer-motion';
-import { FiPlus, FiFilter } from 'react-icons/fi';
+import { FiPlus, FiFilter, FiSliders, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import SearchBar from '../../components/layout/SearchBar';
 import ProductGrid from '../components/products/ProductGrid';
 import ProductForm from '../components/products/ProductForm';
@@ -348,15 +348,27 @@ export default function AllProductsManager({ initialCategoryId = null, showHeade
       {showHeader && (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
           <div>
-            <h1 className="text-6xl font-semibold text-black">Products</h1>
-            <p className="text-md text-gray-600 pt-4">Manage all products across categories.</p>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold text-black">Products</h1>
+            <p className="text-sm sm:text-base text-gray-600 pt-2">Manage all products across categories.</p>
           </div>
-          <button onClick={openCreate} className="inline-flex items-center gap-2 h-11 px-4 border-2 border-black bg-black text-white hover:bg-[#23f47d] hover:text-black"> <FiPlus /> <span className="text-sm font-medium">Add Product</span></button>
+          <button
+            onClick={openCreate}
+            className="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl border border-black/10 bg-black text-white font-semibold hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          >
+            <FiPlus />
+            <span className="text-sm">Add Product</span>
+          </button>
         </div>
       )}
       {!showHeader && (
         <div className="flex justify-end mb-5">
-          <button onClick={openCreate} className="inline-flex items-center gap-2 h-11 px-4 border-2 border-black bg-black text-white hover:bg-[#23f47d] hover:text-black"> <FiPlus /> <span className="text-sm font-medium">Add Product</span></button>
+          <button
+            onClick={openCreate}
+            className="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl border border-black/10 bg-black text-white font-semibold hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          >
+            <FiPlus />
+            <span className="text-sm">Add Product</span>
+          </button>
         </div>
       )}
 
@@ -379,15 +391,33 @@ export default function AllProductsManager({ initialCategoryId = null, showHeade
       }} />
 
       <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-2 text-sm text-gray-700">
           <span>Rows per page</span>
-          <select value={pageSize} onChange={(e) => { setPageSize(parseInt(e.target.value)); setPage(1); }} className="border-2 border-black px-2 py-1 bg-white"> {[4, 8, 12].map(s => <option key={s} value={s}>{s}</option>)}</select>
-          <span className="text-gray-600">Page {page}</span>
+          <select
+            value={pageSize}
+            onChange={(e) => { setPageSize(parseInt(e.target.value)); setPage(1); }}
+            className="rounded-lg border border-black/10 px-2 py-1.5 bg-white text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          >
+            {[4, 8, 12].map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+          <span className="text-gray-500">Page <span className="font-semibold text-gray-900">{page}</span></span>
         </div>
-        <div className="inline-flex border-2 border-black">
-          <button className="px-3 py-2 bg-white hover:bg-[#23f47d]" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>Prev</button>
-          <div className="px-3 py-2 bg-black text-green-400 text-sm">{page}</div>
-          <button className="px-3 py-2 bg-white hover:bg-[#23f47d]" onClick={() => setPage(p => p + 1)} disabled={pageData.length < pageSize}>Next</button>
+        <div className="inline-flex overflow-hidden rounded-xl border border-black/10 bg-white">
+          <button
+            className="inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >
+            <FiChevronLeft className="w-4 h-4" /> Prev
+          </button>
+          <div className="px-3 py-2 bg-black text-white text-sm font-semibold">{page}</div>
+          <button
+            className="inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white"
+            onClick={() => setPage(p => p + 1)}
+            disabled={pageData.length < pageSize}
+          >
+            Next <FiChevronRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
@@ -436,34 +466,88 @@ export default function AllProductsManager({ initialCategoryId = null, showHeade
 }
 
 function Toolbar({ query, setQuery, category, setCategory, status, setStatus, prodFilter, setProdFilter, sort, setSort, total, categoryOptions }) {
-  const statusBorderClass = status === 'all' ? 'border-black' : status === 'active' ? 'border-green-600' : 'border-red-600';
-  const stockBorderClass = prodFilter === 'all' ? 'border-black' : prodFilter === 'in-stock' ? 'border-green-600' : 'border-red-600';
+  const statusBorderClass = status === 'all' ? 'border-black/10' : status === 'active' ? 'border-emerald-200' : 'border-rose-200';
+  const stockBorderClass = prodFilter === 'all' ? 'border-black/10' : prodFilter === 'in-stock' ? 'border-emerald-200' : 'border-rose-200';
   return (
-    <div className="flex flex-col md:flex-row gap-3 md:items-center mb-4 w-full">
-      <div className="flex items-center gap-3">
-        <div className="flex-none">
-          <SearchBar value={query} onChange={e => setQuery(e.target.value)} placeholder="Search products..." width="360px" />
-        </div>
-      </div>
-      <div className="flex items-center gap-3 ml-auto">
-        <Dropdown value={category} onChange={(v) => setCategory(v)} options={categoryOptions} className="w-44 h-8 pr-7 border-2 border-black bg-white text-xs" />
-        <div className="ml-2 flex items-center">
-          <div className="text-xs font-medium mr-2">Status</div>
-          <div className={`inline-flex border-2 ${statusBorderClass} overflow-hidden rounded-full mr-2`}>
-            {['all', 'active', 'inactive'].map(opt => { const isSelected = status === opt; const selectedClass = isSelected ? (opt === 'active' ? 'bg-green-600 text-white border-2 border-green-600' : opt === 'inactive' ? 'bg-red-600 text-white border-2 border-red-600' : 'bg-black text-white border-2 border-black') : 'bg-white text-black hover:bg-gray-100 border-0'; return <button key={opt} onClick={() => setStatus(opt)} className={`px-2 py-1 text-xs ${selectedClass}`}>{opt === 'all' ? 'All' : opt.charAt(0).toUpperCase() + opt.slice(1)}</button>; })}
+    <div className="w-full mb-4">
+      <div className="flex flex-col lg:flex-row gap-3 lg:items-center">
+        <div className="flex items-center gap-3">
+          <div className="flex-none">
+            <SearchBar value={query} onChange={e => setQuery(e.target.value)} placeholder="Search products..." width="360px" />
           </div>
         </div>
-        <div className="ml-3 flex items-center">
-          <div className="text-xs mr-2 font-medium">Stock</div>
-          <div className={`inline-flex border-2 ${stockBorderClass} overflow-hidden rounded-full mr-3`}>
-            {['all', 'in-stock', 'out-of-stock'].map(opt => { const isSelected = prodFilter === opt; const selectedClass = isSelected ? (opt === 'in-stock' ? 'bg-green-600 text-white border-2 border-green-600' : opt === 'out-of-stock' ? 'bg-red-600 text-white border-2 border-red-600' : 'bg-black text-white border-2 border-black') : 'bg-white text-black hover:bg-gray-100 border-0'; return <button key={opt} onClick={() => setProdFilter(opt)} className={`px-2 py-1 text-xs ${selectedClass}`}>{opt === 'all' ? 'All' : opt === 'in-stock' ? 'In stock' : 'Out of stock'}</button>; })}
+
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 lg:ml-auto">
+          <Dropdown value={category} onChange={(v) => setCategory(v)} options={categoryOptions} className="w-full sm:w-44 h-9 pr-7 rounded-lg border border-black/10 bg-white text-sm" />
+
+          <div className="flex items-center">
+            <div className="text-xs font-semibold text-black/60 mr-2">Status</div>
+            <div className={`inline-flex border ${statusBorderClass} overflow-hidden rounded-full bg-white`}>
+              {['all', 'active', 'inactive'].map(opt => {
+                const isSelected = status === opt;
+                const selectedClass = isSelected
+                  ? (opt === 'active'
+                    ? 'bg-emerald-600 text-white'
+                    : opt === 'inactive'
+                      ? 'bg-rose-600 text-white'
+                      : 'bg-black text-white')
+                  : 'bg-white text-gray-900 hover:bg-gray-50';
+                return (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setStatus(opt)}
+                    className={`px-3 py-1.5 text-xs font-semibold transition-colors ${selectedClass}`}
+                  >
+                    {opt === 'all' ? 'All' : opt.charAt(0).toUpperCase() + opt.slice(1)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <div className="text-xs font-semibold text-black/60 mr-2">Stock</div>
+            <div className={`inline-flex border ${stockBorderClass} overflow-hidden rounded-full bg-white`}>
+              {['all', 'in-stock', 'out-of-stock'].map(opt => {
+                const isSelected = prodFilter === opt;
+                const selectedClass = isSelected
+                  ? (opt === 'in-stock'
+                    ? 'bg-emerald-600 text-white'
+                    : opt === 'out-of-stock'
+                      ? 'bg-rose-600 text-white'
+                      : 'bg-black text-white')
+                  : 'bg-white text-gray-900 hover:bg-gray-50';
+                return (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setProdFilter(opt)}
+                    className={`px-3 py-1.5 text-xs font-semibold transition-colors ${selectedClass}`}
+                  >
+                    {opt === 'all' ? 'All' : opt === 'in-stock' ? 'In stock' : 'Out of stock'}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <div className="inline-flex items-center gap-1 text-xs font-semibold text-black/60 mr-2">
+              <FiSliders className="w-3.5 h-3.5" /> Sort
+            </div>
+            <Dropdown
+              value={sort}
+              onChange={(v) => setSort(v)}
+              options={[{ value: 'alpha-asc', label: 'Alphabetically, A–Z' }, { value: 'alpha-desc', label: 'Alphabetically, Z–A' }, { value: 'price-asc', label: 'Price, low to high' }, { value: 'price-desc', label: 'Price, high to low' }]}
+              className="w-full sm:w-56 h-9 pr-7 rounded-lg border border-black/10 bg-white text-sm"
+            />
+          </div>
+
+          <div className="text-xs font-semibold flex items-center gap-1 text-black/70">
+            <FiFilter className="text-black/60" /> {total} result(s)
           </div>
         </div>
-        <div className="ml-3 flex items-center">
-          <div className="text-xs font-medium mr-2">Sort by</div>
-          <Dropdown value={sort} onChange={(v) => setSort(v)} options={[{ value: 'alpha-asc', label: 'Alphabetically, A–Z' }, { value: 'alpha-desc', label: 'Alphabetically, Z–A' }, { value: 'price-asc', label: 'Price, low to high' }, { value: 'price-desc', label: 'Price, high to low' }]} className="w-48 h-8 pr-7 border-2 border-black bg-white text-xs" />
-        </div>
-        <div className="text-xs font-medium flex items-center gap-1 ml-4"><FiFilter className="text-black" /> {total} result(s)</div>
       </div>
     </div>
   );
