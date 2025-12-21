@@ -1,4 +1,5 @@
 import React from "react";
+import { FiDollarSign } from 'react-icons/fi';
 
 export default function BillingSummary({ billing }) {
   const address = billing?.address ?? [];
@@ -55,6 +56,17 @@ export default function BillingSummary({ billing }) {
                 const logoSrc = logos[brand] || logos.visa;
                 const altText = brand === 'amex' ? 'American Express' : (brand.charAt(0).toUpperCase() + brand.slice(1));
 
+                const isCash = /cash|cod|cash on delivery/i.test(paymentTypeRaw || (payment.type || ''));
+
+                if (isCash) {
+                  return (
+                    <div className="flex items-center gap-3">
+                      <FiDollarSign className="h-6 w-6 text-emerald-600" aria-hidden="true" />
+                      <p className="text-gray-900 font-semibold">Cash on Delivery</p>
+                    </div>
+                  );
+                }
+
                 return (
                   <div className="flex items-center gap-3">
                     <img
@@ -71,15 +83,21 @@ export default function BillingSummary({ billing }) {
                 );
               })()}
 
-              {/* Card Details */}
-              <div className="text-sm text-gray-700">
-                <p>Ending with <span className="font-semibold">{paymentLast4}</span></p>
-                {paymentExpires ? (
-                  <p>Expires <span className="font-semibold">{paymentExpires}</span></p>
-                ) : (
-                  <p className="text-gray-500">Expires —</p>
-                )}
-              </div>
+              {/* Card Details (omit for cash on delivery) */}
+              {(/cash|cod|cash on delivery/i.test(paymentTypeRaw || (payment.type || ''))) ? (
+                <div className="text-sm text-gray-700">
+                  <p className="font-semibold">Payment will be collected on delivery</p>
+                </div>
+              ) : (
+                <div className="text-sm text-gray-700">
+                  <p>Ending with <span className="font-semibold">{paymentLast4}</span></p>
+                  {paymentExpires ? (
+                    <p>Expires <span className="font-semibold">{paymentExpires}</span></p>
+                  ) : (
+                    <p className="text-gray-500">Expires —</p>
+                  )}
+                </div>
+              )}
             </dd>
           </div>
         </dl>

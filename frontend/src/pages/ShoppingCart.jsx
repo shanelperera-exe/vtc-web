@@ -63,8 +63,8 @@ export default function ShoppingCart() {
 
                           <td className="cart-contents-product__thumbnail cart-product-thumbnail w-15 p-2 pl-0">
                             <a href="#" className="block">
-                              <figure className="w-20 h-20 overflow-hidden bg-gray-100 flex items-center justify-center">
-                                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                              <figure className="w-20 h-20 overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-gray-700 rounded-sm">
+                                <img src={product.image} alt={product.name} className="w-full h-full object-cover rounded-sm" />
                               </figure>
                             </a>
                           </td>

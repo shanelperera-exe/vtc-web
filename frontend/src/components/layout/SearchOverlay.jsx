@@ -147,7 +147,7 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                 {isOpen && (
                     <motion.div
                         key="search-overlay"
-                        className="fixed inset-0 z-50 bg-white overflow-hidden"
+                        className="fixed inset-0 z-50 bg-gradient-to-b from-white via-slate-50 to-white overflow-auto backdrop-blur-sm"
                         initial={{ y: '-100vh' }}
                         animate={isClosing ? { y: '-100vh' } : { y: 0 }}
                         exit={{ y: '-100vh' }}
@@ -160,21 +160,22 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                         <div className="pointer-events-none fixed right-3 bottom-3 md:right-6 md:bottom-4 z-40">
                             {/* use clamp to scale from ~6rem up to ~14rem depending on viewport */}
                             <div className="flex items-center gap-3">
-                                <Search className="text-black opacity-6" style={{ width: 'clamp(4rem, 10vw, 8rem)', height: 'auto' }} />
-                                <div className="font-bold text-black opacity-6 leading-none" style={{ fontSize: 'clamp(4rem, 10vw, 8rem)', lineHeight: 0.85 }}>search</div>
+                                <Search className="text-gray-300" style={{ width: 'clamp(4rem, 10vw, 8rem)', height: 'auto', opacity: 0.12 }} />
+                                <div className="font-bold text-gray-300 leading-none" style={{ fontSize: 'clamp(4rem, 10vw, 8rem)', lineHeight: 0.85, opacity: 0.12 }}>search</div>
                             </div>
                         </div>
                         {/* Close */}
                         <button
                             onClick={close}
-                            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100"
+                            className="absolute top-4 right-4 p-2 rounded-md bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm"
+                            aria-label="Close search overlay"
                         >
                             <X className="w-6 h-6" />
                         </button>
 
-                        <div className="max-w-5xl mx-auto px-6 py-16 flex flex-col items-center">
+                        <div className="max-w-6xl mx-auto px-6 py-20 flex flex-col items-center text-center">
                             {/* Heading */}
-                            <h4 className="text-2xl font-semibold mb-6">
+                            <h4 className="text-3xl md:text-4xl font-extrabold mb-6 text-gray-900">
                                 What are you looking for?
                             </h4>
 
@@ -185,24 +186,24 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                                 className="w-full flex items-center justify-center"
                             >
                                 <div className="mx-auto">
-                                    <SearchBar name="q" value={query} onChange={(e) => setQuery(e.target.value)} autoFocus />
+                                    <div className="w-full max-w-3xl">
+                                        <SearchBar name="q" value={query} onChange={(e) => setQuery(e.target.value)} autoFocus />
+                                    </div>
                                 </div>
 
                             </form>
 
                             {/* Quick Search */}
-                            <div className="mt-6 flex flex-wrap items-center gap-2 text-sm">
-                                <span className="font-medium">Quick Search:</span>
+                            <div className="mt-6 flex flex-wrap items-center gap-3 text-sm justify-center">
+                                <span className="font-medium text-gray-700 mr-2">Quick Search:</span>
                                 {quickSearch.map((item, i) => (
-                                    <a
+                                    <button
                                         key={i}
-                                        href={`/search?q=${encodeURIComponent(item)}`}
                                         onClick={(e) => { e.preventDefault(); setQuery(item); }}
-                                        className="text-blue-600 hover:underline"
+                                        className="inline-block px-3 py-1 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
                                     >
                                         {item}
-                                        {i < quickSearch.length - 1 && ","}
-                                    </a>
+                                    </button>
                                 ))}
                             </div>
 
@@ -210,8 +211,8 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                             <div className="mt-10 w-full">
                                 {query.trim().length >= 2 ? (
                                     <div>
-                                        <div className="flex items-center justify-between mb-4">
-                                            <h6 className="font-semibold">Top results</h6>
+                                        <div className="flex items-center justify-between mb-6 w-full">
+                                            <h6 className="font-semibold text-lg">Top results</h6>
                                             <div className="text-sm text-gray-500">
                                                 {loading ? 'Searching…' : error ? 'Search failed' : `${total} result${total === 1 ? '' : 's'}`}
                                             </div>
@@ -242,18 +243,31 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                                                     <a
                                                         key={p.id || p.sku}
                                                         href={href}
-                                                        className="block group text-left border-2 border-black hover:border-neutral-900 transition p-2"
+                                                        className="block group text-left bg-white rounded-2xl shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition-all duration-200 p-3 border border-gray-100 overflow-hidden"
                                                     >
-                                                        {img ? (
-                                                            // show full 1:1 image without cropping
-                                                            <div className="w-full aspect-square bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-black box-border">
-                                                                <img src={img} alt={p.name} className="max-w-full max-h-full object-contain" />
+                                                        <div className="relative">
+                                                            {img ? (
+                                                                <div className="w-full aspect-square bg-gradient-to-br from-white to-gray-50 rounded-xl flex items-center justify-center overflow-hidden border border-gray-100">
+                                                                    <img src={img} alt={p.name} className="max-w-full max-h-full object-contain" />
+                                                                </div>
+                                                            ) : (
+                                                                <div className="w-full aspect-square bg-gray-200 flex items-center justify-center text-gray-500 border border-gray-100 rounded-xl">No Image</div>
+                                                            )}
+                                                            <div className="absolute top-3 left-3 inline-flex items-center gap-2 bg-white/85 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-700 border border-gray-100 shadow-sm">
+                                                                <span className="text-xs">{p.sku || ''}</span>
                                                             </div>
-                                                        ) : (
-                                                            <div className="w-full aspect-square bg-gray-200 flex items-center justify-center text-gray-500 border-2 border-black box-border">No Image</div>
-                                                        )}
-                                                        <div className="mt-2 text-sm font-semibold leading-snug line-clamp-2" title={p.name}>{p.name}</div>
-                                                        <span className="mt-1 block text-sm text-gray-700">{"LKR " + (Number(price) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                        </div>
+
+                                                        <div className="mt-3 flex items-center justify-between gap-3">
+                                                            <div className="flex-1">
+                                                                <div className="text-sm font-semibold leading-tight line-clamp-2" title={p.name}>{p.name}</div>
+                                                            </div>
+                                                            <div className="flex-shrink-0 ml-2">
+                                                                <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-50 text-green-700 text-sm font-semibold">
+                                                                    {"LKR " + (Number(price) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </a>
                                                 );
                                             })}
@@ -295,18 +309,25 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                                                     <a
                                                         key={p.id || p.sku}
                                                         href={href}
-                                                        className="block group text-left border-2 border-black hover:border-neutral-900 transition p-2"
+                                                        className="block group text-left bg-white rounded-2xl shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition-all duration-200 p-3 border border-gray-100 overflow-hidden"
                                                     >
-                                                        {img ? (
-                                                            // show full 1:1 image without cropping
-                                                            <div className="w-full aspect-square bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-black box-border">
-                                                                <img src={img} alt={p.name} className="max-w-full max-h-full object-contain" />
+                                                        <div className="relative">
+                                                            {img ? (
+                                                                <div className="w-full aspect-square bg-gradient-to-br from-white to-gray-50 rounded-xl flex items-center justify-center overflow-hidden border border-gray-100">
+                                                                    <img src={img} alt={p.name} className="max-w-full max-h-full object-contain" />
+                                                                </div>
+                                                            ) : (
+                                                                <div className="w-full aspect-square bg-gray-200 flex items-center justify-center text-gray-500 border border-gray-100 rounded-xl">No Image</div>
+                                                            )}
+                                                            <div className="absolute top-3 left-3 inline-flex items-center gap-2 bg-white/85 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-700 border border-gray-100 shadow-sm">
+                                                                <span className="text-xs">{p.sku || ''}</span>
                                                             </div>
-                                                        ) : (
-                                                            <div className="w-full aspect-square bg-gray-200 flex items-center justify-center text-gray-500 border-2 border-black box-border">No Image</div>
-                                                        )}
-                                                        <div className="mt-2 text-sm font-semibold leading-snug line-clamp-2" title={p.name}>{p.name}</div>
-                                                        <span className="mt-1 block text-sm text-gray-700">{"LKR " + (Number(price) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                        </div>
+
+                                                        <div className="mt-3">
+                                                            <div className="text-sm font-semibold leading-snug line-clamp-2" title={p.name}>{p.name}</div>
+                                                            <div className="mt-2 text-sm text-gray-700">{"LKR " + (Number(price) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                                                        </div>
                                                     </a>
                                                 );
                                             })}

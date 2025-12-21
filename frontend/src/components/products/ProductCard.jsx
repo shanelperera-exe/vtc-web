@@ -278,9 +278,9 @@ const StyledWrapper = styled.div`
     padding: 0;
     background: #f5f5f5;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
     border: 2px solid black;
-    /* border-radius: 1rem; */
+    border-radius: 1rem;
   }
 
   /* Make image container a square using aspect-ratio when supported, fallback to fixed height */
@@ -402,7 +402,7 @@ const StyledWrapper = styled.div`
     position: relative;
     overflow: visible;
     background: #f9fafb; /* bg-neutral-50 */
-    // border-radius: 1rem;
+    border-radius: 1rem;
     border: 2px solid black;
     box-sizing: border-box;
     margin: 0 auto;

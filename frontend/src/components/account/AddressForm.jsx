@@ -6,6 +6,8 @@ import { provinces, districtsByProvince } from '../../data/sriLankaLocations'
 const AddressForm = ({ initialValues, onSave, onCancel }) => {
   const [values, setValues] = useState(initialValues);
 
+  const inputBase = "w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-neutral-900 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/15";
+
   // Keep internal state in sync when parent changes initialValues (e.g., toggle Billing/Shipping)
   useEffect(() => {
     setValues(initialValues);
@@ -22,13 +24,13 @@ const AddressForm = ({ initialValues, onSave, onCancel }) => {
   };
 
   return (
-    <form className="space-y-4 p-4" onSubmit={handleSubmit}>
+    <form className="space-y-4" onSubmit={handleSubmit}>
       <div className="space-y-1">
         <label className="text-sm text-gray-700" htmlFor="name">Name</label>
         <input
           id="name"
           name="name"
-          className="w-full rounded-none border-[3px] border-gray-300 px-3 py-2 outline-none focus:border-[#0bd964]"
+          className={inputBase}
           value={values.name}
           onChange={handleChange}
         />
@@ -38,7 +40,7 @@ const AddressForm = ({ initialValues, onSave, onCancel }) => {
         <input
           id="address1"
           name="address1"
-          className="w-full rounded-none border-[3px] border-gray-300 px-3 py-2 outline-none focus:border-[#0bd964]"
+          className={inputBase}
           value={values.address1 || ''}
           onChange={handleChange}
           placeholder="House number and street name"
@@ -49,7 +51,7 @@ const AddressForm = ({ initialValues, onSave, onCancel }) => {
         <input
           id="address2"
           name="address2"
-          className="w-full rounded-none border-[3px] border-gray-300 px-3 py-2 outline-none focus:border-[#0bd964]"
+          className={inputBase}
           value={values.address2 || ''}
           onChange={handleChange}
           placeholder="Apartment, suite, unit, etc. (optional)"
@@ -60,7 +62,7 @@ const AddressForm = ({ initialValues, onSave, onCancel }) => {
         <input
           id="city"
           name="city"
-          className="w-full rounded-none border-[3px] border-gray-300 px-3 py-2 outline-none focus:border-[#0bd964]"
+          className={inputBase}
           value={values.city || ''}
           onChange={handleChange}
           placeholder="Colombo"
@@ -71,7 +73,7 @@ const AddressForm = ({ initialValues, onSave, onCancel }) => {
         <input
           id="postal"
           name="postal"
-          className="w-full rounded-none border-[3px] border-gray-300 px-3 py-2 outline-none focus:border-[#0bd964]"
+          className={inputBase}
           value={values.postal || ''}
           onChange={handleChange}
           placeholder="00000"
@@ -105,7 +107,7 @@ const AddressForm = ({ initialValues, onSave, onCancel }) => {
           type="text"
           readOnly
           value={values.country || 'Sri Lanka'}
-          className="w-full rounded-none border-[3px] border-gray-300 px-3 py-2 outline-none focus:border-[#0bd964] bg-gray-50"
+          className={`${inputBase} bg-neutral-50`}
         />
       </div>
       <div className="space-y-1">
@@ -113,7 +115,7 @@ const AddressForm = ({ initialValues, onSave, onCancel }) => {
         <input
           id="phone"
           name="phone"
-          className="w-full rounded-none border-[3px] border-gray-300 px-3 py-2 outline-none focus:border-[#0bd964]"
+          className={inputBase}
           value={values.phone}
           onChange={handleChange}
         />
@@ -121,16 +123,18 @@ const AddressForm = ({ initialValues, onSave, onCancel }) => {
       <div className="flex gap-3 justify-end pt-2">
         <CommonBtn
           type="button"
-          bgClass="bg-gray-200 text-gray-700 hover:bg-gray-300"
-          className="px-4 py-2"
+          noShadow
+          bgClass="bg-white text-neutral-900 hover:bg-neutral-100"
+          className="rounded-xl border border-black/10 px-4 py-2 text-sm font-semibold"
           label="Cancel"
           onClick={onCancel}
           fullWidth={false}
         />
         <CommonBtn
           type="submit"
-          bgClass="bg-[#0bd964] text-black hover:bg-[#09a84e] hover:text-white"
-          className="px-6 py-2"
+          noShadow
+          bgClass="bg-emerald-600 text-white hover:bg-emerald-700"
+          className="rounded-xl border border-black/10 px-6 py-2 text-sm font-semibold"
           label="Save"
           fullWidth={false}
         />

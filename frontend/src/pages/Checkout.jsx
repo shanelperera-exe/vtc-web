@@ -282,13 +282,13 @@ export default function Checkout() {
 	return (
 		<div className="min-h-screen bg-gray-50">
 			<Navbar />
-			<div className="mx-auto max-w-6xl px-4 py-6">
-				<div className="flex items-center justify-between mb-3 md:mb-4">
-					<h1 className="text-6xl md:text-6xl lg:text-6xl font-semibold text-gray-900">Checkout</h1>
+			<div className="mx-auto max-w-6xl px-4 py-6 mt-2">
+				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+					<h1 className="text-4xl sm:text-6xl font-semibold text-gray-900">Checkout</h1>
 					<button
 						type="button"
 						onClick={() => navigate('/cart')}
-						className="inline-flex items-center gap-2 px-4 py-2.5 text-base font-medium text-white bg-black border-0 rounded-none hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800"
+						className="inline-flex items-center justify-center gap-2 rounded-xl bg-black px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-200"
 					>
 						<FiShoppingCart className="w-4 h-4" aria-hidden="true" />
 						<span>View cart</span>
@@ -300,21 +300,21 @@ export default function Checkout() {
 				<div className="mt-6 grid grid-cols-1 lg:grid-cols-5 gap-6">
 					<div className="lg:col-span-3">
 						{active === 0 && !isAuthenticated && (
-							<div className="mb-3 py-2 text-sm px-1 text-gray-800">
+							<div className="mb-4 rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-gray-800 shadow-sm">
 								Returning customer?{' '}
-								<button type="button" onClick={() => setAuthOpen(true)} className="font-semibold text-[#0bd964] hover:underline">Click here to sign in</button>
+								<button type="button" onClick={() => setAuthOpen(true)} className="font-semibold text-emerald-600 hover:underline">Click here to sign in</button>
 							</div>
 						)}
-						<div className="border-[3px] bg-white p-5 shadow-sm">
+						<div className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
 							{active === 0 && (
 								<section>
-									<h2 className="text-2xl font-semibold mb-4">Billing Details</h2>
+									<h2 className="text-xl font-semibold text-gray-900 mb-4">Billing Details</h2>
 									<BillingForm data={billing} onChange={setBilling} errors={errors} clearError={clearError} />
 								</section>
 							)}
 							{active === 1 && (
 								<section>
-									<h2 className="text-2xl font-semibold mb-4">Delivery Details</h2>
+									<h2 className="text-xl font-semibold text-gray-900 mb-4">Delivery Details</h2>
 									<DeliveryForm
 										data={delivery}
 										onChange={setDelivery}
@@ -327,7 +327,7 @@ export default function Checkout() {
 							)}
 							{active === 2 && (
 								<section>
-									<h2 className="text-2xl font-semibold mb-4">Payment</h2>
+									<h2 className="text-xl font-semibold text-gray-900 mb-4">Payment</h2>
 									<PaymentForm data={payment} onChange={setPayment} errors={errors} clearError={clearError}
 										couponCode={couponCode}
 										onApplyCoupon={doApplyCoupon}

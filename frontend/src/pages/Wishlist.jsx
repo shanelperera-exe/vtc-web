@@ -144,7 +144,7 @@ const Wishlist = () => {
 			{/* Empty state */}
 			{count === 0 && (
 				<div className="px-14 py-16">
-					<div className="border-2 border-dashed border-gray-300 rounded-md p-12 text-center">
+					<div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center bg-white shadow-sm">
 						<h3 className="text-xl font-semibold text-gray-800">Your wishlist is empty</h3>
 						<p className="text-gray-600 mt-2">Browse products and tap the heart to save items here.</p>
 						<div className="mt-6">
@@ -157,23 +157,25 @@ const Wishlist = () => {
 			{/* Grid */}
 			{count > 0 && (
 				<div className="mt-10 px-14">
-					<div className="flex flex-wrap gap-8 justify-start px-12">
-						{gridItems.map((product) => (
-							<ProductCard
-								key={product.sku || product.id}
-								id={product.id}
-								sku={product.sku}
-								name={product.name}
-								description={product.description}
-								image={product.image}
-								price={product.price}
-								category={product.category}
-								rating={product.rating}
-								numOfReviews={product.numOfReviews}
-								isWishlisted={true}
-								onWishlistToggle={onWishlistToggle}
-							/>
-						))}
+					<div className="">
+						<div className="flex flex-wrap gap-8 justify-start px-2">
+							{gridItems.map((product) => (
+								<ProductCard
+									key={product.sku || product.id}
+									id={product.id}
+									sku={product.sku}
+									name={product.name}
+									description={product.description}
+									image={product.image}
+									price={product.price}
+									category={product.category}
+									rating={product.rating}
+									numOfReviews={product.numOfReviews}
+									isWishlisted={true}
+									onWishlistToggle={onWishlistToggle}
+								/>
+							))}
+						</div>
 					</div>
 					{loading && (
 						<div className="px-12 pt-2 pb-8 text-sm text-gray-500">Loading product details…</div>

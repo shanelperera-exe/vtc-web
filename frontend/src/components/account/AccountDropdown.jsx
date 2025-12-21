@@ -17,7 +17,7 @@ export default function AccountDropdown({
     onSignOut
 }) {
     const containerCls = [
-        'absolute right-[102px] top-[calc(100%+15px)] z-[60] origin-top',
+        'absolute right-0 top-[calc(100%+8px)] z-[60] origin-top',
         'transition-all duration-200',
         open ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1.5 pointer-events-none'
     ].join(' ')
@@ -38,29 +38,41 @@ export default function AccountDropdown({
                 animate={open ? 'open' : 'closed'}
                 variants={wrapperVariants}
                 style={{ originY: 'top' }}
-                className="w-64 border-2 border-neutral-950 bg-white p-4 text-neutral-950 overflow-hidden rounded-none"
+                className="w-72 overflow-hidden rounded-2xl border border-black/10 bg-white p-3.5 text-neutral-950 shadow-lg shadow-black/5"
             >
                 {isLoggedIn ? (
                     <>
                         <motion.div variants={itemVariants} className="mb-3 flex items-center gap-3">
-                            <AvatarImg seed={email || userName} className="w-10 h-10 border-2 object-cover" alt={`Avatar for ${userName}`} />
+                            <AvatarImg
+                                seed={email || userName}
+                                className="h-10 w-10 rounded-full border border-black/10 object-cover"
+                                alt={`Avatar for ${userName}`}
+                            />
                             <div className="flex flex-col">
-                                <p className="whitespace-nowrap font-bold">{userName}</p>
+                                <p className="whitespace-nowrap text-sm font-semibold">{userName}</p>
                                 <p className="text-xs text-neutral-600">{email}</p>
                             </div>
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <AuthButton onClick={onVisitProfile} bgClass="bg-emerald-600 text-white">
+                            <AuthButton
+                                onClick={onVisitProfile}
+                                bgClass="bg-emerald-600 text-white"
+                                className="rounded-xl border border-black/10 py-2 text-sm hover:bg-emerald-700"
+                            >
                                 <span className="inline-flex items-center gap-2">
-                                    <FiUser className="text-lg"/>
+                                    <FiUser className="text-lg" />
                                     <span>Account</span>
                                 </span>
                             </AuthButton>
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <AuthButton onClick={onAccountSettings} bgClass="bg-black text-white">
+                            <AuthButton
+                                onClick={onAccountSettings}
+                                bgClass="bg-black text-white"
+                                className="rounded-xl border border-black/10 py-2 text-sm hover:bg-neutral-800"
+                            >
                                 <span className="inline-flex items-center gap-2">
                                     <FiPackage className="text-lg" />
                                     <span>My Orders</span>
@@ -68,21 +80,30 @@ export default function AccountDropdown({
                             </AuthButton>
                         </motion.div>
 
-                        <motion.button variants={itemVariants} type="button" onClick={onSignOut} className="flex w-full items-center justify-center gap-2 whitespace-nowrap bg-white p-1.5 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-200 hover:text-neutral-800">
+                        <motion.button
+                            variants={itemVariants}
+                            type="button"
+                            onClick={onSignOut}
+                            className="flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-white px-3 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+                        >
                             <FiLogOut className="text-lg" />
                             <span>Sign out</span>
                         </motion.button>
                     </>
                 ) : (
                     <>
-                        <motion.p variants={itemVariants} className="whitespace-nowrap font-bold flex items-center gap-2">
+                        <motion.p variants={itemVariants} className="flex items-center gap-2 whitespace-nowrap text-sm font-semibold">
                             <RiAccountCircleLine className="text-xl" />
                             <span>Your Account</span>
                         </motion.p>
                         <motion.p variants={itemVariants} className="mb-2 text-xs text-neutral-600">Sign in or create an account</motion.p>
 
                         <motion.div variants={itemVariants}>
-                            <AuthButton onClick={onSignIn} bgClass="bg-emerald-600 text-white">
+                            <AuthButton
+                                onClick={onSignIn}
+                                bgClass="bg-emerald-600 text-white"
+                                className="rounded-xl border border-black/10 py-2 text-sm hover:bg-emerald-700"
+                            >
                                 <span className="inline-flex items-center justify-center gap-2">
                                     <FiLogIn className="text-lg" />
                                     <span>Sign in</span>
@@ -91,7 +112,11 @@ export default function AccountDropdown({
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <AuthButton onClick={onCreateAccount} bgClass="bg-black text-white">
+                            <AuthButton
+                                onClick={onCreateAccount}
+                                bgClass="bg-black text-white"
+                                className="rounded-xl border border-black/10 py-2 text-sm hover:bg-neutral-800"
+                            >
                                 <span className="inline-flex items-center justify-center gap-2">
                                     <FiUserPlus className="text-lg" />
                                     <span>Create Account</span>

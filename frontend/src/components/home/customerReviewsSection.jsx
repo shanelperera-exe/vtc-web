@@ -240,6 +240,8 @@ export default function CustomerReviewsSection() {
           boxShadow: isActive
             ? "0 8px 32px rgba(60,60,200,0.15)"
             : "0 2px 8px rgba(0,0,0,0.08)",
+          borderRadius: '1rem',
+          overflow: 'hidden',
         };
 
         let cardClass =
@@ -268,7 +270,7 @@ export default function CustomerReviewsSection() {
               <AvatarImg
                 seed={slide.name}
                 style="notionists"
-                className={`h-10 w-10 border-2 border-neutral-950 ${
+                  className={`h-10 w-10 border-2 border-neutral-950 rounded-full ${
                   isActive ? "bg-white" : "bg-neutral-100"
                 }`}
                 alt={`Avatar for ${slide.name}`}

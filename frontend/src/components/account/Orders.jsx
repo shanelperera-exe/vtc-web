@@ -1,50 +1,67 @@
 import CommonBtn from "../ui/CommonBtn"
-import { Eye } from "lucide-react"
+import { FiEye } from "react-icons/fi"
 import { Link } from "react-router-dom"
 import useOrders from "../../api/hooks/useOrders"
 
 function Orders() {
   const { orders, loading, error } = useOrders();
+
+  const getStatusPill = (status) => {
+    const s = String(status || '').toUpperCase()
+    if (s === 'CANCELLED') return 'bg-rose-50 text-rose-700 ring-rose-600/20'
+    if (s === 'DELIVERED') return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20'
+    if (s === 'SHIPPED') return 'bg-sky-50 text-sky-700 ring-sky-600/20'
+    if (s === 'PROCESSING') return 'bg-amber-50 text-amber-700 ring-amber-600/20'
+    return 'bg-neutral-50 text-neutral-700 ring-black/10'
+  }
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-4xl font-extrabold text-gray-900">Orders</h2>
-        <p className="mt-1 text-sm text-gray-500">View your recent purchases</p>
+    <div className="space-y-5">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-2xl font-semibold text-neutral-900 sm:text-3xl">Orders</h2>
+        <p className="text-sm text-neutral-600">View your recent purchases</p>
       </div>
-      <div className="overflow-hidden border-3 border-gray-200">
-        {loading && <div className="p-6 text-sm text-gray-500">Loading orders...</div>}
-        {error && <div className="p-6 text-sm text-red-500">Failed to load orders</div>}
+
+      <div className="overflow-hidden rounded-2xl border border-black/10 bg-white">
+        {loading && <div className="p-6 text-sm text-neutral-600">Loading orders...</div>}
+        {error && <div className="p-6 text-sm text-rose-700">Failed to load orders</div>}
         {!loading && !error && (
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-black/10">
+            <thead className="bg-neutral-50">
               <tr>
-                <th className="px-4 py-3 text-left text-md font-semibold text-gray-700">Order #</th>
-                <th className="px-4 py-3 text-left text-md font-semibold text-gray-700">Date</th>
-                <th className="px-4 py-3 text-left text-md font-semibold text-gray-700">Status</th>
-                <th className="px-4 py-3 text-left text-md font-semibold text-gray-700">Total</th>
-                <th className="px-4 py-3"></th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-neutral-600">Order</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-neutral-600">Date</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-neutral-600">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-neutral-600">Total</th>
+                <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 bg-white">
+            <tbody className="divide-y divide-black/5 bg-white">
               {orders.map((order) => {
                 const total = order.billing?.summary?.total ?? 0
+                const orderId = order.orderNumber ? order.orderNumber : order.id
                 return (
-                  <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm text-gray-900">{order.orderNumber ? `#${order.orderNumber}` : `#${order.id}`}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{order.placed}</td>
+                  <tr key={order.id} className="hover:bg-neutral-50">
+                    <td className="px-4 py-3 text-sm font-semibold text-neutral-900">#{orderId}</td>
+                    <td className="px-4 py-3 text-sm text-neutral-600">{order.placed}</td>
                     <td className="px-4 py-3 text-sm">
-                      <span className="inline-flex items-center bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">{order.status}</span>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${getStatusPill(order.status)}`}>
+                        {order.status}
+                      </span>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">Rs. {total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td className="px-4 py-3 text-sm font-semibold text-neutral-900">
+                      Rs. {total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    </td>
                     <td className="px-4 py-3 text-right text-sm">
-                      <Link to={`/orders/${order.orderNumber ? order.orderNumber : order.id}`} className="inline-block">
+                      <Link to={`/orders/${orderId}`} className="inline-block">
                         <CommonBtn
                           fullWidth={false}
-                          bgClass="bg-[#0bd964] text-black hover:bg-[#0bd964]/80"
+                          noShadow
+                          bgClass="bg-emerald-600 text-white hover:bg-emerald-700"
                           containerClassName="inline-block"
-                          className="inline-flex items-center gap-1 px-1 py-0.5 text-sm"
+                          className="inline-flex items-center gap-2 rounded-xl border border-black/10 px-3 py-1.5 text-sm font-semibold"
                         >
-                          <Eye className="h-5 w-5" />
+                          <FiEye className="text-base" />
                           <span>View</span>
                         </CommonBtn>
                       </Link>
@@ -54,7 +71,7 @@ function Orders() {
               })}
               {orders.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="px-4 py-6 text-center text-sm text-gray-500">No orders yet.</td>
+                  <td colSpan="5" className="px-4 py-10 text-center text-sm text-neutral-600">No orders yet.</td>
                 </tr>
               )}
             </tbody>

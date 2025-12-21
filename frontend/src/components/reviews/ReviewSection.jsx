@@ -30,9 +30,9 @@ function timeAgo(isoDate) {
 
 const ProgressBar = ({ percent }) => {
   return (
-    <div className="w-48 h-3 bg-gray-200">
+    <div className="w-48 h-3 bg-gray-200 rounded-full overflow-hidden">
       <div
-        className="h-3 bg-[#00bf63]"
+        className="h-3 bg-[#00bf63] rounded-full"
         style={{ width: `${percent}%` }}
       />
     </div>
@@ -106,8 +106,8 @@ const ReviewSection = ({ product = null }) => {
 
   return (
     <>
-    <section aria-labelledby="reviews-heading" className="bg-white py-4 px-6">
-  <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-x-20 gap-y-12">
+    <section aria-labelledby="reviews-heading" className="py-6 px-6">
+  <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-x-8 gap-y-8">
         {/* Left Side */}
         <div>
           <h2

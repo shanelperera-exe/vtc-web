@@ -6,6 +6,7 @@ import CommonBtn from "../ui/CommonBtn"
 import DeleteBtn from "../ui/DeleteBtn"
 import addressApi from "../../api/addressApi"
 import { useAuth } from "../../context/AuthContext"
+import { FiPlus } from 'react-icons/fi'
 
 function Addresses() {
 	const [popupIdx, setPopupIdx] = useState(null)
@@ -144,64 +145,58 @@ function Addresses() {
 	}
 
 	return (
-		<div className="space-y-6">
-			<div>
-				<h2 className="text-4xl font-extrabold text-gray-900">Addresses</h2>
-				<p className="mt-1 text-sm text-gray-500">
-					Manage your shipping and billing addresses
-				</p>
-			</div>
-
-			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-				{addresses.map((addr, idx) => (
-									 <div key={`${addr.type}-${addr.id ?? idx}`} className="border-3 border-gray-200 p-4 flex flex-col justify-between h-full relative">
-												 {/* Overlayed buttons at top right for all address types */}
-																		 <div className="absolute top-4 right-4 flex flex-col items-end gap-2 z-20">
-																			 <EditBtn noShadow onClick={() => handleEdit(idx)} />
-																			 <DeleteBtn noShadow onClick={() => handleDelete(idx)} />
-																		 </div>
-												 <div>
-														 <div className="mb-3">
-																 <h3 className="text-sm font-medium text-gray-900">{addr.type}</h3>
-														 </div>
-														 <p className="text-sm text-gray-700">{addr.name}</p>
-														 <p className="text-sm text-gray-700">{addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}</p>
-														 <p className="text-sm text-gray-700">{[addr.city, addr.district].filter(Boolean).join(', ')}</p>
-														 <p className="text-sm text-gray-700">{[addr.province, addr.postal].filter(Boolean).join(' ')}</p>
-														 <p className="text-sm text-gray-700">{addr.country || 'Sri Lanka'}</p>
-														 <p className="text-sm text-gray-500">{addr.phone}</p>
-												 </div>
-										 </div>
-				))}
-			</div>
-
-			<div className="sm:col-span-3 flex justify-center w-60">
+		<div className="space-y-5">
+			<div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+				<div>
+					<h2 className="text-2xl font-semibold text-neutral-900 sm:text-3xl">Addresses</h2>
+					<p className="mt-1 text-sm text-neutral-600">Manage your shipping and billing addresses</p>
+				</div>
 				<CommonBtn
 					type="button"
 					noShadow
-					bgClass="bg-[#09a84e] text-white hover:bg-[#0bd964] hover:text-black font-bold"
-					containerClassName=""
-					className="inline-flex items-center px-4 py-2 text-base w-auto justify-center font-bold group"
-					label={
-						<>
-							<svg
-								className="h-5 w-5 mr-2 inline-block transition-transform duration-200 group-hover:rotate-180"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="3"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M12 4v16m8-8H4"
-								/>
-							</svg>
-							<span className="font-bold">Add New Address</span>
-						</>
-					}
+					fullWidth={false}
+					bgClass="bg-emerald-600 text-white hover:bg-emerald-700"
+					className="inline-flex items-center gap-2 rounded-xl border border-black/10 px-4 py-2 text-sm font-semibold"
 					onClick={() => setAddPopupOpen(true)}
-				/>
+				>
+					<FiPlus className="text-base" />
+					<span>Add new address</span>
+				</CommonBtn>
+			</div>
+
+			{addresses.length === 0 ? (
+				<div className="rounded-2xl border border-black/10 bg-neutral-50 p-6 text-sm text-neutral-700">
+					No saved addresses yet. Add a billing or shipping address to speed up checkout.
+				</div>
+			) : null}
+
+			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+				{addresses.map((addr, idx) => (
+					<div
+						key={`${addr.type}-${addr.id ?? idx}`}
+						className="relative flex h-full flex-col justify-between rounded-2xl border border-black/10 bg-white p-5 shadow-sm shadow-black/5"
+					>
+						<div className="absolute right-4 top-4 flex items-center gap-2">
+							<EditBtn noShadow onClick={() => handleEdit(idx)} />
+							<DeleteBtn noShadow onClick={() => handleDelete(idx)} />
+						</div>
+						<div className="pr-16">
+							<div className="mb-3">
+								<span className="inline-flex items-center rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-semibold text-neutral-800">
+									{addr.type}
+								</span>
+							</div>
+							<div className="space-y-1 text-sm">
+								<p className="font-semibold text-neutral-900">{addr.name}</p>
+								<p className="text-neutral-700">{addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}</p>
+								<p className="text-neutral-700">{[addr.city, addr.district].filter(Boolean).join(', ')}</p>
+								<p className="text-neutral-700">{[addr.province, addr.postal].filter(Boolean).join(' ')}</p>
+								<p className="text-neutral-700">{addr.country || 'Sri Lanka'}</p>
+								{addr.phone ? <p className="text-neutral-600">{addr.phone}</p> : null}
+							</div>
+						</div>
+					</div>
+				))}
 			</div>
 
 			{popupIdx !== null && (
@@ -219,18 +214,27 @@ function Addresses() {
 
 			{addPopupOpen && (
 				<AddressPopup isOpen={addPopupOpen} onClose={handleClose}>
-					<div className="mb-4 text-2xl font-extrabold text-center">Add New Address</div>
-					<div className="flex items-center justify-center gap-2 mb-4">
+					<div className="mb-4 text-center">
+						<div className="text-2xl font-semibold text-neutral-900">Add new address</div>
+						<div className="mt-1 text-sm text-neutral-600">Choose address type and fill the details</div>
+					</div>
+					<div className="mb-4 flex items-center justify-center gap-2">
 						<button
 							type="button"
-							className={`px-3 py-1 border-3 ${newType === 'Billing Address' ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300'}`}
+							className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${newType === 'Billing Address'
+								? 'border-black bg-black text-white'
+								: 'border-black/10 bg-white text-neutral-900 hover:bg-neutral-100'
+							}`}
 							onClick={() => setNewType('Billing Address')}
 						>
 							Billing
 						</button>
 						<button
 							type="button"
-							className={`px-3 py-1 border-3 ${newType === 'Shipping Address' ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300'}`}
+							className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${newType === 'Shipping Address'
+								? 'border-black bg-black text-white'
+								: 'border-black/10 bg-white text-neutral-900 hover:bg-neutral-100'
+							}`}
 							onClick={() => setNewType('Shipping Address')}
 						>
 							Shipping

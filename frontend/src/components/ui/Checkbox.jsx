@@ -43,6 +43,7 @@ const StyledWrapper = styled.div`
     left: 0;
     border: 2px solid var(--main-color);
     background-color: var(--input-out-of-focus);
+    border-radius: 3px;
     transition: all 0.3s;
   }
 

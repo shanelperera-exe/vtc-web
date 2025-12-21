@@ -27,7 +27,7 @@ export default function SaveBtn({ onSave, className = '' }) {
         }
     };
 
-    const base = 'relative inline-flex items-center gap-2 px-3 py-1.5 border-0 text-md font-semibold text-white rounded-none shadow-sm transition-all focus:outline-none';
+    const base = 'relative inline-flex items-center gap-2 px-3 py-1.5 border-0 text-md font-semibold text-white rounded-xl shadow-sm transition-all focus:outline-none';
     const classes = {
         idle: `${base} bg-black border-2 hover:bg-white hover:text-black hover:border-black`,
         loading: `${base} bg-black border-2 hover:bg-white hover:text-black opacity-90 cursor-wait`,

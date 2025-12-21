@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
 import { validateEmail as sharedValidateEmail } from '../../utils/validation'
-import CommonBtn from "../ui/CommonBtn"
 import OutlineButton from "../ui/OutlineBtn"
 import SaveBtn from "../ui/SaveBtn"
 import { FiEdit, FiMail, FiLock, FiPhone } from 'react-icons/fi'
@@ -52,17 +51,6 @@ function AccountDetails() {
       })
     }
   }, [user])
-
-  const maskEmail = (email) => {
-    if (!email) return "no-email@example.com"
-    const parts = email.split("@");
-    if (parts.length !== 2) return email.replace(/.(?=.{4})/g, "*")
-    const [local, domain] = parts
-    const keep = Math.min(5, local.length)
-    const visible = local.slice(0, keep)
-    const stars = "********"
-    return `${visible}${stars}${domain}`
-  }
 
   const validateEmail = (email) => {
     const err = sharedValidateEmail(email)
@@ -161,93 +149,99 @@ function AccountDetails() {
     }
   }
 
-  const inputBase = "w-full rounded-none border-[3px] border-gray-300 px-3 py-2 outline-none focus:border-[#0bd964]"
+  const inputBase = "w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-neutral-900 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/15"
   const emailInvalid = touched.email && Boolean(errors.email)
   const phoneInvalid = touched.phone && Boolean(errors.phone)
 
   const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-600']
 
   return (
-    <div className="relative space-y-6">
+    <div className="space-y-5">
       <div>
-        <h2 className="text-4xl font-semibold text-gray-900">Account Details</h2>
-        <p className="mt-1 text-sm text-gray-500">Update your personal information</p>
+        <h2 className="text-2xl font-semibold text-neutral-900 sm:text-3xl">Account Details</h2>
+        <p className="mt-1 text-sm text-neutral-600">Update your personal information</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <div className="hidden lg:block absolute right-1 -top-0">
-          <AvatarImg
-            seed={values.email || `${values.firstName} ${values.lastName}`}
-            className="w-50 h-50 border-3 border-gray-300 object-cover"
-            alt={`Avatar for ${values.firstName || values.email || 'user'}`}
-          />
-        </div>
-
-          <form onSubmit={async (e) => { e.preventDefault(); try { await saveProfile(); } catch (err) { /* saveProfile sets saveMsg; swallow here to avoid unhandled rejection */ } }} className="lg:col-span-2 grid grid-cols-1 -mt-5 gap-4 bg-white p-4">
-          <div className="lg:hidden w-full flex justify-center mb-2">
-            <AvatarImg
-              seed={values.email || `${values.firstName} ${values.lastName}`}
-              className="w-40 h-40 border-3 border-gray-300 object-cover"
-              alt={`Avatar for ${values.firstName || values.email || 'user'}`}
-            />
+      <div>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            try { await saveProfile(); } catch (err) { /* saveProfile sets saveMsg; swallow */ }
+          }}
+          className="space-y-5"
+        >
+          <div className="flex flex-col items-center gap-3 pb-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center">
+              <AvatarImg
+                seed={values.email || `${values.firstName} ${values.lastName}`}
+                className="h-28 w-28 rounded-3xl border-2 border-black/10 object-cover sm:h-40 sm:w-40"
+                alt={`Avatar for ${values.firstName || values.email || 'user'}`}
+              />
+              <div className="text-center sm:text-left">
+                <div className="text-lg font-semibold text-neutral-900">
+                  {[values.firstName, values.lastName].filter(Boolean).join(' ') || 'Your profile'}
+                </div>
+                <div className="text-sm text-neutral-600">{values.email || 'no-email@example.com'}</div>
+              </div>
+            </div>
           </div>
 
           {/* Names */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-sm text-gray-700" htmlFor="firstName">First Name</label>
+              <label className="text-sm font-medium text-neutral-700" htmlFor="firstName">First Name</label>
               <input id="firstName" name="firstName" placeholder="John" className={inputBase} value={values.firstName} onChange={handleChange} />
             </div>
             <div className="space-y-1">
-              <label className="text-sm text-gray-700" htmlFor="lastName">Last Name</label>
+              <label className="text-sm font-medium text-neutral-700" htmlFor="lastName">Last Name</label>
               <input id="lastName" name="lastName" placeholder="Doe" className={inputBase} value={values.lastName} onChange={handleChange} />
             </div>
           </div>
 
           {/* Email */}
           <div className="space-y-1">
-            <label className="text-sm text-gray-700 flex items-center gap-2" htmlFor="email"><FiMail className="text-gray-400" aria-hidden="true" /><span>Email</span></label>
+            <label className="flex items-center gap-2 text-sm font-medium text-neutral-700" htmlFor="email"><FiMail className="text-neutral-400" aria-hidden="true" /><span>Email</span></label>
             {!emailEditing ? (
               <div className="flex items-center gap-3">
-                <div className="text-gray-700">{maskEmail(values.email)}</div>
-                <button type="button" className="inline-flex items-center gap-1 text-sm text-[#09a84e]" onClick={() => { setEmailDraft(values.email || ""); setEmailEditing(true) }}>
-                  <FiEdit className="no-underline" style={{ textDecoration: 'none' }} aria-hidden="true" />
-                  <span className="hover:underline">Change</span>
+                <div className="text-sm text-neutral-800">{values.email || 'no-email@example.com'}</div>
+                <button type="button" className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800" onClick={() => { setEmailDraft(values.email || ""); setEmailEditing(true) }}>
+                  <FiEdit aria-hidden="true" />
+                  <span>Change</span>
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-3 w-full">
-                <input id="email" type="email" name="email" placeholder="john@example.com" className={`${inputBase} ${emailInvalid ? "border-red-500" : ""} flex-1`} value={emailDraft} onChange={(e) => setEmailDraft(e.target.value)} onBlur={() => setTouched((t) => ({ ...t, email: true }))} aria-invalid={Boolean(errors.email) && touched.email} />
-                <button type="button" className="text-sm text-gray-600 hover:underline" onClick={() => { setEmailEditing(false); setEmailDraft(""); setErrors((er) => ({ ...er, email: "" })); }}>Cancel</button>
-                <button type="button" className="text-sm text-white bg-[#09a84e] px-3 py-1 rounded" onClick={() => {
+                <input id="email" type="email" name="email" placeholder="john@example.com" className={`${inputBase} ${emailInvalid ? "border-rose-500" : ""} flex-1`} value={emailDraft} onChange={(e) => setEmailDraft(e.target.value)} onBlur={() => setTouched((t) => ({ ...t, email: true }))} aria-invalid={Boolean(errors.email) && touched.email} />
+                <button type="button" className="text-sm font-semibold text-neutral-700 hover:underline" onClick={() => { setEmailEditing(false); setEmailDraft(""); setErrors((er) => ({ ...er, email: "" })); }}>Cancel</button>
+                <button type="button" className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700" onClick={() => {
                   const err = validateEmail(emailDraft); setTouched((t) => ({ ...t, email: true })); setErrors((er) => ({ ...er, email: err })); if (!err) { setValues((v) => ({ ...v, email: emailDraft })); setEmailEditing(false); setEmailDraft(""); }
                 }}>Save</button>
               </div>
             )}
-            {touched.email && errors.email ? (<p className="text-sm text-red-600">{errors.email}</p>) : null}
+            {touched.email && errors.email ? (<p className="text-sm text-rose-700">{errors.email}</p>) : null}
           </div>
 
           {/* Password section */}
           <div className="space-y-2">
-            <label className="text-sm text-gray-700 flex items-center gap-2"><FiLock className="text-gray-400" aria-hidden="true" /><span>Password</span></label>
+            <label className="flex items-center gap-2 text-sm font-medium text-neutral-700"><FiLock className="text-neutral-400" aria-hidden="true" /><span>Password</span></label>
             {!showPwdForm ? (
               <div className="flex items-center gap-3">
-                <div className="text-gray-700 tracking-widest">********</div>
-                <button type="button" className="inline-flex items-center gap-1 text-sm text-[#09a84e]" onClick={() => { setShowPwdForm(true); setPwdMsg(""); setPwdErr({ current: "", next: "", confirm: "" }); }}>
-                  <FiEdit className="no-underline" style={{ textDecoration: 'none' }} aria-hidden="true" />
-                  <span className="hover:underline">Edit</span>
+                <div className="text-sm tracking-widest text-neutral-700">********</div>
+                <button type="button" className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800" onClick={() => { setShowPwdForm(true); setPwdMsg(""); setPwdErr({ current: "", next: "", confirm: "" }); }}>
+                  <FiEdit aria-hidden="true" />
+                  <span>Edit</span>
                 </button>
               </div>
             ) : (
-              <div className="space-y-3 bg-gray-50 p-3 border border-gray-200 max-w-md">
+              <div className="max-w-md space-y-3 rounded-xl border border-black/10 bg-neutral-50 p-4">
                 <div className="space-y-1">
-                  <label className="text-xs text-gray-700" htmlFor="currentPassword">Current password</label>
-                  <input id="currentPassword" type="password" placeholder="Current password" className={`${inputBase} text-sm px-2 py-1 ${pwdErr.current ? 'border-red-500' : ''}`} value={pwd.current} onChange={(e) => setPwd((p) => ({ ...p, current: e.target.value }))} aria-invalid={Boolean(pwdErr.current)} />
-                  {pwdErr.current ? <p className="text-sm text-red-600">{pwdErr.current}</p> : null}
+                  <label className="text-xs font-semibold uppercase tracking-wide text-neutral-600" htmlFor="currentPassword">Current password</label>
+                  <input id="currentPassword" type="password" placeholder="Current password" className={`${inputBase} ${pwdErr.current ? 'border-rose-500' : ''}`} value={pwd.current} onChange={(e) => setPwd((p) => ({ ...p, current: e.target.value }))} aria-invalid={Boolean(pwdErr.current)} />
+                  {pwdErr.current ? <p className="text-sm text-rose-700">{pwdErr.current}</p> : null}
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-gray-700" htmlFor="newPassword">New password</label>
-                  <input id="newPassword" type="password" placeholder="New password" className={`${inputBase} text-sm px-2 py-1 ${pwdErr.next ? 'border-red-500' : ''}`} value={pwd.next} onChange={(e) => setPwd((p) => ({ ...p, next: e.target.value }))} aria-invalid={Boolean(pwdErr.next)} />
+                  <label className="text-xs font-semibold uppercase tracking-wide text-neutral-600" htmlFor="newPassword">New password</label>
+                  <input id="newPassword" type="password" placeholder="New password" className={`${inputBase} ${pwdErr.next ? 'border-rose-500' : ''}`} value={pwd.next} onChange={(e) => setPwd((p) => ({ ...p, next: e.target.value }))} aria-invalid={Boolean(pwdErr.next)} />
                   {/* Strength meter */}
                   {pwd.next && (
                     <div className="space-y-1">
@@ -265,12 +259,12 @@ function AccountDetails() {
                       {pwdStrength?.feedback && <p className="text-xs text-gray-500">{pwdStrength.feedback}</p>}
                     </div>
                   )}
-                  {pwdErr.next ? <p className="text-sm text-red-600">{pwdErr.next}</p> : null}
+                  {pwdErr.next ? <p className="text-sm text-rose-700">{pwdErr.next}</p> : null}
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-gray-700" htmlFor="confirmPassword">Confirm new password</label>
-                  <input id="confirmPassword" type="password" placeholder="Confirm new password" className={`${inputBase} text-sm px-2 py-1 ${pwdErr.confirm ? 'border-red-500' : ''}`} value={pwd.confirm} onChange={(e) => setPwd((p) => ({ ...p, confirm: e.target.value }))} aria-invalid={Boolean(pwdErr.confirm)} />
-                  {pwdErr.confirm ? <p className="text-sm text-red-600">{pwdErr.confirm}</p> : null}
+                  <label className="text-xs font-semibold uppercase tracking-wide text-neutral-600" htmlFor="confirmPassword">Confirm new password</label>
+                  <input id="confirmPassword" type="password" placeholder="Confirm new password" className={`${inputBase} ${pwdErr.confirm ? 'border-rose-500' : ''}`} value={pwd.confirm} onChange={(e) => setPwd((p) => ({ ...p, confirm: e.target.value }))} aria-invalid={Boolean(pwdErr.confirm)} />
+                  {pwdErr.confirm ? <p className="text-sm text-rose-700">{pwdErr.confirm}</p> : null}
                 </div>
                 <div className="flex items-center gap-3">
                   <OutlineButton onClick={handleChangePassword} disabled={pwdSaving} label={pwdSaving ? 'Changing...' : 'Change Password'} size="sm" color="black" className="mt-2"/>
@@ -283,32 +277,23 @@ function AccountDetails() {
 
           {/* Phone */}
           <div className="space-y-1">
-            <label className="text-sm text-gray-700 flex items-center gap-2" htmlFor="phone"><FiPhone className="text-gray-400" aria-hidden="true" /><span>Phone</span></label>
+            <label className="flex items-center gap-2 text-sm font-medium text-neutral-700" htmlFor="phone"><FiPhone className="text-neutral-400" aria-hidden="true" /><span>Phone</span></label>
             <div className="flex items-center">
-              <input id="phone" name="phone" type="tel" placeholder="e.g. +1 555 555 5555" className={`${inputBase} ${phoneInvalid ? 'border-red-500' : ''} w-full sm:w-[265px]`} value={values.phone} onChange={handleChange} onBlur={handleBlur} />
+              <input id="phone" name="phone" type="tel" placeholder="e.g. +94 77 123 4567" className={`${inputBase} ${phoneInvalid ? 'border-rose-500' : ''} w-full sm:max-w-sm`} value={values.phone} onChange={handleChange} onBlur={handleBlur} />
             </div>
-            {touched.phone && errors.phone ? (<p className="text-sm text-red-600">{errors.phone}</p>) : null}
+            {touched.phone && errors.phone ? (<p className="text-sm text-rose-700">{errors.phone}</p>) : null}
           </div>
 
-          {/* Save profile */}
-          <div className="flex items-start gap-4">
-            {/* mobile: show inside form; hide on large screens because desktop has a right-column button */}
-            <div className="lg:hidden flex flex-col items-start">
-              <SaveBtn onSave={saveProfile} className="inline-flex items-center px-4 py-2 text-base w-auto justify-center" />
-              {saveMsg && (<span className="mt-2 text-sm font-medium text-black">{saveMsg}</span>)}
+          <div className="flex items-center justify-between gap-4 pt-2">
+            <div className="min-h-[1.25rem] text-sm">
+              {saveMsg ? (
+                <span className="font-medium text-neutral-700">{saveMsg}</span>
+              ) : null}
             </div>
-            {/* on desktop the message will be shown in the right column under the button */}
+            <SaveBtn onSave={saveProfile} className="rounded-xl inline-flex items-center justify-center px-5 py-2 text-base" />
           </div>
-          {/* form ends here */}
-          </form>
 
-          {/* Desktop: place save button in the 3rd column, right-aligned (under avatar). Hidden on small screens. */}
-          <div className="hidden lg:flex lg:col-span-1 items-end justify-end lg:mt-60">
-            <div className="flex flex-col items-end gap-2">
-              <SaveBtn onSave={saveProfile} className="inline-flex items-center px-4 py-2 text-base w-auto justify-center" />
-              {saveMsg && (<span className="text-sm text-gray-600">{saveMsg}</span>)}
-            </div>
-          </div>
+        </form>
       </div>
     </div>
   )

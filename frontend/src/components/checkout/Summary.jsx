@@ -38,15 +38,15 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
   const discount = Number(couponDiscount || 0)
 
   return (
-    <aside className="border-3 p-4 shadow-sm bg-white">
-      <h3 className="text-2xl font-semibold mb-3 flex items-center gap-2">Order Summary</h3>
+    <aside className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
+      <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">Order Summary</h3>
       <div className="divide-y">
         <div className="space-y-2 pb-3">
           {grouped.length === 0 && <p className="text-sm text-gray-500">Your cart is empty.</p>}
           {grouped.map((item) => (
             <div key={item.id} className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-3 max-w-[65%]">
-                <div className="w-14 h-14 flex-shrink-0 bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
+                <div className="w-14 h-14 flex-shrink-0 rounded-xl bg-gray-50 border border-black/10 overflow-hidden flex items-center justify-center">
                   {item.image ? (
                     <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
                   ) : (
@@ -67,7 +67,7 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
                   <p className="text-gray-700 font-medium text-sm">Qty: {item.quantity || 1}</p>
                 </div>
               </div>
-                  <p className="font-medium">{formatLKR((item.price || 0) * (item.quantity || 1))}</p>
+              <p className="font-medium">{formatLKR((item.price || 0) * (item.quantity || 1))}</p>
             </div>
           ))}
         </div>
@@ -81,13 +81,13 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
                 value={couponCode || ''}
                 onChange={(e) => setCouponCode && setCouponCode(e.target.value)}
                 placeholder="Enter coupon code"
-                className="flex-1 px-3 py-2 border-2 border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className="flex-1 rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
               />
               <button
                 type="button"
                 onClick={() => onApplyCoupon && onApplyCoupon('apply')}
                 disabled={couponApplying}
-                className="px-4 py-2 text-white bg-emerald-600 hover:bg-black rounded-none border-0 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-emerald-200"
               >
                 {couponApplying ? 'Applying...' : 'Apply'}
               </button>
@@ -99,9 +99,9 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
           <div className="flex justify-between"><span>Items ({count})</span><span>{formatLKR(subtotal)}</span></div>
           <div className="flex justify-between"><span>Shipping</span><span>{shipping ? formatLKR(shipping) : 'Free'}</span></div>
           {discount > 0 && (
-            <div className="flex justify-between text-green-700"><span>Discount {couponCode ? `(${couponCode})` : ''}</span><span>- {formatLKR(discount)}</span></div>
+            <div className="flex justify-between text-emerald-700"><span>Discount {couponCode ? `(${couponCode})` : ''}</span><span>- {formatLKR(discount)}</span></div>
           )}
-          <div className="flex justify-between font-semibold text-xl text-gray-900 pt-2"><span>Total</span><span>{formatLKR(Math.max(0, subtotal + shipping - discount))}</span></div>
+          <div className="flex justify-between font-semibold text-lg text-gray-900 pt-2"><span>Total</span><span>{formatLKR(Math.max(0, subtotal + shipping - discount))}</span></div>
         </div>
       </div>
     </aside>

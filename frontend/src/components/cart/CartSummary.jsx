@@ -36,7 +36,7 @@ export default function CartSummary() {
 
   return (
     <aside className="w-full lg:w-90">
-      <div className="checkout-sidebar bg-white border-2 p-5 shadow-sm lg:sticky lg:top-28">
+      <div className="checkout-sidebar bg-white border-2 p-5 shadow-sm rounded-lg lg:sticky lg:top-28 overflow-hidden">
         <h3 className="text-xl font-semibold mb-4">Cart Summary</h3>
         <div className="cart-footer pt-0">
           <div className="cart-subtotal flex items-center justify-between mb-3">
@@ -72,7 +72,7 @@ export default function CartSummary() {
               )}
               <button
                 type="button"
-                className={`w-full text-white py-2 ${agreed && !hasExceededStock ? 'bg-black' : 'bg-gray-400 cursor-not-allowed'}`}
+                className={`w-full text-white py-2 rounded-lg ${agreed && !hasExceededStock ? 'bg-black' : 'bg-gray-400 cursor-not-allowed'}`}
                 disabled={!agreed || hasExceededStock}
                 aria-disabled={!agreed || hasExceededStock}
                 onClick={() => { if (agreed && !hasExceededStock) navigate('/checkout'); }}

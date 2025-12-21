@@ -67,6 +67,7 @@ const StyledWrapper = styled.div`
     font-weight: 600;
     color: var(--text-default);
     padding: 0 16px;
+    border-radius: 8px;
     background: var(--btn-color);
   }
 

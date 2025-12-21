@@ -69,7 +69,8 @@ const StyledWrapper = styled.div`
     font-size: ${p => (p.$fontSizePx ? `${p.$fontSizePx}px` : '16px')};
     font-weight: 600;
     color: var(--text-default);
-    padding: 0 16px;
+      padding: 0 16px;
+      border-radius: 8px;
     background: transparent;
   }
 

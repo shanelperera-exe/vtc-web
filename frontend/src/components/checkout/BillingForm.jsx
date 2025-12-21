@@ -141,6 +141,8 @@ export default function BillingForm({ data, onChange, errors, clearError }) {
             <Dropdown
               value={data.province || ''}
               onChange={(v) => onChange({ ...data, province: v, district: '' })}
+              tall
+              className="focus:ring-emerald-100"
               options={[{ label: 'Select province', value: '', disabled: true }, ...provinces]}
             />
           </Field>
@@ -149,6 +151,8 @@ export default function BillingForm({ data, onChange, errors, clearError }) {
             <Dropdown
               value={data.district || ''}
               onChange={(v) => onChange({ ...data, district: v })}
+              tall
+              className="focus:ring-emerald-100"
               options={data.province ? [{ label: 'Select district', value: '', disabled: true }, ...(districtsByProvince[data.province] || []).map(d => ({ label: d, value: d }))] : [{ label: 'Select district', value: '', disabled: true }]}
             />
           </Field>

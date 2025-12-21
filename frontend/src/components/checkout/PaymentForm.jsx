@@ -36,7 +36,7 @@ export default function PaymentForm({ data, onChange, errors, clearError }) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <label className="flex items-center gap-3 border-3 p-3 cursor-pointer">
+        <label className={`flex items-center gap-3 rounded-xl border bg-white p-4 cursor-pointer shadow-sm transition-colors ${data.method === 'card' ? 'border-emerald-600 ring-2 ring-emerald-100' : 'border-black/10 hover:border-black/20'}`}>
           <RadioBtn
             name="payment-method"
             value="card"
@@ -55,7 +55,7 @@ export default function PaymentForm({ data, onChange, errors, clearError }) {
               width="40"
               height="24"
               style={brand && brand !== 'visa' ? { filter: 'grayscale(100%)', opacity: 0.5 } : {}}
-              className='border-2'
+              className="rounded-md border border-black/10 bg-white"
             />
             <img
               src="https://raw.githubusercontent.com/datatrans/payment-logos/master/assets/cards/mastercard.svg"
@@ -63,7 +63,7 @@ export default function PaymentForm({ data, onChange, errors, clearError }) {
               width="40"
               height="24"
               style={brand && brand !== 'mastercard' ? { filter: 'grayscale(100%)', opacity: 0.5 } : {}}
-              className='border-2'
+              className="rounded-md border border-black/10 bg-white"
             />
             <img
               src="https://raw.githubusercontent.com/datatrans/payment-logos/master/assets/cards/american-express.svg"
@@ -71,11 +71,11 @@ export default function PaymentForm({ data, onChange, errors, clearError }) {
               width="40"
               height="24"
               style={brand && brand !== 'amex' ? { filter: 'grayscale(100%)', opacity: 0.5 } : {}}
-              className='border-2'
+              className="rounded-md border border-black/10 bg-white"
             />
           </span>
         </label>
-        <label className="flex items-center gap-3 border-3 p-3 cursor-pointer">
+        <label className={`flex items-center gap-3 rounded-xl border bg-white p-4 cursor-pointer shadow-sm transition-colors ${data.method === 'cod' ? 'border-emerald-600 ring-2 ring-emerald-100' : 'border-black/10 hover:border-black/20'}`}>
           <RadioBtn
             name="payment-method"
             value="cod"

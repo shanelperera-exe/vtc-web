@@ -39,7 +39,7 @@ const QuantityInput = ({ className = '', inputClassName = '', value: valueProp, 
     <div className={`product-quantity-picker qty relative inline-flex items-center ${className}`}> 
       <input
         type="number"
-        className={`product-quantity-picker__input product-quantity-picker-input border-2 border-gray-300 text-black text-center pl-6 pr-6 w-30 h-12 text-base font-medium focus:ring-0 ${inputClassName}`}
+        className={`product-quantity-picker__input product-quantity-picker-input border-2 border-gray-300 text-black text-center pl-6 pr-6 w-30 h-12 text-base font-medium focus:ring-0 rounded-md ${inputClassName}`}
         value={current}
         min={min}
         {...(max !== undefined ? { max } : {})}
@@ -49,7 +49,7 @@ const QuantityInput = ({ className = '', inputClassName = '', value: valueProp, 
       <button
         type="button"
         aria-label="Decrease quantity"
-        className="absolute left-1 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#00bf63] cursor-pointer px-2 py-0.5"
+        className="absolute left-1 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#00bf63] cursor-pointer px-2 py-0.5 rounded-md"
         onClick={() => setNext(current - 1)}
       >
         <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,7 +60,7 @@ const QuantityInput = ({ className = '', inputClassName = '', value: valueProp, 
       <button
         type="button"
         aria-label="Increase quantity"
-        className="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#00bf63] cursor-pointer px-2 py-1"
+        className="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#00bf63] cursor-pointer px-2 py-1 rounded-md"
         onClick={() => setNext(current + 1)}
       >
         <svg width="16" height="16" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">

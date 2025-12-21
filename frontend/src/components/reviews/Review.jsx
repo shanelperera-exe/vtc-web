@@ -8,12 +8,12 @@ export default function Review({ review, timeLabel, isLast = false }) {
     ? 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ1OY0mhKRTFDpKTCR9X7pae91M4uBlwhD7w6NlHmU9L9zHxdnr'
     : `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(name)}`;
   return (
-    <div className={`flex items-start justify-between space-x-4 ${!isLast ? 'border-b border-gray-200 pb-4' : ''}`}>
+    <div className={`flex items-start justify-between space-x-4 py-4 ${!isLast ? 'border-b border-gray-200' : ''}`}>
       <div className="flex items-start space-x-4">
         <img
           src={avatarSrc}
           alt={name}
-          className="w-12 h-12 border-2 object-cover"
+          className="w-12 h-12 object-cover rounded-md border-2 border-gray-200"
         />
         <div className="flex-1 min-w-0 pr-6">
           <h4 className="font-medium text-gray-900">{name}</h4>

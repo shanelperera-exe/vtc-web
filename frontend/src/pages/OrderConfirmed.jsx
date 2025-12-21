@@ -222,7 +222,7 @@ export default function OrderConfirmed() {
   }, [status]);
 
   return (
-    <div className="min-h-screen bg-[#fbfaf6]">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -236,7 +236,7 @@ export default function OrderConfirmed() {
         </div>
 
         {/* Card */}
-  <div className="bg-white rounded-2xl shadow-sm overflow-hidden border-2 border-gray-100">
+    <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-black/10">
           {/* Header */}
           <div className="bg-gradient-to-r from-emerald-800 to-emerald-700 text-white px-5 sm:px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="space-y-1">
@@ -258,13 +258,13 @@ export default function OrderConfirmed() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <button onClick={onDownloadInvoice} className="inline-flex items-center gap-2 bg-white/95 hover:bg-white text-emerald-800 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium shadow-sm">
+              <button onClick={onDownloadInvoice} className="inline-flex items-center gap-2 bg-white/95 hover:bg-white text-emerald-800 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-sm">
                 <Download className="h-4 w-4" /> Invoice
               </button>
-              <button onClick={() => window.print()} className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium border-2 border-white/20">
+              <button onClick={() => window.print()} className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold border border-white/20">
                 <Printer className="h-4 w-4" /> Print
               </button>
-              <button onClick={onTrack} className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold">
+              <button onClick={onTrack} className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold">
                 <Truck className="h-4 w-4" /> Track
               </button>
             </div>
@@ -322,8 +322,8 @@ export default function OrderConfirmed() {
                     return null;
                   })();
                   return (
-                    <div key={it.id || idx} className="flex items-center gap-4 bg-white p-4 border-2 rounded-lg">
-                      <img src={image} alt={title} className="w-16 h-16 object-cover bg-gray-50" />
+                    <div key={it.id || idx} className="flex items-center gap-4 bg-white p-4 border border-black/10 rounded-xl shadow-sm">
+                      <img src={image} alt={title} className="w-16 h-16 rounded-lg object-cover bg-gray-50 border border-black/10" />
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-medium text-gray-900 truncate">{title}</div>
                         <div className="mt-1 text-xs text-gray-500 flex flex-wrap items-center gap-3">
@@ -370,29 +370,29 @@ export default function OrderConfirmed() {
 
             {/* Right: Summary + addresses */}
             <aside className="space-y-4">
-              <div className="border-2 rounded-lg p-4 bg-gray-50">
+              <div className="border border-black/10 rounded-2xl p-5 bg-gray-50">
                 <div className="text-sm mt-0 flex justify-between items-center text-gray-600"><span>Items subtotal</span><span className="font-medium text-gray-900">{formatCurrency(itemCost)}</span></div>
 
                 <div className="mt-3 text-sm flex justify-between text-gray-600"><span>Shipping</span><span>{formatCurrency(shippingCost)}</span></div>
                 <div className="mt-1 text-sm flex justify-between text-gray-600"><span>Tax</span><span>{formatCurrency(tax)}</span></div>
                 <div className="mt-1 text-sm flex justify-between text-gray-600"><span>Discount</span><span className="text-emerald-700">-{formatCurrency(coupon)}</span></div>
 
-                <div className="mt-4 border-t-2 pt-3 flex justify-between items-center">
+                <div className="mt-4 border-t border-black/10 pt-3 flex justify-between items-center">
                   <div className="text-sm font-medium text-gray-700">Total</div>
                   <div className="text-lg font-semibold">{formatCurrency(totalCost)}</div>
                 </div>
 
                 <div className="mt-4 grid grid-cols-2 gap-2">
-                  <button onClick={onDownloadInvoice} className="inline-flex items-center justify-center gap-2 px-3 py-2 bg-white text-gray-800 text-xs font-medium border-2">
+                  <button onClick={onDownloadInvoice} className="inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 bg-white text-gray-800 text-xs font-semibold border border-black/10 hover:bg-gray-50">
                     <Download className="h-4 w-4" /> Invoice
                   </button>
-                  <button onClick={onTrack} className="inline-flex items-center justify-center gap-2 px-3 py-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold">
+                  <button onClick={onTrack} className="inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold">
                     <Truck className="h-4 w-4" /> Track
                   </button>
                 </div>
               </div>
 
-              <div className="border-2 rounded-lg p-4">
+              <div className="border border-black/10 rounded-2xl p-5 bg-white">
                 <div className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2"><User className="h-4 w-4 text-gray-500" /> Contact</div>
                 <div className="space-y-1 text-sm text-gray-700">
                   <div className="flex items-center gap-2"><User className="h-4 w-4 text-gray-400" /><span>{displayName}</span></div>
@@ -402,7 +402,7 @@ export default function OrderConfirmed() {
                 </div>
               </div>
 
-              <div className="border-2 rounded-lg p-4">
+              <div className="border border-black/10 rounded-2xl p-5 bg-white">
                 <div className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">{isCash ? <DollarSign className="h-4 w-4 text-gray-500" /> : <CreditCard className="h-4 w-4 text-gray-500" />} Payment details</div>
                 <div className="space-y-1 text-sm text-gray-700">
                   <div className="flex items-center gap-2">{isCash ? <DollarSign className="h-4 w-4 text-gray-400" /> : <CreditCard className="h-4 w-4 text-gray-400" />}<span className="font-medium">{displayPaymentMethod}</span></div>
@@ -411,7 +411,7 @@ export default function OrderConfirmed() {
                 </div>
               </div>
 
-              <div className="border-2 rounded-lg p-4">
+              <div className="border border-black/10 rounded-2xl p-5 bg-white">
                 <div className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2"><MapPin className="h-4 w-4 text-gray-500" /> Shipping Address</div>
                 <div className="text-sm text-gray-700 whitespace-pre-line">{displayShipping}</div>
               </div>
@@ -420,14 +420,14 @@ export default function OrderConfirmed() {
 
           {error && (
             <div className="px-5 sm:px-6 pb-6 -mt-3">
-              <div className="border-2 border-rose-200 rounded-lg bg-rose-50 text-rose-800 px-4 py-3 text-sm">{String(error)}</div>
+              <div className="border border-rose-200 rounded-xl bg-rose-50 text-rose-800 px-4 py-3 text-sm">{String(error)}</div>
             </div>
           )}
         </div>
 
         {/* Footer actions */}
         <div className="flex justify-center mt-8">
-          <button onClick={onContinueShopping} className="bg-white px-4 py-2 shadow-sm text-sm font-medium rounded-full border-2 hover:bg-gray-50">Continue shopping</button>
+          <button onClick={onContinueShopping} className="bg-white px-5 py-2.5 shadow-sm text-sm font-semibold rounded-xl border border-black/10 hover:bg-gray-50">Continue shopping</button>
         </div>
       </div>
     </div>

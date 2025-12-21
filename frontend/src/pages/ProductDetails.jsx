@@ -363,7 +363,7 @@ export default function ProductDetails() {
                       <button
                         type="button"
                         key={img + idx}
-                        className={`bg-gray-100 flex items-center justify-center w-[110px] h-[110px] cursor-pointer border transition focus:outline-none overflow-hidden ${selectedImg === img ? 'border-2 border-black' : 'border-transparent hover:border-gray-300'}`}
+                        className={`bg-gray-100 rounded-lg flex items-center justify-center w-[110px] h-[110px] cursor-pointer border transition focus:outline-none overflow-hidden ${selectedImg === img ? 'border-2 border-black' : 'border-transparent hover:border-gray-300'}`}
                         onClick={() => setSelectedImg(img)}
                         aria-label={`Select image ${idx + 1}`}
                       >
@@ -376,12 +376,12 @@ export default function ProductDetails() {
                       </button>
                     ))}
                   </div>
-                  <div className="bg-gray-100 flex items-center justify-center w-[550px] h-[550px] min-w-[300px] min-h-[300px]">
+                  <div className="bg-gray-100 flex items-center justify-center w-[550px] h-[550px] min-w-[300px] min-h-[300px] rounded-2xl overflow-hidden">
                     <img
                       alt={product.name}
                       src={selectedImg}
                       className="object-contain w-full h-full aspect-square"
-                      style={{ border: '3px solid #d1d5db', boxSizing: 'border-box' }}
+                      style={{ border: '3px solid black', boxSizing: 'border-box', borderRadius: '1rem' }}
                     />
                   </div>
                 </div>
@@ -420,19 +420,26 @@ export default function ProductDetails() {
                           <h3 className="mb-2 text-md text-gray-700">Color: <span className="font-medium text-gray-900">{selectedColor}</span></h3>
                           <fieldset aria-label="Choose a color" className="mt-3">
                             <div className="flex items-center gap-x-3">
-                              {colorOptions.map((color) => (
-                                <div key={color} className="flex outline -outline-offset-1 outline-black/10">
-                                  <input
-                                    type="radio"
-                                    name="color"
-                                    value={color}
-                                    checked={selectedColor === color}
-                                    aria-label={color}
-                                    className={`size-8 appearance-none forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3 ${color === 'White' ? 'bg-white checked:outline-gray-400' : color === 'Black' ? 'bg-gray-900 checked:outline-gray-900' : color === 'Red' ? 'bg-red-500 checked:outline-red-500' : color === 'Blue' ? 'bg-blue-500 checked:outline-blue-500' : color === 'Green' ? 'bg-green-500 checked:outline-green-500' : color === 'Silver' ? 'bg-gray-300 checked:outline-gray-400' : 'bg-gray-200 checked:outline-gray-400'}`}
-                                    onChange={() => setSelectedColor(color)}
-                                  />
-                                </div>
-                              ))}
+                              {colorOptions.map((color) => {
+                                const colorAvail = product?.availability?.[color];
+                                const outOfStock = colorAvail ? Object.values(colorAvail).every(s => !s || String(s).toLowerCase().indexOf('in stock') === -1) : false;
+                                return (
+                                  <div key={color} className={`relative flex outline -outline-offset-1 outline-black/10 ${outOfStock ? 'opacity-50 grayscale' : ''}`}>
+                                    <input
+                                      type="radio"
+                                      name="color"
+                                      value={color}
+                                      checked={selectedColor === color}
+                                      aria-label={color}
+                                      className={`w-8 h-8 rounded-md appearance-none forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3 ${color === 'White' ? 'bg-white checked:outline-gray-400' : color === 'Black' ? 'bg-gray-900 checked:outline-gray-900' : color === 'Red' ? 'bg-red-500 checked:outline-red-500' : color === 'Blue' ? 'bg-blue-500 checked:outline-blue-500' : color === 'Green' ? 'bg-green-500 checked:outline-green-500' : color === 'Silver' ? 'bg-gray-300 checked:outline-gray-400' : 'bg-gray-200 checked:outline-gray-400'}`}
+                                      onChange={() => setSelectedColor(color)}
+                                    />
+                                    {outOfStock && (
+                                      <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] px-1 rounded">Out</span>
+                                    )}
+                                  </div>
+                                );
+                              })}
                             </div>
                           </fieldset>
                         </div>
@@ -452,7 +459,7 @@ export default function ProductDetails() {
                               <label
                                 key={size}
                                 aria-label={size}
-                                className={`group relative flex items-center justify-center border border-gray-300 bg-white p-2.5 cursor-pointer`}
+                                className={`group relative flex items-center justify-center border border-gray-300 bg-white p-2.5 cursor-pointer rounded-md`}
                                 style={selectedSize === size ? { backgroundColor: 'rgb(30, 42, 56)', borderColor: 'rgb(30, 42, 56)' } : {}}
                               >
                                 <input

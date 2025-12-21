@@ -46,8 +46,8 @@ export default function CartItem({ product, onRemove }) {
 
     return (
         <>
-            <div className="size-27 shrink-0 overflow-hidden border-2 border-black p-0">
-                <img alt={product?.name} src={product?.image} className="size-full object-cover" />
+            <div className="size-27 shrink-0 overflow-hidden border-2 border-black p-0 rounded-md">
+                <img alt={product?.name} src={product?.image} className="size-full object-cover rounded-md" />
             </div>
             <div className="ml-4 flex flex-1 flex-col">
                 <div>

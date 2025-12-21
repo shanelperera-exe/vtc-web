@@ -80,6 +80,8 @@ export default function DeliveryForm({ data, onChange, errors, billing, onEditBi
               <Dropdown
                 value={data.shippingProvince || ''}
                 onChange={(v) => onChange({ ...data, shippingProvince: v, shippingDistrict: '' })}
+                tall
+                className="focus:ring-emerald-100"
                 options={[{ label: 'Select province', value: '', disabled: true }, ...provinces]}
               />
             </Field>
@@ -87,6 +89,8 @@ export default function DeliveryForm({ data, onChange, errors, billing, onEditBi
               <Dropdown
                 value={data.shippingDistrict || ''}
                 onChange={(v) => onChange({ ...data, shippingDistrict: v })}
+                tall
+                className="focus:ring-emerald-100"
                 options={data.shippingProvince ? [{ label: 'Select district', value: '', disabled: true }, ...(districtsByProvince[data.shippingProvince] || []).map(d => ({ label: d, value: d }))] : [{ label: 'Select district', value: '', disabled: true }]}
               />
             </Field>
@@ -116,7 +120,7 @@ export default function DeliveryForm({ data, onChange, errors, billing, onEditBi
       <section className="space-y-2">
         <div className="flex items-center justify-between">
           <h4 className="text-md font-semibold flex items-center gap-2"><FiUser className="w-4 h-4" />Contact</h4>
-          <button type="button" onClick={onEditBilling} className="text-xs font-semibold text-[#0bd964] hover:underline">Change</button>
+          <button type="button" onClick={onEditBilling} className="text-xs font-semibold text-emerald-600 hover:underline">Change</button>
         </div>
         <div className="text-sm text-gray-700">
           <p>{billing?.firstName} {billing?.lastName}</p>
@@ -128,7 +132,7 @@ export default function DeliveryForm({ data, onChange, errors, billing, onEditBi
       <section className="space-y-2">
         <div className="flex items-center justify-between">
           <h4 className="text-md font-semibold flex items-center gap-2"><FiHome className="w-4 h-4" />Address</h4>
-          <button type="button" onClick={onEditBilling} className="text-xs font-semibold text-[#0bd964] hover:underline">Change</button>
+          <button type="button" onClick={onEditBilling} className="text-xs font-semibold text-emerald-600 hover:underline">Change</button>
         </div>
         <div className="text-sm text-gray-700">
           <p>{billing?.address1}</p>
@@ -139,14 +143,26 @@ export default function DeliveryForm({ data, onChange, errors, billing, onEditBi
       </section>
 
       <section className="space-y-3">
-  <h4 className="text-md font-semibold flex items-center gap-2"><FiTruck className="w-4 h-4" />Delivery Method</h4>
+        <h4 className="text-md font-semibold flex items-center gap-2"><FiTruck className="w-4 h-4" />Delivery Method</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <label className={`flex items-center justify-between border-3 p-3 cursor-pointer ${data.deliveryMethod === 'delivery' ? 'border-black' : 'border-gray-300'}`}>
-            <span className="text-sm"><span className='font-semibold'>Standard Delivery </span><br /><span className='font-sm'>Charge: LKR 350.00</span></span>
+          <label
+            className={`flex items-center justify-between rounded-xl border bg-white p-4 cursor-pointer shadow-sm transition-colors ${data.deliveryMethod === 'delivery' ? 'border-emerald-600 ring-2 ring-emerald-100' : 'border-black/10 hover:border-black/20'}`}
+          >
+            <span className="text-sm">
+              <span className="font-semibold text-gray-900">Standard Delivery</span>
+              <br />
+              <span className="text-xs text-gray-600">Charge: LKR 350.00</span>
+            </span>
             <RadioBtn name="delivery-method" value="delivery" checked={data.deliveryMethod === 'delivery'} onChange={() => setDeliveryMethod('delivery')} ariaLabel="Delivery" />
           </label>
-          <label className={`flex items-center justify-between border-3 p-3 cursor-pointer ${data.deliveryMethod === 'pickup' ? 'border-black' : 'border-gray-300'}`}>
-            <span className="text-sm font-semibold">Local pickup</span>
+          <label
+            className={`flex items-center justify-between rounded-xl border bg-white p-4 cursor-pointer shadow-sm transition-colors ${data.deliveryMethod === 'pickup' ? 'border-emerald-600 ring-2 ring-emerald-100' : 'border-black/10 hover:border-black/20'}`}
+          >
+            <span className="text-sm">
+              <span className="font-semibold text-gray-900">Local pickup</span>
+              <br />
+              <span className="text-xs text-gray-600">Collect from our store</span>
+            </span>
             <RadioBtn name="delivery-method" value="pickup" checked={data.deliveryMethod === 'pickup'} onChange={() => setDeliveryMethod('pickup')} ariaLabel="Local pickup" />
           </label>
         </div>

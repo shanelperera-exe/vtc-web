@@ -65,7 +65,7 @@ const Dropdown = ({ value, onChange, options = [], className = '', tall = false 
         <button
           onClick={() => setOpen((pv) => !pv)}
           type="button"
-          className={`flex items-center gap-2 px-3 ${tall ? 'h-10' : 'h-7'} text-gray-700 bg-white border border-gray-300 w-full justify-between rounded-none focus:outline-none focus:border-black focus:ring-1 focus:ring-black ${open ? 'border-b-0 rounded-b-none' : ''} ${className}`}
+          className={`flex items-center gap-2 px-3 ${tall ? 'h-11' : 'h-10'} text-gray-700 bg-white border border-black/10 w-full justify-between rounded-xl shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 ${open ? 'border-b-0 rounded-b-none' : ''} ${className}`}
         >
           <span className="flex-1 text-left truncate flex items-center gap-2">{typeof selectedLabel === 'string' ? <span className="truncate">{selectedLabel}</span> : selectedLabel}</span>
           <motion.span variants={iconVariants}>
@@ -77,7 +77,7 @@ const Dropdown = ({ value, onChange, options = [], className = '', tall = false 
           initial={wrapperVariants.closed}
           variants={wrapperVariants}
           style={{ originY: 'top' }}
-          className="flex flex-col gap-0 p-1 bg-white shadow-xl absolute top-full left-0 w-full border-2 border-gray-300 border-t-0 overflow-hidden z-50 rounded-t-none translate-y-[1px]"
+          className="flex flex-col gap-0 p-1 bg-white shadow-xl absolute top-full left-0 w-full border border-black/10 border-t-0 overflow-hidden z-50 rounded-b-xl translate-y-[1px]"
         >
           {options.map((opt) => (
             <Option

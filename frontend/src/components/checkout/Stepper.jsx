@@ -4,7 +4,7 @@ import { checkoutSteps } from './checkoutSteps'
 
 export function Stepper({ active, onStepClick }) {
   return (
-  <div className="w-full px-4 py-4 mb-6 md:mb-10">
+    <div className="w-full mb-6 md:mb-10">
       <ol className="mx-auto max-w-3xl grid grid-cols-3 md:grid-cols-5 items-center gap-x-1 md:gap-x-2 list-none">
         {checkoutSteps.map(({ id, label, Icon }, idx) => {
           const isActive = active === id
@@ -18,17 +18,17 @@ export function Stepper({ active, onStepClick }) {
                   className={[
                     'group flex items-center',
                     'transition-colors',
-                    isActive ? 'text-[#0bd964]' : isComplete ? 'text-[#0bd964]' : 'text-gray-500',
+                    isActive ? 'text-emerald-700' : isComplete ? 'text-emerald-700' : 'text-gray-500',
                   ].join(' ')}
                 >
                   <span
                     className={[
-                      'flex h-12 w-12 items-center justify-center border-2',
+                      'flex h-12 w-12 items-center justify-center rounded-xl border shadow-sm transition-colors',
                       isComplete
-                        ? 'border-[3px] border-black bg-[#0bd964] text-black'
+                        ? 'border-emerald-600 bg-emerald-600 text-white'
                         : isActive
-                          ? 'border-[3px] border-black text-black bg-[#0bd964]'
-                          : 'border-[3px] border-gray-300 text-gray-500',
+                          ? 'border-emerald-600 bg-emerald-50 text-emerald-800'
+                          : 'border-black/10 bg-white text-gray-600',
                     ].join(' ')}
                   >
                     {isComplete ? (
@@ -40,7 +40,7 @@ export function Stepper({ active, onStepClick }) {
                 </button>
 
                 {/* Label positioned under the icon box so it doesn't affect layout of the boxes/lines */}
-                <span className="absolute left-1/2 top-full translate-y-2 -translate-x-1/2 text-sm font-semibold text-black whitespace-nowrap">
+                <span className="absolute left-1/2 top-full translate-y-2 -translate-x-1/2 text-xs font-semibold text-gray-900 whitespace-nowrap">
                   {label}
                 </span>
               </li>
@@ -49,7 +49,7 @@ export function Stepper({ active, onStepClick }) {
                   <div
                     className={[
                       'h-0.75 flex-1 transition-colors -mx-6',
-                      isComplete ? 'bg-black' : 'bg-gray-200',
+                      isComplete ? 'bg-emerald-600' : 'bg-black/10',
                     ].join(' ')}
                   />
                 </li>

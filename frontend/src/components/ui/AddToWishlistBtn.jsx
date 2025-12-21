@@ -92,6 +92,7 @@ const StyledWrapper = styled.div`
     color: var(--text-default);
     padding: 0;
     background: var(--btn-color);
+    border-radius: 8px;
   }
 
   .btn-icon { display: inline-flex; align-items: center; justify-content: center; }

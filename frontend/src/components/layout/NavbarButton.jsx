@@ -16,6 +16,7 @@ const ButtonBase = styled.button`
 	-webkit-appearance: button;
 	appearance: button;
 	outline: none;
+	border-radius: 8px;
 	line-height: 1;
 
 	/* Make buttons slightly smaller on narrow mobile screens */

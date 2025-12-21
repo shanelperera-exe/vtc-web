@@ -18,12 +18,12 @@ const AddressPopup = ({ isOpen = true, onClose, children, maxWidthClass = 'max-w
             exit={{ scale: 0.95, rotate: "0deg" }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className={`relative w-full ${maxWidthClass} h-auto max-h-[90vh] overflow-hidden cursor-default border-2 border-neutral-950 bg-white`}
+            className={`relative w-full ${maxWidthClass} h-auto max-h-[90vh] overflow-hidden cursor-default rounded-2xl border border-black/10 bg-white shadow-xl shadow-black/10`}
           >
             <button
               onClick={onClose}
               aria-label="Close address popup"
-              className="absolute top-1 right-1 z-30 inline-flex h-12 w-12 items-center justify-center rounded-full text-neutral-900 transition"
+              className="absolute right-3 top-3 z-30 inline-flex h-10 w-10 items-center justify-center rounded-full text-neutral-900 transition hover:bg-neutral-100"
             >
               <svg
                 stroke="currentColor"
@@ -32,7 +32,7 @@ const AddressPopup = ({ isOpen = true, onClose, children, maxWidthClass = 'max-w
                 viewBox="0 0 24 24"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-10 w-10 md:h-8 md:w-8"
+                className="h-6 w-6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -40,7 +40,7 @@ const AddressPopup = ({ isOpen = true, onClose, children, maxWidthClass = 'max-w
               </svg>
             </button>
             {/* content area scrolls if taller than the popup max height */}
-            <div className="relative z-10 p-6 overflow-auto max-h-[calc(90vh-3rem)]">{children}</div>
+            <div className="relative z-10 max-h-[calc(90vh-3rem)] overflow-auto p-6">{children}</div>
           </motion.div>
         </motion.div>
       )}

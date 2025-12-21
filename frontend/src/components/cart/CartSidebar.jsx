@@ -26,7 +26,7 @@ export default function CartSidebar({ open, onClose }) {
                                 transition
                                 className="pointer-events-auto w-screen max-w-md transform transition duration-500 ease-in-out data-closed:translate-x-full sm:duration-700"
                             >
-                                <div className="flex h-full flex-col overflow-y-auto bg-white shadow-xl">
+                                <div className="flex h-full flex-col overflow-y-auto bg-white shadow-xl rounded-l-lg overflow-hidden">
                                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                                         <div className="flex items-start justify-between">
                                             <DialogTitle className="text-3xl font-bold text-gray-900">Shopping cart</DialogTitle>
@@ -145,7 +145,7 @@ const StyledAction = styled.div`
         color: var(--text-default);
         padding: 0 20px;
         background: var(--btn-color);
-        border-radius: 0;
+        border-radius: 0.5rem;
     }
 
     .btn-label { white-space: nowrap; }
