@@ -592,7 +592,7 @@ const Carousel = () => {
   };
 
   return (
-    <div className="relative w-full max-w-full overflow-hidden h-[50vh] sm:h-[80vh] md:h-[85vh] lg:h-[92vh] -mt-4 sm:mt-0">
+    <div className="relative w-full max-w-full overflow-hidden h-[50vh] sm:h-[80vh] md:h-[85vh] lg:h-[92vh] -mt-4">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         navigation={false}
@@ -863,18 +863,18 @@ const Carousel = () => {
       <button
         ref={prevRef}
         type="button"
-        className="custom-swiper-button-prev absolute bottom-5 right-20 z-10 bg-black/70 text-white border-none w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 flex items-center justify-center cursor-pointer text-base sm:text-lg md:text-xl transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
+        className="custom-swiper-button-prev absolute rounded-xl bottom-5 right-20 z-10 bg-black/70 text-white border-none w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 flex items-center justify-center cursor-pointer text-base sm:text-lg md:text-xl transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
         aria-label="Previous slide"
       >
-        <FiArrowLeft size={22} />
+        <FiArrowLeft size={25} />
       </button>
       <button
         ref={nextRef}
         type="button"
-        className="custom-swiper-button-next absolute bottom-5 right-5 z-10 bg-black/70 text-white border-none w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 flex items-center justify-center cursor-pointer text-base sm:text-lg md:text-xl transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
+        className="custom-swiper-button-next absolute rounded-xl bottom-5 right-5 z-10 bg-black/70 text-white border-none w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 flex items-center justify-center cursor-pointer text-base sm:text-lg md:text-xl transition-colors duration-200 hover:bg-white hover:text-black shadow-lg"
         aria-label="Next slide"
       >
-        <FiArrowRight size={24} />
+        <FiArrowRight size={25} />
       </button>
       {/* Custom pagination dots at bottom center, outside Swiper */}
       <div

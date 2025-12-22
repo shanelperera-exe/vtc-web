@@ -65,7 +65,7 @@ const LoginForm = ({ onSubmit, onForgotPassword, onShowAllAuth, onCreateAccount,
                         required
                         placeholder="cool.fella@gmail.com"
                         onBlur={() => setTouched(t => ({ ...t, email: true }))}
-                        className={`w-full rounded border-[1px] p-2 outline-[#0bd964] transition-colors placeholder:italic focus:border-[#0bd964] ${touched.email && emailErr ? 'border-rose-500' : 'border-neutral-300'}`}
+                        className={`w-full rounded-xl p-3 bg-white/95 placeholder:italic transition-shadow outline-none focus:ring-2 focus:ring-emerald-400 border ${touched.email && emailErr ? 'border-rose-500' : 'border-neutral-300'}`}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
@@ -85,7 +85,7 @@ const LoginForm = ({ onSubmit, onForgotPassword, onShowAllAuth, onCreateAccount,
                             maxLength={150}
                             placeholder="••••••••••••"
                             onBlur={() => setTouched(t => ({ ...t, password: true }))}
-                            className={`w-full pr-11 rounded border p-2 outline-[#0bd964] transition-colors placeholder:italic focus:border-[#0bd964] ${touched.password && passwordErr ? 'border-rose-500' : 'border-neutral-300'}`}
+                            className={`w-full pr-11 rounded-xl p-3 bg-white/95 placeholder:italic transition-shadow outline-none focus:ring-2 focus:ring-emerald-400 border ${touched.password && passwordErr ? 'border-rose-500' : 'border-neutral-300'}`}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />

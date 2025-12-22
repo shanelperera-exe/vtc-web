@@ -17,7 +17,7 @@ export default function AccountDropdown({
     onSignOut
 }) {
     const containerCls = [
-        'absolute right-0 top-[calc(100%+8px)] z-[60] origin-top',
+        'absolute right-0 top-[calc(100%+20px)] z-[60] origin-top',
         'transition-all duration-200',
         open ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1.5 pointer-events-none'
     ].join(' ')
@@ -38,14 +38,14 @@ export default function AccountDropdown({
                 animate={open ? 'open' : 'closed'}
                 variants={wrapperVariants}
                 style={{ originY: 'top' }}
-                className="w-72 overflow-hidden rounded-2xl border border-black/10 bg-white p-3.5 text-neutral-950 shadow-lg shadow-black/5"
+                className="w-72 overflow-hidden rounded-2xl bg-white/95 p-3.5 text-neutral-950"
             >
                 {isLoggedIn ? (
                     <>
                         <motion.div variants={itemVariants} className="mb-3 flex items-center gap-3">
                             <AvatarImg
                                 seed={email || userName}
-                                className="h-10 w-10 rounded-full border border-black/10 object-cover"
+                                className="h-10 w-10 rounded-lg border border-neutral-300 object-cover"
                                 alt={`Avatar for ${userName}`}
                             />
                             <div className="flex flex-col">
@@ -58,7 +58,7 @@ export default function AccountDropdown({
                             <AuthButton
                                 onClick={onVisitProfile}
                                 bgClass="bg-emerald-600 text-white"
-                                className="rounded-xl border border-black/10 py-2 text-sm hover:bg-emerald-700"
+                                className="rounded-xl py-2 text-sm hover:bg-emerald-700"
                             >
                                 <span className="inline-flex items-center gap-2">
                                     <FiUser className="text-lg" />
@@ -71,7 +71,7 @@ export default function AccountDropdown({
                             <AuthButton
                                 onClick={onAccountSettings}
                                 bgClass="bg-black text-white"
-                                className="rounded-xl border border-black/10 py-2 text-sm hover:bg-neutral-800"
+                                className="rounded-xl py-2 text-sm hover:bg-neutral-800"
                             >
                                 <span className="inline-flex items-center gap-2">
                                     <FiPackage className="text-lg" />
@@ -84,7 +84,7 @@ export default function AccountDropdown({
                             variants={itemVariants}
                             type="button"
                             onClick={onSignOut}
-                            className="flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-white px-3 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+                            className="flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl px-3 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
                         >
                             <FiLogOut className="text-lg" />
                             <span>Sign out</span>
@@ -102,7 +102,7 @@ export default function AccountDropdown({
                             <AuthButton
                                 onClick={onSignIn}
                                 bgClass="bg-emerald-600 text-white"
-                                className="rounded-xl border border-black/10 py-2 text-sm hover:bg-emerald-700"
+                                className="rounded-xl py-2 text-sm hover:bg-emerald-700"
                             >
                                 <span className="inline-flex items-center justify-center gap-2">
                                     <FiLogIn className="text-lg" />
@@ -115,7 +115,7 @@ export default function AccountDropdown({
                             <AuthButton
                                 onClick={onCreateAccount}
                                 bgClass="bg-black text-white"
-                                className="rounded-xl border border-black/10 py-2 text-sm hover:bg-neutral-800"
+                                className="rounded-xl py-2 text-sm hover:bg-neutral-800"
                             >
                                 <span className="inline-flex items-center justify-center gap-2">
                                     <FiUserPlus className="text-lg" />

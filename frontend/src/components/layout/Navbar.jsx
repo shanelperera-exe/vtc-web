@@ -35,10 +35,10 @@ const Navbar = () => {
   return (
     <>
     <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50 rounded-b-xl">
-      <div className="max-w-8xl mx-auto flex items-center justify-between px-3 sm:px-5 py-1.5 sm:py-2">
+      <div className="max-w-8xl mx-auto flex items-center justify-between px-4 sm:px-5 py-3 sm:py-2">
         {/* Logo */}
         <a href="/" className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-          <img src={logo3} alt="Logo" className="h-6 xs:h-7 sm:h-8 md:h-10 w-auto flex-shrink-0" />
+          <img src={logo3} alt="Logo" className="h-8 xs:h-8 sm:h-8 md:h-10 w-auto flex-shrink-0" />
           {/* Hide brand text on mobile; show from small screens up */}
           <span className="hidden sm:flex flex-col text-base sm:text-lg md:text-2xl font-bold truncate" style={{ fontFamily: 'Poppins, sans-serif', lineHeight: '0.9' }}>
             <span className="text-black">vidara</span>
@@ -85,7 +85,7 @@ const Navbar = () => {
             <FiHeart />
           </NavbarButton>
           {/* Hamburger menu (mobile only) appears to the right of wishlist */}
-            <div className="flex lg:hidden mt-[3px]">
+            <div className="flex lg:hidden items-center">
             <CornerNav
               isLoggedIn={isAuthenticated}
               userName={user ? (user.firstName + ' ' + user.lastName) : 'Guest'}
@@ -102,7 +102,7 @@ const Navbar = () => {
       </div>
       </header>
       {/* Spacer to prevent content from being hidden under fixed navbar */}
-      <div className="w-full h-14 md:h-16" aria-hidden="true" />
+      <div className="w-full h-16 md:h-20" aria-hidden="true" />
   <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
 
   {/* AuthPopup disabled while dropdown in use */}

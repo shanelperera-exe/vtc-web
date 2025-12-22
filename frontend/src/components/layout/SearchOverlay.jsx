@@ -159,18 +159,14 @@ export default function SearchOverlay({ open: propOpen, onClose }) {
                         {/* Decorative overlay text in bottom-right */}
                         <div className="pointer-events-none fixed right-3 bottom-3 md:right-6 md:bottom-4 z-40">
                             {/* use clamp to scale from ~6rem up to ~14rem depending on viewport */}
-                            <div className="flex items-center gap-3">
-                                <Search className="text-gray-300" style={{ width: 'clamp(4rem, 10vw, 8rem)', height: 'auto', opacity: 0.12 }} />
-                                <div className="font-bold text-gray-300 leading-none" style={{ fontSize: 'clamp(4rem, 10vw, 8rem)', lineHeight: 0.85, opacity: 0.12 }}>search</div>
-                            </div>
                         </div>
                         {/* Close */}
                         <button
                             onClick={close}
-                            className="absolute top-4 right-4 p-2 rounded-md bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm"
+                            className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm hover:bg-white/90"
                             aria-label="Close search overlay"
                         >
-                            <X className="w-6 h-6" />
+                            <X className="w-10 h-10" />
                         </button>
 
                         <div className="max-w-6xl mx-auto px-6 py-20 flex flex-col items-center text-center">

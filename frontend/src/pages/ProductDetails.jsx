@@ -424,7 +424,7 @@ export default function ProductDetails() {
                                 const colorAvail = product?.availability?.[color];
                                 const outOfStock = colorAvail ? Object.values(colorAvail).every(s => !s || String(s).toLowerCase().indexOf('in stock') === -1) : false;
                                 return (
-                                  <div key={color} className={`relative flex outline -outline-offset-1 outline-black/10 ${outOfStock ? 'opacity-50 grayscale' : ''}`}>
+                                  <div key={color} className={`relative flex outline -outline-offset-1 outline-black/10 rounded-md ${outOfStock ? 'opacity-50 grayscale' : ''}`}>
                                     <input
                                       type="radio"
                                       name="color"

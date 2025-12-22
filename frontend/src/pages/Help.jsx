@@ -93,7 +93,7 @@ export default function Help() {
       <h1 className="mb-6 text-center text-6xl font-bold">FAQs</h1>
 
       {faqs.map((faq, i) => (
-        <div key={i} className="mb-4 border-2 border-neutral-950 px-4">
+        <div key={i} className="mb-4 border-2 border-neutral-950 px-4 rounded-2xl">
           <button onClick={() => toggle(i)} className="flex w-full items-center justify-between gap-4 py-6">
             <span className={`text-left text-lg font-medium md:text-2xl ${openIndex === i ? 'text-emerald-600' : 'text-neutral-900'}`}>
               {faq.question}

@@ -97,15 +97,12 @@ export default function CornerNav({
                             key="menu-open"
                             layoutId="hamburger-panel"
                             initial={false}
-                            className="fixed z-[9999] overflow-hidden flex flex-col"
+                            className="fixed z-[9999] overflow-hidden flex flex-col rounded-2xl bg-white ring-1 ring-slate-200 shadow-lg"
                             style={{
                                 top: 8,
                                 left: 16,
                                 right: 16,
-                                height: 'calc(100vh - 32px)',
-                                background: 'white',
-                                border: '2px solid #0a0a0a',
-                                boxShadow: panelShadow ? '2px 2px 0px #000' : 'none'
+                                height: 'calc(100vh - 32px)'
                             }}
                             transition={{ type: 'spring', stiffness: 140, damping: 22 }}
                             onAnimationComplete={() => { if (open) setPanelShadow(true); }}
@@ -118,10 +115,10 @@ export default function CornerNav({
                             <button
                                 onClick={toggle}
                                 aria-label="Close menu"
-                                className="absolute top-2 right-2 w-8 h-8 sm:w-8 sm:h-10 bg-white border-2 sm:border-[3px] border-black flex items-center justify-center focus:outline-none"
+                                className="absolute top-4 right-4 bg-white flex items-center justify-center focus:outline-none transition-colors"
                                 style={{ cursor: 'pointer' }}
                             >
-                                <FiX className="w-[26px] h-[26px] sm:w-6 sm:h-6 text-black" />
+                                <FiX className="w-[32px] h-[32px] sm:w-30 sm:h-30" />
                             </button>
                             <div className="flex-1 flex flex-col px-7 pb-8 pt-18 overflow-y-auto">
                                 {/* Search bar */}
@@ -138,8 +135,8 @@ export default function CornerNav({
                                                 initial={{ opacity: 0, y: 6 }}
                                                 animate={{ opacity: 1, y: 0, transition: { delay: 0.10 + i * 0.05 } }}
                                                 whileHover={{ y: -2 }}
-                                                whileTap={{ scale: 0.94 }}
-                                                className="px-4 py-2 text-sm font-medium border-2 border-black shadow-[2px_2px_0_#000] bg-white hover:bg-black hover:text-white transition-colors"
+                                                whileTap={{ scale: 0.98 }}
+                                                className="px-4 py-2 text-sm font-medium rounded-xl border border-slate-300 bg-white hover:bg-black hover:text-white transition-colors"
                                                 onClick={() => {
                                                     navigate(`/category/${cat.slug}`);
                                                     setOpen(false);
@@ -152,13 +149,13 @@ export default function CornerNav({
                                     </div>
                                 </div>
                                 <nav className="space-y-5">
-                                    {menuLinks.map((link, i) => (
+                                        {menuLinks.map((link, i) => (
                                         <motion.a
                                             key={link.href}
                                             initial={{ opacity: 0, x: 20 }}
                                             animate={{ opacity: 1, x: 0, transition: { delay: 0.25 + i * 0.06 } }}
                                             exit={{ opacity: 0, x: 20 }}
-                                            className="block text-3xl font-semibold text-black transition-colors hover:text-[#0bd964] md:text-5xl"
+                                            className="block text-3xl font-semibold text-black transition-colors hover:text-emerald-600 md:text-5xl"
                                             href={link.href}
                                             onClick={() => setOpen(false)}
                                             aria-label={link.label}
@@ -172,31 +169,31 @@ export default function CornerNav({
                             {/* Fixed bottom area: auth or profile */}
                             <div className="relative">
                                 {!isLoggedIn ? (
-                                    <div className="px-7 py-4 border-t-2 border-black bg-white flex items-center justify-between gap-4">
+                                        <div className="px-7 py-4 border-t bg-white/95 flex items-center justify-between gap-4 rounded-b-2xl">
                                         <span className="text-sm font-medium text-gray-600">Welcome. Join us.</span>
                                         <div className="flex gap-3">
                                             <button
                                                 onClick={() => { onLogin(); setOpen(false); }}
-                                                className="px-4 h-10 inline-flex items-center justify-center text-sm font-semibold bg-white border-2 border-black shadow-[2px_2px_0_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-transform"
+                                                className="px-4 h-10 inline-flex items-center justify-center text-sm font-semibold bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors"
                                             >
                                                 Log in
                                             </button>
                                             <button
                                                 onClick={() => { onSignup(); setOpen(false); }}
-                                                className="px-4 h-10 inline-flex items-center justify-center text-sm font-semibold text-white bg-black border-2 border-black shadow-[2px_2px_0_#000] hover:bg-[#0bd964] hover:text-black hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                                                className="px-4 h-10 inline-flex items-center justify-center text-sm font-semibold text-white bg-black border border-black rounded-xl hover:bg-emerald-600 hover:text-black transition-colors"
                                             >
                                                 Sign Up
                                             </button>
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="px-7 py-4 border-t-2 border-black bg-white flex items-center gap-4">
+                                        <div className="px-7 py-4 border-t bg-white/95 flex items-center gap-4 rounded-b-2xl">
                                         <button
                                             onClick={() => setProfileOpen(o => !o)}
                                             aria-label="Account options"
-                                            className="w-12 h-12 flex items-center justify-center border-2 border-black bg-white shadow-[2px_2px_0_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-transform"
+                                            className="w-12 h-12 flex items-center justify-center border border-slate-300 bg-white rounded-full hover:bg-black hover:text-white transition-colors"
                                         >
-                                            <FiUser className="w-6 h-6 text-black" />
+                                            <FiUser className="w-6 h-6" />
                                         </button>
                                         <div className="flex flex-col leading-tight select-none">
                                             <span className="text-sm font-semibold text-black">{userName}</span>
@@ -210,7 +207,7 @@ export default function CornerNav({
                                                     animate={{ opacity: 1, y: 0 }}
                                                     exit={{ opacity: 0, y: 12 }}
                                                     transition={{ type: 'spring', stiffness: 280, damping: 26 }}
-                                                    className="absolute bottom-[72px] left-4 w-56 max-w-[75%] border-2 border-black bg-white shadow-[2px_2px_0_#000] p-4 flex flex-col gap-3 z-[10000]"
+                                                    className="absolute bottom-[72px] left-4 w-56 max-w-[75%] bg-white/95 ring-1 ring-slate-200 rounded-xl p-4 flex flex-col gap-3 z-[10000]"
                                                     style={{ pointerEvents: 'auto' }}
                                                 >
                                                     <button

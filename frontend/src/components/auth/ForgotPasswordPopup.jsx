@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { AnimatePresence, motion as M } from 'framer-motion'
+import { FiX, FiMail } from 'react-icons/fi'
 import AuthButton from '../ui/AuthBtn'
 
 /**
@@ -50,33 +51,32 @@ const ForgotPasswordPopup = ({ isOpen, onClose, onBackToLogin, onSubmit }) => {
             onClick={onClose}
             className="fixed inset-0 z-50 grid place-items-center bg-slate-900/40 backdrop-blur-sm p-0 cursor-pointer"
         >
-          <M.div
+              <M.div
               initial={{ scale: 0.98 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 260, damping: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl cursor-default border-2 border-neutral-950 rounded-lg"
+              className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-2xl bg-white/95 cursor-default"
             >
-            <div className="absolute inset-0 bg-gradient-to-br bg-white" />
             <div className="relative z-10 h-full">
               <button
                 onClick={onClose}
                 aria-label="Close forgot password popup"
-                className="absolute top-1 right-1 z-30 inline-flex h-12 w-12 items-center justify-center rounded-full text-neutral-900 transition"
+                className="absolute top-3 right-3 z-30 inline-flex h-10 w-10 items-center justify-center rounded-full text-neutral-700 hover:text-neutral-900 transition"
               >
-                <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" className="h-10 w-10 md:h-8 md:w-8" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
+                <FiX className="h-5 w-5" />
               </button>
 
               <div className="w-full flex items-center justify-center p-6 md:p-8">
                 <div className="w-full max-w-lg px-4 md:px-6">
                   {status !== 'sent' && (
                     <>
-                      <h3 className="mb-1 text-center text-3xl font-bold uppercase">Forgot Password</h3>
-                      <p className="mb-4 text-center text-sm text-neutral-500">Enter your account email and we'll send you a reset link.</p>
+                      <h3 className="mb-1 text-center text-3xl font-bold uppercase flex items-center justify-center gap-3">
+                        <FiMail className="text-3xl text-emerald-600" />
+                        <span>Forgot Password</span>
+                      </h3>
+                      <p className="mb-4 text-center text-sm text-neutral-500 max-w-lg mx-auto">Enter your account email and we'll send you a reset link.</p>
                       <form onSubmit={handleSubmit}>
                         <div className="mb-3">
                           <label className="mb-1 block text-sm font-medium" htmlFor="fp-email">Email*</label>
@@ -85,18 +85,18 @@ const ForgotPasswordPopup = ({ isOpen, onClose, onBackToLogin, onSubmit }) => {
                             type="email"
                             required
                             placeholder="you@example.com"
-                            className="w-full rounded border-[1px] border-neutral-300 p-2 outline-[#0bd964] transition-colors placeholder:italic focus:border-[#0bd964]"
+                            className="w-full rounded-xl p-3 bg-white/95 placeholder:italic transition-shadow outline-none focus:ring-2 focus:ring-emerald-400 border border-neutral-300"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                           />
                         </div>
                         {error && <div className="mb-3 text-sm font-medium text-red-600">{error}</div>}
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-3">
                           <AuthButton
                             type="submit"
                             label={status === 'submitting' ? 'Sending...' : 'Send Reset Link'}
                             disabled={status === 'submitting'}
-                            bgClass="bg-[#0bd964] text-black"
+                            bgClass="bg-emerald-600 text-white"
                           />
                           <AuthButton
                             type="button"

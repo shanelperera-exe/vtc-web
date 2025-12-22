@@ -21,27 +21,30 @@ const ButtonBase = styled.button`
 
 	/* Make buttons slightly smaller on narrow mobile screens */
 	@media (max-width: 640px) {
-		width: 32px;
-		height: 32px;
+		width: 36px;
+		height: 36px;
 		border-width: 2px;
 
 		img, svg {
-			width: 18px;
-			height: 18px;
+			width: 20px;
+			height: 20px;
 		}
 	}
 
 	&:hover:not(:disabled) {
-		background: #37df80ff;
-		color: black;
-		border-color: black;
+		background: #000000;
+		color: #ffffff;
+		border-color: #000000;
 	}
 
 	&:active:not(:disabled) {
 		background: #0bd964;
 		color: #ffffff;
-		border-color: black;
+		border-color: #000000;
 	}
+
+	/* smooth transitions */
+	transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 
 	&:disabled {
 		opacity: 0.6;

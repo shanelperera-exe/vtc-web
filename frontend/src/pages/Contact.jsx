@@ -49,7 +49,7 @@ export default function Contact() {
 						whileInView={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.6 }}
 						viewport={{ once: true }}
-						className="bg-white shadow-md ring-1 ring-slate-200 p-8"
+						className="bg-white/95 rounded-2xl ring-1 ring-slate-200 p-8"
 					>
 						<h2 className="text-2xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
 							<Store className="text-emerald-600 w-6 h-6" /> Visit Us
@@ -77,12 +77,12 @@ export default function Contact() {
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.3 }}
 						transition={{ duration: 0.6 }}
-						className="relative overflow-hidden shadow-xl ring-1 ring-black/5 bg-white p-6 flex flex-col items-center justify-center text-center"
+						className="relative overflow-hidden rounded-2xl ring-1 ring-slate-200 bg-white/95 p-6 flex flex-col items-center justify-center text-center"
 					>
 						<div className="w-full">
 							<iframe
 								title="Vidara Trade Center location map"
-								className="block w-full h-72 sm:h-80 md:h-[420px]"
+								className="block w-full h-72 sm:h-80 md:h-[420px] rounded-2xl"
 								src={useFallback ? fallbackEmbedSrc : primaryEmbedSrc}
 								onLoad={() => setMapLoaded(true)}
 								onError={() => setUseFallback(true)}
@@ -97,7 +97,7 @@ export default function Contact() {
 									href={googleMapsUrl}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white text-sm hover:bg-emerald-700 focus:outline-none"
+									className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white text-sm hover:bg-emerald-700 focus:outline-none rounded-xl"
 								>
 									Open in Google Maps
 									<ExternalLink className="w-4 h-4" />
@@ -147,16 +147,16 @@ function ContactForm() {
 
 	if (submitted) {
 		return (
-			<div className="mb-8 md:mb-10 bg-white shadow-sm ring-1 ring-black/5 p-6 md:p-8">
+			<div className="mb-8 md:mb-10 bg-white/95 rounded-2xl ring-1 ring-slate-200 p-6 md:p-8">
 					<p className="text-emerald-700 font-medium">Thanks! Your message has been sent. We’ll get back to you soon.</p>
 			</div>
 		)
 	}
 
-	const inputClass = 'mt-1 block w-full border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'
+	const inputClass = 'mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'
 
 	return (
-		<form onSubmit={onSubmit} className="mb-8 md:mb-10 bg-white shadow-sm ring-1 ring-black/5 p-6 md:p-8" noValidate>
+		<form onSubmit={onSubmit} className="mb-8 md:mb-10 bg-white/95 rounded-2xl ring-1 ring-slate-200 p-6 md:p-8" noValidate>
 			<h2 className="text-2xl font-semibold text-slate-900">Send us a message</h2>
 			<p className="mt-1 text-sm text-slate-600">We typically respond within 1–2 business days.</p>
 
@@ -190,7 +190,7 @@ function ContactForm() {
 			{error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
 			<div className="mt-6">
-				<button type="submit" disabled={isSubmitting} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50">
+				<button type="submit" disabled={isSubmitting} className="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 rounded-xl shadow-sm">
 					{isSubmitting ? 'Sending…' : 'Submit'}
 				</button>
 			</div>

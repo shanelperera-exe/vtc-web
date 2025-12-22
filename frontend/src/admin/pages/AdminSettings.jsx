@@ -152,7 +152,7 @@ export default function AdminSettings() {
       <header className="mb-8">
         <div className="flex items-start justify-between gap-6">
           <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">Settings</h1>
+            <h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-gray-900">Settings</h1>
             <p className="mt-2 text-sm text-gray-600">Manage your admin account, security, and preferences.</p>
           </div>
         </div>

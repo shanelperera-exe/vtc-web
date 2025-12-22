@@ -4,18 +4,7 @@ import { FiEdit2, FiTrash2, FiClock, FiGrid } from "react-icons/fi";
 import StatusBadge from "./StatusBadge";
 import { niceDate } from "./categoryUtils";
 
-/**
- * CategoryTile now derives its images from API-provided fields on the category.
- * New canonical field names (backend entity):
- *  - cat.catMainImg        (primary / default)
- *  - cat.carouselImg       (secondary / hover preference)
- *  - cat.catTileImage1     (legacy fallback 1)
- *  - cat.catTileImage2     (legacy fallback 2)
- * Backward compatibility (old API/cached objects) still supports:
- *  - categoryImage (-> catMainImg)
- *  - carouselImage (-> carouselImg)
- *  - categoryIcon  (-> catTileImage1)
- */
+
 export default function CategoryTile({ cat, onEdit, onDelete }) {
     const navigate = useNavigate();
 
@@ -69,7 +58,7 @@ export default function CategoryTile({ cat, onEdit, onDelete }) {
             </div>
 
             {/* title */}
-            <h2 className="relative z-10 text-2xl md:text-3xl font-semibold leading-tight tracking-tight text-white drop-shadow-sm transition-transform duration-300 group-hover:-translate-y-1">
+            <h2 className="relative z-10 text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-white drop-shadow-sm transition-transform duration-300 group-hover:-translate-y-1">
                 {cat.name}
             </h2>
 

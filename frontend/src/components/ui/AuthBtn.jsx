@@ -16,7 +16,7 @@ const AuthButton = ({
         type={type}
         disabled={disabled}
         onClick={onClick}
-        className={`w-full text-center font-semibold text-base py-2 px-4 rounded-none border-2 border-neutral-950 transition-colors duration-150 ease-in-out ${bgClass} hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none ${className}`}
+        className={`w-full text-center font-semibold text-base py-2 px-4 rounded-xl transition-colors duration-150 ease-in-out ${bgClass} hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none ${className}`}
       >
         {children ? children : label}
       </button>

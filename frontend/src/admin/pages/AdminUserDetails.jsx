@@ -112,7 +112,7 @@ export default function AdminUserDetails() {
 		<div className="w-full pb-24">
 			<div className="mt-8 mb-6 px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
 				<div>
-					<h1 className="text-4xl md:text-5xl font-extrabold text-black tracking-tight">User Detail</h1>
+					<h1 className="text-5xl md:text-6xl font-medium text-black tracking-tight"><span className='font-semibold'>User Details:</span> {user.firstName} {user.lastName}</h1>
 					<p className="text-sm text-gray-600 mt-2">Manage account role, status & view order history.</p>
 				</div>
 				<div className="flex gap-3">
@@ -143,9 +143,9 @@ export default function AdminUserDetails() {
 								<AvatarImg
 									seed={user.firstName + ' ' + user.lastName}
 									alt={`Avatar for ${user.firstName} ${user.lastName}`}
-									className="w-40 h-40 md:w-44 md:h-44 rounded-full border border-black/10 bg-white shadow-sm"
+									className="w-45 h-45 md:w-50 md:h-50 rounded-xl border-2 border-black bg-white shadow-sm"
 								/>
-								<div className="mt-3 text-xs font-semibold text-black/70 text-left space-y-1">
+								<div className="mt-3 text-xs font-semibold text-black/70 text-right space-y-1">
 									<div>USER CODE: <span className="font-bold text-black">{user.userCode || user.id}</span></div>
 									<div>CREATED: <span className="font-bold text-black">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</span></div>
 									<div>LAST LOGIN: <span className="font-bold text-black">{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : '-'}</span></div>
@@ -306,9 +306,9 @@ export default function AdminUserDetails() {
 							{(isCurrentManager || (isCurrentAdmin && role === 'customer')) && !isViewingSelf && (
 								<div className="mt-4 border-t border-black/10 pt-4 mb-[3px]">
 									<div className="rounded-lg border border-rose-200 bg-rose-50/40 p-4">
-										<h5 className="text-sm font-semibold mb-2 text-rose-800">Delete account</h5>
+										<h5 className="text-md font-semibold mb-2 text-rose-800">Delete account</h5>
 										<p className="text-xs text-rose-900/70 mb-3 flex items-start gap-2">
-										<FiInfo className="w-4 h-4 text-emerald-700 mt-0.5" />
+										<FiInfo className="w-4 h-4 text-rose-900/70 mt-0.5" />
 										<span><span className="font-semibold">Note:</span> Permanently remove this user's account. Reviews and orders will be preserved but the account will be deleted.</span>
 									</p>
 									<div>

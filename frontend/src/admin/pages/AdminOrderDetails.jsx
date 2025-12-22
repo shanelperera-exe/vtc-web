@@ -372,7 +372,7 @@ const AdminOrderDetails = () => {
 					<div className="flex-1">
 						<div className="flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-4">
 							<div className="flex flex-col">
-								<h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 inline-flex items-center gap-3">
+								<h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-gray-900 inline-flex items-center gap-3">
 									<span>Order #{order?.orderNumber ?? order?.id ?? rawKey}</span>
 								</h1>
 								<a

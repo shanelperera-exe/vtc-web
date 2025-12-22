@@ -1,19 +1,24 @@
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 import useCategories from "../../api/hooks/useCategories";
-import { slugifyCategory } from '../../utils/slugify';
+import { slugifyCategory } from "../../utils/slugify";
 
 export default function DecorCollection() {
   const { data: categories, loading, error } = useCategories();
 
-  const collections = (categories || []).slice(0, 12).map(c => {
-    const slug = slugifyCategory(c.name || '');
+  const collections = (categories || []).slice(0, 12).map((c) => {
+    const slug = slugifyCategory(c.name || "");
     return {
       name: c.name,
       items: c.productCount ?? 0,
-      image: c.carouselImg || c.catMainImg || c.catTileImage1 || c.catTileImage2 || null,
+      image:
+        c.carouselImg ||
+        c.catMainImg ||
+        c.catTileImage1 ||
+        c.catTileImage2 ||
+        null,
       // navigate to ProductsByCategory route for this category
-      link: `/category/${encodeURIComponent(slug)}`
+      link: `/category/${encodeURIComponent(slug)}`,
     };
   });
 
@@ -29,17 +34,21 @@ export default function DecorCollection() {
 
   return (
     <section className="w-full overflow-hidden py-12 bg-neutral-50">
-  <div className="w-full px-8">
+      <div className="w-full px-8">
         {/* Heading */}
         <div className="text-center mb-10">
           <div className="text-sm uppercase tracking-widest text-gray-600 font-semibold">
             SHOP BY CATEGORIES
           </div>
-          <h3 className="text-3xl md:text-4xl font-bold mt-2">Product Categories</h3>
+          <h3 className="text-3xl md:text-4xl font-bold mt-2">
+            Product Categories
+          </h3>
         </div>
 
         {error && (
-          <div className="text-red-600 mb-4 text-sm" role="alert">Failed to load categories: {error.message || 'Error'}</div>
+          <div className="text-red-600 mb-4 text-sm" role="alert">
+            Failed to load categories: {error.message || "Error"}
+          </div>
         )}
         {/* Carousel */}
         <div className="relative">
@@ -49,74 +58,86 @@ export default function DecorCollection() {
               ref={containerRef}
               className="flex gap-8 overflow-x-auto snap-x snap-mandatory px-0 py-4 scroll-smooth hide-scrollbar"
             >
-            {loading && (
-              <div className="text-center w-full py-10 text-gray-500">Loading categories...</div>
-            )}
-            {!loading && collections.map((col, idx) => (
-              <div
-                key={idx}
-                className="snap-start flex-shrink-0 min-w-[220px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[320px] group"
-              >
-                <a
-                  href={col.link}
-                  className="block w-full bg-white shadow-sm hover:shadow-md overflow-hidden transition-all duration-300 group"
-                >
-                  <div className="relative overflow-hidden">
-                    <div style={{ position: 'relative', paddingTop: '100%' }}>
-                      {col.image ? (
-                        <img
-                          src={col.image}
-                          alt={col.name}
-                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                          className="transform transition-transform duration-500 group-hover:scale-105"
-                        />
-                      ) : (
+              {loading && (
+                <div className="text-center w-full py-10 text-gray-500">
+                  Loading categories...
+                </div>
+              )}
+              {!loading &&
+                collections.map((col, idx) => (
+                  <div
+                    key={idx}
+                    className="snap-start flex-shrink-0 min-w-[220px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[320px] group"
+                  >
+                    <a
+                      href={col.link}
+                      className="block w-full bg-white shadow-sm hover:shadow-md overflow-hidden transition-all duration-300 group rounded-xl"
+                    >
+                      <div className="relative overflow-hidden">
                         <div
-                          aria-hidden
-                          style={{ position: 'absolute', inset: 0 }}
-                          className="bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-400"
+                          style={{ position: "relative", paddingTop: "100%" }}
                         >
-                          <span className="text-sm">No image</span>
+                          {col.image ? (
+                            <img
+                              src={col.image}
+                              alt={col.name}
+                              style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
+                              className="transform transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div
+                              aria-hidden
+                              style={{ position: "absolute", inset: 0 }}
+                              className="bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-400"
+                            >
+                              <span className="text-sm">No image</span>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
 
-                    {/* pill overlay: text above, animated black fill beneath that grows on hover */}
-                    <div className="absolute left-1/2 -translate-x-1/2 bottom-4 z-10 w-[90%] max-w-[520px]">
-                      <div className="relative">
-                        <div className="absolute inset-0 w-full bg-white transition-all duration-500 group-hover:bg-black"></div>
+                        {/* pill overlay: text above, animated black fill beneath that grows on hover */}
+                        <div className="absolute left-1/2 -translate-x-1/2 bottom-4 z-10 w-[90%] max-w-[520px]">
+                          <div className="relative">
+                            <div className="absolute inset-0 w-full bg-white transition-all duration-500 group-hover:bg-black rounded-xl"></div>
 
-                        {/* content sits above the fill */}
-                        <div className="relative px-4 py-2 flex items-center justify-between gap-3">
-                          {/* Category name on the left */}
-                          <h5 className="font-semibold text-lg text-black group-hover:text-white transition-colors duration-300">
-                            {col.name}
-                          </h5>
+                            {/* content sits above the fill */}
+                            <div className="relative px-4 py-2 flex items-center justify-between gap-3">
+                              {/* Category name on the left */}
+                              <h5 className="font-semibold text-lg text-black group-hover:text-white transition-colors duration-300">
+                                {col.name}
+                              </h5>
 
-                          {/* Right-side area: mobile shows only the numeric badge (bold), desktop shows full text+arrow */}
-                          <div className="flex items-center gap-2">
-                            {/* Mobile-only: numeric count in a black circle, bold */}
-                            <span className="inline-flex sm:hidden items-center justify-center rounded-full bg-black text-white text-xs w-6 h-6 font-bold">
-                              {col.items}
-                            </span>
+                              {/* Right-side area: mobile shows only the numeric badge (bold), desktop shows full text+arrow */}
+                              <div className="flex items-center gap-2">
+                                {/* Mobile-only: numeric count in a black circle, bold */}
+                                <span className="inline-flex sm:hidden items-center justify-center rounded-full bg-black text-white text-xs w-6 h-6 font-bold">
+                                  {col.items}
+                                </span>
 
-                            {/* Desktop / larger screens: keep existing text + arrow behavior */}
-                            <div className="relative hidden sm:block">
-                              <span className="text-sm text-gray-700 group-hover:text-white transition-opacity duration-300 inline-block group-hover:opacity-0">
-                                {col.items} ITEMS
-                              </span>
-                              <span className="absolute inset-0 flex items-center justify-end pr-1 opacity-0 group-hover:opacity-100 group-hover:text-white transition-opacity duration-300">
-                                <ArrowRight size={18} />
-                              </span>
+                                {/* Desktop / larger screens: keep existing text + arrow behavior */}
+                                <div className="relative hidden sm:block">
+                                  <span className="text-sm text-gray-700 group-hover:text-white transition-opacity duration-300 inline-block group-hover:opacity-0">
+                                    {col.items} ITEMS
+                                  </span>
+                                  <span className="absolute inset-0 flex items-center justify-end pr-1 opacity-0 group-hover:opacity-100 group-hover:text-white transition-opacity duration-300">
+                                    <ArrowRight size={18} />
+                                  </span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </a>
                   </div>
-                </a>
-              </div>
-            ))}
+                ))}
             </div>
 
             {/* overlay buttons inside carousel */}
@@ -124,22 +145,22 @@ export default function DecorCollection() {
               type="button"
               onClick={() => scrollBy(-1)}
               aria-label="Previous"
-              className="flex md:flex items-center justify-center bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-10 h-10 md:w-14 md:h-14 left-2 md:-left-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
+              className="flex md:flex items-center justify-center rounded-xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-10 h-10 md:w-14 md:h-14 left-2 md:-left-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={30} />
             </button>
 
             <button
               type="button"
               onClick={() => scrollBy(1)}
               aria-label="Next"
-              className="flex md:flex items-center justify-center bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-10 h-10 md:w-14 md:h-14 right-2 md:-right-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
+              className="flex md:flex items-center justify-center rounded-xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-10 h-10 md:w-14 md:h-14 right-2 md:-right-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={30} />
             </button>
+          </div>
         </div>
       </div>
-    </div>
     </section>
   );
 }

@@ -234,10 +234,10 @@ const Categories = () => {
 
         {/* Explore all tile */}
         {!loading && !error && (
-          <a href="/category/all" aria-label="Explore all products" title="Explore all products" className="callout col-span-full md:col-span-1 relative border-2 border-black bg-black text-white hover:shadow-md transition-shadow overflow-hidden">
+          <a href="/category/all" aria-label="Explore all products" title="Explore all products" className="callout col-span-full md:col-span-1 relative border-2 border-black bg-black rounded-2xl text-white hover:shadow-md transition-shadow overflow-hidden">
             <FiArrowUpRight className="absolute right-1 top-1 w-15 h-15 text-white" aria-hidden="true" />
             <div className="absolute left-3 bottom-3">
-                <span className="label font-semibold text-lg md:text-xl lg:text-3xl text-white">Explore <br></br>all products</span>
+                <span className="label font-semibold text-xl md:text-2xl lg:text-4xl text-white">Explore <br></br>all products</span>
               </div>
           </a>
         )}

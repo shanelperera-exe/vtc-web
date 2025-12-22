@@ -20,10 +20,14 @@ export default function AdminApp() {
     bodyEl?.classList.add('admin-mode');
 
     // Force a desktop-like layout width for admin on mobile by using a
-    // wider virtual viewport. This makes Tailwind's responsive breakpoints
-    // behave like on desktop, while the device can still scroll.
+    // wider virtual viewport for admin tools — but skip this override
+    // on the admin login page so the login form remains responsive.
     if (viewportMeta) {
-      viewportMeta.setAttribute('content', 'width=1280, initial-scale=1');
+      const path = window?.location?.pathname || '';
+      const isLoginPath = path.startsWith('/admin/login') || path.startsWith('/admin/signin');
+      if (!isLoginPath) {
+        viewportMeta.setAttribute('content', 'width=1280, initial-scale=1');
+      }
     }
     document.title = 'Admin | VTC';
 

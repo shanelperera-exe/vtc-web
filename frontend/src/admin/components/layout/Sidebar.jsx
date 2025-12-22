@@ -45,7 +45,7 @@ const Sidebar = () => {
                     setSelected={setSelected}
                     open={open}
                     isTransitioning={isTransitioning}
-                    notifs={3}
+                    
                 />
                 <Option
                     Icon={FiMonitor}

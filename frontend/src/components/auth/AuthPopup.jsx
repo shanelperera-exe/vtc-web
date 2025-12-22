@@ -30,7 +30,7 @@ const AuthPopup = ({ isOpen, onClose, initialMode = "login" }) => {
 						className="relative w-full max-w-3xl cursor-default"
 					>
 						<div className="relative">
-								<div className="relative border-2 border-neutral-950 bg-white p-6 sm:p-8 rounded-none">
+							<div className="relative bg-white/95 p-6 sm:p-8 rounded-2xl overflow-hidden">
 								{/* Close button */}
 								<button
 									onClick={onClose}

@@ -12,6 +12,10 @@ export default function BillingSummary({ billing }) {
   const paymentExpires = payment.expires || (payment.cardExpMonth && payment.cardExpYear ? `${String(payment.cardExpMonth).padStart(2, '0')} / ${String(payment.cardExpYear).slice(-2)}` : undefined);
   const summary = billing?.summary ?? { subtotal: 0, shipping: 0, tax: 0, total: 0 };
   const format = (v) => (typeof v === 'number' ? `LKR ${v.toLocaleString()}` : v);
+  // Display total without tax (hide tax from order details)
+  const subtotalNum = Number(summary.subtotal) || 0;
+  const shippingNum = Number(summary.shipping) || 0;
+  const displayedTotal = subtotalNum + shippingNum;
   return (
     <section aria-labelledby="summary-heading" className="mt-4">
       <h3 id="summary-heading" className="sr-only">Billing summary</h3>
@@ -112,13 +116,9 @@ export default function BillingSummary({ billing }) {
             <dt className="text-gray-600">Shipping</dt>
             <dd className="font-semibold text-gray-900">{format(summary.shipping)}</dd>
           </div>
-          <div className="flex justify-between py-3 px-4">
-            <dt className="text-gray-600">Tax</dt>
-            <dd className="font-semibold text-gray-900">{format(summary.tax)}</dd>
-          </div>
           <div className="flex justify-between py-3 px-4 bg-gray-50 text-lg font-bold">
             <dt className="text-gray-900">Order total</dt>
-            <dd className="text-gray-900">{format(summary.total)}</dd>
+            <dd className="text-gray-900">{format(displayedTotal)}</dd>
           </div>
         </dl>
       </div>

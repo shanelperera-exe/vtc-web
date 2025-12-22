@@ -127,7 +127,15 @@ export const AuthProvider = ({ children }) => {
         try { await wishlist.fetchAndRehydrateFromServer(); } catch { }
       } catch { }
       try { window.dispatchEvent(new CustomEvent('vtc:cart:rehydrate')); } catch { }
-      notifier?.notify({ type: 'success', text: 'Welcome back!' });
+      // Prefer a friendly display name when available
+      try {
+        const u = res?.user || {};
+        const displayName = u.firstName || u.name || u.displayName || (u.email ? u.email.split('@')[0] : '');
+        const welcomeText = displayName ? `Welcome back, ${displayName}!` : 'Welcome back!';
+        notifier?.notify({ type: 'success', text: welcomeText });
+      } catch {
+        notifier?.notify({ type: 'success', text: 'Welcome back!' });
+      }
       // Refresh the whole page so all components rehydrate from latest auth state
       try { setTimeout(() => window.location.reload(), 200); } catch { }
       return res.user;

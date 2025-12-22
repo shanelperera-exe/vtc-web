@@ -348,11 +348,7 @@ const OrderDetails = () => {
       <main className="mx-auto max-w-7xl py-8 px-8 relative">
         <div className="flex items-baseline justify-between mb-8 pb-2 px-0">
           <div className="flex flex-col md:flex-row items-baseline gap-0 md:gap-4">
-            <h1 className="text-6xl font-extrabold tracking-tight text-gray-900 inline-flex items-center gap-3">
-              <FiPackage
-                className="w-7 h-7 text-emerald-700"
-                aria-hidden="true"
-              />
+            <h1 className="text-6xl font-semibold tracking-tight text-gray-900 inline-flex items-center gap-3">
               <span>
                 Order{" "}
                 {effectiveOrder?.orderNumber
@@ -360,7 +356,7 @@ const OrderDetails = () => {
                   : `#${effectiveOrder?.id}`}
               </span>
             </h1>
-            <div className="flex items-center gap-2 mt-3 md:mt-0">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={onViewInvoice}

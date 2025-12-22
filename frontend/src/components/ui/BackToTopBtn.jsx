@@ -22,7 +22,8 @@ const StyledWrapper = styled.div`
     justify-content: center;
     cursor: pointer;
     position: relative;
-    border: 3px solid #000;
+    border: 2px solid #000;
+    border-radius: 20%;
   }
 
   .arrow path {

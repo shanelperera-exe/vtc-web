@@ -70,7 +70,7 @@ const RegisterForm = ({ onSubmit, onShowAllAuth, onSignIn, primaryBtnClass, seco
               required
               placeholder="Jane"
               onBlur={() => setTouched(t => ({ ...t, firstName: true }))}
-              className={`w-full rounded border-[1px] p-2 outline-[#0bd964] transition-colors placeholder:italic focus:border-[#0bd964] ${touched.firstName && fnErr ? 'border-rose-500' : 'border-neutral-300'}`}
+              className={`w-full rounded-xl p-3 bg-white/95 placeholder:italic transition-shadow outline-none focus:ring-2 focus:ring-emerald-400 border ${touched.firstName && fnErr ? 'border-rose-500' : 'border-neutral-300'}`}
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
@@ -84,7 +84,7 @@ const RegisterForm = ({ onSubmit, onShowAllAuth, onSignIn, primaryBtnClass, seco
               required
               placeholder="Doe"
               onBlur={() => setTouched(t => ({ ...t, lastName: true }))}
-              className={`w-full rounded border-[1px] p-2 outline-[#0bd964] transition-colors placeholder:italic focus:border-[#0bd964] ${touched.lastName && lnErr ? 'border-rose-500' : 'border-neutral-300'}`}
+              className={`w-full rounded-xl p-3 bg-white/95 placeholder:italic transition-shadow outline-none focus:ring-2 focus:ring-emerald-400 border ${touched.lastName && lnErr ? 'border-rose-500' : 'border-neutral-300'}`}
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
@@ -100,7 +100,7 @@ const RegisterForm = ({ onSubmit, onShowAllAuth, onSignIn, primaryBtnClass, seco
             required
             placeholder="example@email.com"
             onBlur={() => setTouched(t => ({ ...t, email: true }))}
-            className={`w-full rounded border-[1px] p-2 outline-[#0bd964] transition-colors placeholder:italic focus:border-[#0bd964] ${touched.email && emailErr ? 'border-rose-500' : 'border-neutral-300'}`}
+            className={`w-full rounded-xl p-3 bg-white/95 placeholder:italic transition-shadow outline-none focus:ring-2 focus:ring-emerald-400 border ${touched.email && emailErr ? 'border-rose-500' : 'border-neutral-300'}`}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -119,7 +119,7 @@ const RegisterForm = ({ onSubmit, onShowAllAuth, onSignIn, primaryBtnClass, seco
               placeholder="••••••••••••"
               autoComplete="new-password"
               onBlur={() => setTouched(t => ({ ...t, password: true }))}
-              className={`w-full pr-11 rounded border p-2 outline-[#0bd964] transition-colors placeholder:italic focus:border-[#0bd964] ${touched.password && pwErr ? 'border-rose-500' : 'border-neutral-300'}`}
+              className={`w-full pr-11 rounded-xl p-3 bg-white/95 placeholder:italic transition-shadow outline-none focus:ring-2 focus:ring-emerald-400 border ${touched.password && pwErr ? 'border-rose-500' : 'border-neutral-300'}`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

@@ -23,7 +23,7 @@ export default function CatDropTile({
       aria-label={label}
       title={label}
       className={
-        "group relative block overflow-hidden transition-colors hover:bg-neutral-200 aspect-[4/5] sm:aspect-[3/4] md:aspect-square focus:outline-none focus:ring-0 " +
+        "group relative block overflow-hidden rounded-2xl transition-colors hover:bg-neutral-200 aspect-[4/5] sm:aspect-[3/4] md:aspect-square focus:outline-none focus:ring-0 " +
         className
       }
       style={{ textDecoration: "none" }}
@@ -59,7 +59,7 @@ export default function CatDropTile({
           const first = words[0] || '';
           const rest = words.slice(1).join(' ');
           return (
-            <h3 className="text-lg md:text-xl lg:text-3xl font-semibold leading-tight text-black px-2 py-1 inline-block pointer-events-none" style={{ textShadow: '0 1px 3px rgba(255,255,255,0.6)' }}>
+            <h3 className="text-xl md:text-2xl lg:text-4xl font-semibold leading-tight text-black px-2 py-1 inline-block pointer-events-none" style={{ textShadow: '0 1px 3px rgba(255,255,255,0.6)' }}>
               <span>{first}</span>
               {rest ? <span className="block">{rest}</span> : null}
             </h3>
