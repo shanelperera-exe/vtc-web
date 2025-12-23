@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.lang.NonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,8 @@ public class ProductVariationServiceImpl implements ProductVariationService {
 
     @Override
     public ProductVariation create(Long productId, ProductVariation variation) {
+        if (productId == null)
+            throw new IllegalArgumentException("productId must not be null");
         if (variation == null)
             throw new IllegalArgumentException("variation must not be null");
         if (variation.getPrice() != null && variation.getPrice().signum() < 0) {
@@ -78,6 +81,7 @@ public class ProductVariationServiceImpl implements ProductVariationService {
     }
 
     @Override
+    @NonNull
     public ProductVariation update(Long id, ProductVariation updates) {
         if (updates == null)
             throw new IllegalArgumentException("updates must not be null");
@@ -119,7 +123,11 @@ public class ProductVariationServiceImpl implements ProductVariationService {
         if (updates.getImageUrl() != null)
             existing.setImageUrl(updates.getImageUrl());
         // ignore updates.getVariationKey(); key is derived from attributes
-        return variationRepository.save(existing);
+        ProductVariation saved = variationRepository.save(existing);
+        if (saved == null) {
+            throw new IllegalStateException("Failed to save ProductVariation");
+        }
+        return saved;
     }
 
     @Override

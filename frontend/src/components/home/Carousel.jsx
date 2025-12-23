@@ -25,6 +25,7 @@ import { TbSparkles } from "react-icons/tb";
 import { RiDiscountPercentFill, RiShoppingCartFill } from "react-icons/ri";
 import { FaKitchenSet } from "react-icons/fa6";
 import { BsLamp } from "react-icons/bs";
+import { BsShopWindow } from "react-icons/bs";
 import { PiSprayBottleFill, PiPencilRulerFill } from "react-icons/pi";
 import { GiPlasticDuck } from "react-icons/gi";
 import { FaPlug } from "react-icons/fa";
@@ -780,22 +781,21 @@ const Carousel = () => {
                     </div>
                   </li>
                 </motion.ul>
-              </div>
-            </div>
-              {/* Big cart icon bottom-right */}
-              <div className="pointer-events-none absolute bottom-10 right-10 hidden md:block">
+              {/* Big shop window icon bottom-right */}
+              <div className="pointer-events-none absolute -bottom-8 right-20 hidden md:block">
                 <div className="relative">
                   <div className="absolute -inset-6 rounded-full bg-emerald-400/20 blur-3xl" />
-                  <RiShoppingCartFill
+                  <BsShopWindow
                     className="relative text-white"
                     style={{
-                      fontSize: "25rem",
-                      transform: "rotate(-18deg)",
+                      fontSize: "33rem"
                     }}
                     aria-hidden
                   />
                 </div>
               </div>
+            </div>
+          </div>
             </div>
           </div>
         </SwiperSlide>

@@ -53,7 +53,7 @@ public class CacheConfig {
                             .fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
             Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-            cacheConfigurations.put("cart", defaultConfig.entryTtl(cartTtl));
+            cacheConfigurations.put("cart", defaultConfig.entryTtl(java.util.Objects.requireNonNull(cartTtl)));
 
             log.info("Using RedisCacheManager for caching with cart TTL {} seconds", cartTtl.getSeconds());
             return RedisCacheManager.builder(connectionFactory)

@@ -35,23 +35,34 @@ public class ProductImageServiceImpl implements ProductImageService {
     private final ImageStorageService imageStorageService;
 
     @Override
+    @org.springframework.lang.NonNull
     public ProductImage addToProduct(Long productId, String url, ImageType type) {
+        if (productId == null) {
+            throw new IllegalArgumentException("productId must not be null");
+        }
         if (url == null || url.isBlank())
             throw new IllegalArgumentException("url must not be blank");
         if (type == null)
             type = ImageType.SECONDARY;
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException("Product not found: id=" + productId));
+            .orElseThrow(() -> new NotFoundException("Product not found: id=" + productId));
         ProductImage image = ProductImage.builder()
-                .product(product)
-                .url(url)
-                .type(type)
-                .build();
-        return imageRepository.save(image);
+            .product(product)
+            .url(url)
+            .type(type)
+            .build();
+        ProductImage savedImage = imageRepository.save(image);
+        return savedImage;
     }
 
     @Override
     public ProductImage addToVariation(Long productId, Long variationId, String url, ImageType type) {
+        if (productId == null) {
+            throw new IllegalArgumentException("productId must not be null");
+        }
+        if (variationId == null) {
+            throw new IllegalArgumentException("variationId must not be null");
+        }
         if (url == null || url.isBlank())
             throw new IllegalArgumentException("url must not be blank");
         if (type == null)
@@ -75,24 +86,36 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Override
     @Transactional(readOnly = true)
     public ProductImage getById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
         return imageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("ProductImage not found: id=" + id));
+            .orElseThrow(() -> new NotFoundException("ProductImage not found: id=" + id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<ProductImage> listByProduct(Long productId, Pageable pageable) {
+        if (productId == null) {
+            throw new IllegalArgumentException("productId must not be null");
+        }
         return imageRepository.findByProductId(productId, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<ProductImage> listByVariation(Long variationId, Pageable pageable) {
+        if (variationId == null) {
+            throw new IllegalArgumentException("variationId must not be null");
+        }
         return imageRepository.findByVariationId(variationId, pageable);
     }
 
     @Override
     public ProductImage update(Long id, String url, ImageType type) {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
         ProductImage existing = getById(id);
         if (url != null && !url.isBlank())
             existing.setUrl(url);
@@ -103,19 +126,28 @@ public class ProductImageServiceImpl implements ProductImageService {
 
     @Override
     public void delete(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
         ProductImage existing = getById(id);
         imageRepository.delete(existing);
     }
 
     @Override
     public int deleteByProduct(Long productId) {
+        if (productId == null) {
+            throw new IllegalArgumentException("productId must not be null");
+        }
         return imageRepository.deleteByProductId(productId);
     }
 
     @Override
     public List<ProductImage> syncProductImages(Long productId, String primaryImage, List<String> secondaryImages) {
+        if (productId == null) {
+            throw new IllegalArgumentException("productId must not be null");
+        }
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException("Product not found: id=" + productId));
+            .orElseThrow(() -> new NotFoundException("Product not found: id=" + productId));
 
         String sku = product.getSku();
         String folder = "products/" + (sku != null ? sku : ("id-" + productId));

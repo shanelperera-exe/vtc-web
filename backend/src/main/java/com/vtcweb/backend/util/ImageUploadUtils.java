@@ -156,7 +156,7 @@ public final class ImageUploadUtils {
         @Override
         @NonNull
         public String getName() {
-            return name;
+            return Objects.requireNonNull(name, "name");
         }
 
         @Override
