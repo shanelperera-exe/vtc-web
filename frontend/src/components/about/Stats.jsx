@@ -48,26 +48,23 @@ export default function StatsSection() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-1 md:py-1 mb-15">
-      <div className="flex flex-col items-start justify-center sm:flex-row sm:flex-nowrap sm:items-start gap-12 md:gap-24">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:flex sm:flex-row sm:flex-nowrap sm:items-start sm:gap-12 md:gap-24">
         {stats.map((stat, index) => {
           const count = useCountUp(stat.number, 5 + index); // stagger timing
           return (
-            <div key={index} className="flex w-72 flex-col items-center justify-center h-28 py-2 sm:py-0">
+            <div key={index} className="flex w-full sm:w-72 flex-col items-center justify-center py-3 sm:py-0 min-h-[84px] sm:h-28">
               {/* Number container: reserve exact space based on widest number */}
               <div
                 className="relative flex items-center justify-center"
                 style={{ width: `${maxChars}ch`, minWidth: `${maxChars}ch`, height: 'auto' }}
               >
                 {/* invisible spacer to reserve width (prevents reflow while counting) */}
-                <span className="invisible block text-6xl font-semibold tabular-nums">
+                <span className="invisible block text-6xl sm:text-6xl font-semibold tabular-nums">
                   {Array(maxChars).fill("0").join("")}
                 </span>
 
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <p
-                    className="mb-0 text-6xl font-semibold tabular-nums leading-none"
-                    aria-label={String(stat.number)}
-                  >
+                  <p className="mb-0 text-6xl sm:text-6xl font-semibold tabular-nums leading-none" aria-label={String(stat.number)}>
                     {formatCompact(count)}
                     <span className="text-[#00bf63]">{stat.suffix ?? "+"}</span>
                   </p>
@@ -75,7 +72,7 @@ export default function StatsSection() {
               </div>
 
               {/* Force label to a single line to avoid wrapping/shaking, centered under number */}
-              <p className="mt-2 text-center text-neutral-600 truncate whitespace-nowrap max-w-full">{stat.label}</p>
+              <p className="mt-2 text-center text-neutral-600 text-sm sm:text-base truncate whitespace-nowrap max-w-full">{stat.label}</p>
             </div>
           );
         })}

@@ -117,12 +117,15 @@ const ReviewSection = ({ product = null }) => {
             Customer Reviews
           </h2>
 
-          <div className="mt-4 flex items-center space-x-4">
+
+          <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-0 sm:gap-4">
             <StarReview rating={avgRating} numReviews={numReviews} size={20} showCount={!!numReviews} />
-            <p className="text-gray-700 font-medium">{avgRating} out of 5 stars</p>
-            {numReviews ? (
-              <span className="text-gray-500 text-sm">Based on {numReviews} reviews</span>
-            ) : null}
+            <div className="flex flex-col sm:flex-row sm:items-center">
+              <p className="text-gray-700 font-medium mt-1 sm:mt-0">{avgRating} out of 5 stars</p>
+              {numReviews ? (
+                <span className="text-gray-500 text-sm mt-0 sm:ml-2">Based on {numReviews} reviews</span>
+              ) : null}
+            </div>
           </div>
 
           <div className="mt-6">

@@ -82,10 +82,33 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
   const availabilityStatus = getAvailabilityForSelection();
 
   return (
-    // Full width container with page padding so tabs span full browser width
+
     <div className="w-full">
-      {/* Full-bleed tab bar */}
-      <div className="w-full bg-white">
+      {/* Mobile: pill-style horizontal scrollable selector */}
+      <div className="block sm:hidden w-full bg-white border-b border-gray-200">
+        <div className="overflow-x-auto no-scrollbar">
+          <div className="flex flex-nowrap gap-2 px-2 py-2 ml-5">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => handleTabClick(tab.id)}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                className={`px-3 py-1 rounded-full whitespace-nowrap text-sm font-medium transition-colors duration-200 border
+                  ${activeTab === tab.id
+                    ? "bg-[#00bf63] text-white border-[#00bf63]"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                  }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop: original tab bar */}
+      <div className="hidden sm:block w-full bg-white">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 border-b border-gray-200">
           <div className="relative">
             <div
@@ -110,7 +133,6 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
                 </button>
               ))}
             </div>
-
             {/* sliding indicator */}
             <div
               aria-hidden
@@ -126,10 +148,10 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
       </div>
 
       {/* Tab Content */}
-      <div className="p-6 text-gray-700 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="p-6 text-gray-700 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 ml-6 sm:ml-50">
         <div
           className={`transition-opacity duration-300 transform ${contentVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
-            } ${isAnimating ? "pointer-events-none" : ""}`}
+            } ${isAnimating ? "pointer-events-none" : ""} w-full sm:w-auto max-w-full sm:max-w-none"`}
           aria-live="polite"
         >
           {activeTab === "description" && (
@@ -216,7 +238,9 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
 
           {activeTab === "reviews" && (
             product ? (
-              <ReviewSection product={product} />
+              <div className="-ml-8 sm:ml-0">
+                <ReviewSection product={product} />
+              </div>
             ) : (
               <p>No reviews available.</p>
             )

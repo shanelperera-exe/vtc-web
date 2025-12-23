@@ -263,11 +263,11 @@ export default function Footer() {
 
 function USP({ icon, title, subtitle }) {
   return (
-    <div className="flex items-center justify-center gap-4">
-      <div className="shrink-0">{icon}</div>
-      <div>
-        <div className="text-base font-semibold text-white">{title}</div>
-        <div className="text-sm text-neutral-400">{subtitle}</div>
+    <div className="flex items-start sm:items-center gap-4">
+      <div className="shrink-0 mt-1 sm:mt-0">{icon}</div>
+      <div className="text-left">
+        <div className="text-sm sm:text-base font-semibold text-white">{title}</div>
+        <div className="text-xs sm:text-sm text-neutral-400">{subtitle}</div>
       </div>
     </div>
   )

@@ -45,10 +45,23 @@ const AddToWishlistBtn = ({ product }) => {
 
   return (
     <div className="bg-white flex items-start">
-      <StyledWrapper className="h-fit w-fit" $heightPx={48} $fontSizePx={16} $minWidthEm={3}>
-        <button type="button" onClick={handleAdd} aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'} aria-pressed={wishlisted} className={wishlisted ? 'is-wishlisted' : ''}>
+      <StyledWrapper
+        className="h-12 w-12 p-0 sm:h-fit sm:w-fit"
+        $heightPx={48}
+        $fontSizePx={16}
+        $minWidthEm={3}
+      >
+        <button
+          type="button"
+          onClick={handleAdd}
+          aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-pressed={wishlisted}
+          className={wishlisted ? 'is-wishlisted' : ''}
+        >
           {pulse && <span className="pulse-ring" aria-hidden="true" />}
-          <span className="btn-icon" aria-hidden="true"><FiHeart size={18} strokeWidth={2.4} /></span>
+          <span className="btn-icon" aria-hidden="true">
+            <FiHeart size={18} strokeWidth={2.4} />
+          </span>
         </button>
       </StyledWrapper>
     </div>

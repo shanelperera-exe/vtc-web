@@ -29,7 +29,7 @@ export default function CartSidebar({ open, onClose }) {
                                 <div className="flex h-full flex-col overflow-y-auto bg-white shadow-xl rounded-l-lg overflow-hidden">
                                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                                         <div className="flex items-start justify-between">
-                                            <DialogTitle className="text-3xl font-bold text-gray-900">Shopping cart</DialogTitle>
+                                            <DialogTitle className="text-4xl font-semibold text-gray-900">Shopping Cart</DialogTitle>
                                             <div className="ml-3 flex h-7 items-center">
                                                 <button
                                                     type="button"
@@ -38,7 +38,7 @@ export default function CartSidebar({ open, onClose }) {
                                                 >
                                                     <span className="absolute -inset-0.5" />
                                                     <span className="sr-only">Close panel</span>
-                                                    <XMarkIcon aria-hidden="true" className="size-6" />
+                                                    <XMarkIcon aria-hidden="true" className="size-8" />
                                                 </button>
                                             </div>
                                         </div>

@@ -21,7 +21,13 @@ const BuyNowBtn = ({ product, quantity = 1, className = '', fullWidth = false })
 
   return (
     <div className={`bg-white flex items-start ${fullWidth ? 'w-full' : ''} ${className}`}>
-      <StyledWrapper className={`${fullWidth ? 'w-full' : 'h-fit w-fit'}`} $heightPx={48} $fontSizePx={16} $minWidthEm={16} $fullWidth={fullWidth}>
+      <StyledWrapper
+        className={`${fullWidth ? 'w-full' : 'h-fit w-fit'} buy-now-mobile-width`}
+        $heightPx={48}
+        $fontSizePx={16}
+        $minWidthEm={16}
+        $fullWidth={fullWidth}
+      >
         <button type="button" onClick={onBuy} aria-label="Buy now">
           <span className="btn-icon" aria-hidden="true"><FiShoppingBag size={18} strokeWidth={2.4} /></span>
           <span className="btn-label">Buy Now</span>
@@ -35,6 +41,15 @@ export default BuyNowBtn
 
 // Styled outline button adapted per request
 const StyledWrapper = styled.div`
+    /* Mobile only: set width and min-width to 22.5em */
+    &.buy-now-mobile-width button {
+      @media (max-width: 639px) {
+        min-width: 22.5em !important;
+        width: 22.5em !important;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+      }
+    }
   display: inline-flex;
   justify-content: flex-start;
   align-items: center;

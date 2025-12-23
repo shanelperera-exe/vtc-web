@@ -62,24 +62,26 @@ export default function RecentReviews({ reviews = [] }) {
       <div className="mt-4 space-y-6">
         {/* Filter bar */}
         <div className="flex items-center gap-2">
-          <span className="text-md font-medium text-gray-700">Filter:</span>
-          <div className="inline-flex items-center gap-2">
-            {['recent', 'all', 5, 4, 3, 2, 1].map((opt) => {
-              const label = opt === 'all' ? `All (${reviews.length})` : opt === 'recent' ? 'Recent' : `${opt}★`;
-              const active = String(filter) === String(opt);
-              return (
-                <button
-                  key={String(opt)}
-                  type="button"
-                  onClick={() => setFilter(opt)}
-                  className={
-                    `px-3 py-1 text-sm rounded-md ${active ? 'bg-[#00bf63] text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`
-                  }
-                >
-                  {label}
-                </button>
-              );
-            })}
+          <span className="text-md font-medium text-gray-700 flex-shrink-0">Filter:</span>
+          <div className="overflow-x-auto whitespace-nowrap no-scrollbar sm:overflow-visible sm:whitespace-normal">
+            <div className="inline-flex items-center gap-2">
+              {['recent', 'all', 5, 4, 3, 2, 1].map((opt) => {
+                const label = opt === 'all' ? `All (${reviews.length})` : opt === 'recent' ? 'Recent' : `${opt}★`;
+                const active = String(filter) === String(opt);
+                return (
+                  <button
+                    key={String(opt)}
+                    type="button"
+                    onClick={() => setFilter(opt)}
+                    className={
+                      `px-3 py-1 text-sm rounded-md ${active ? 'bg-[#00bf63] text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`
+                    }
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

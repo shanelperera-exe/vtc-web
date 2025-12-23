@@ -4,7 +4,7 @@ import shopImg from "../../assets/images/shop.png";
 export default function OurStory() {
     return (
         <section
-            className="bg-[#edf1f0] "
+            className="bg-[#edf1f0] rounded-2xl"
             aria-label="Our story"
         >
             <div className="container mx-auto px-4">
@@ -24,7 +24,7 @@ export default function OurStory() {
                             <img
                                 src={shopImg}
                                 alt="Decor"
-                                className="w-full max-w-[520px] h-auto object-cover border-l-3 border-r-3 border-black"
+                                className="w-full max-w-[520px] h-auto object-cover rounded-3xl"
                                 width={499}
                                 height={370}
                                 loading="lazy"
@@ -36,12 +36,12 @@ export default function OurStory() {
                         <div className="mb-3 text-[#161616] font-medium font-heading text-xl">
                             Our Journey
                         </div>
-                        <p className="text-[#828282] text-[15px] md:text-[16px] leading-[28px]">
-                            Vidara Trade Center began as a small family-run store with a vision to be a one-stop destination for household needs. By focusing on affordable, reliable, and quality products, we have grown into a trusted hub for homeware, kitchenware, cleaning essentials, plastics, and electrical items.
+                        <p className="text-[#828282] text-sm md:text-[15px] lg:text-[16px] leading-6 md:leading-[28px]">
+                            At Vidara Trade Center, we believe that a well-equipped home makes life easier and more enjoyable. That’s why we bring together a wide selection of cleaning products, kitchenware, plastic solutions, homeware, and electrical items – all carefully chosen to meet your everyday household needs.
                         </p>
 
-                        <p className="text-[#828282] text-[15px] md:text-[16px] leading-[28px] mt-4">
-                            Our mission is simple — to make life easier for families, students, and businesses by providing household solutions under one roof. What started as a small dream is now a name our community relies on for value and trust.
+                        <p className="text-[#828282] text-sm md:text-[15px] lg:text-[16px] leading-6 md:leading-[28px] mt-4">
+                            For years, we’ve been more than just a retail shop — we’ve been a reliable partner for families, students, and businesses looking for affordable, long-lasting household products. Whether you’re upgrading your kitchen, organizing your home, or searching for practical lifestyle items, Vidara Trade Center is here to help you find exactly what you need — all in one place.
                         </p>
                     </div>
                 </div>

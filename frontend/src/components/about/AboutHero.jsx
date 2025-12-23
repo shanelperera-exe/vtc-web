@@ -4,7 +4,7 @@ import hero from "../../assets/images/hero.png";
 export default function AboutHeroSection() {
   return (
     <section
-      className="relative bg-center bg-cover bg-no-repeat"
+      className="relative bg-center bg-cover bg-no-repeat rounded-b-3xl -mt-1"
       style={{ backgroundImage: `url(${hero})` }}
     >
       {/* Content */}
@@ -33,7 +33,7 @@ export default function AboutHeroSection() {
             </a>
             <a
               href="#learn"
-              className="px-6 py-3 rounded-[36px] border border-[#161616] text-[#161616] hover:bg-[#f8f7f6] hover:text-[#f8f7f6] transition"
+              className="px-6 py-3 rounded-[36px] border border-[#161616] text-[#161616] hover:bg-black hover:text-white transition"
             >
               Learn More
             </a>
