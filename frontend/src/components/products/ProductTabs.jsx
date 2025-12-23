@@ -1,8 +1,12 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { FiCheckCircle } from 'react-icons/fi';
+import { FiCheckCircle } from "react-icons/fi";
 import ReviewSection from "../reviews/ReviewSection";
 
-export default function ProductTabs({ product = null, selectedColor = null, selectedSize = null }) {
+export default function ProductTabs({
+  product = null,
+  selectedColor = null,
+  selectedSize = null,
+}) {
   const [activeTab, setActiveTab] = useState("description");
   // visualTab is used for the tab indicator so it can move immediately when a tab is clicked
   const [visualTab, setVisualTab] = useState(activeTab);
@@ -70,8 +74,17 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
     if (!product) return null;
     if (product.availability && typeof product.availability === "object") {
       const color = selectedColor || Object.keys(product.availability)[0];
-      const size = selectedSize || (color && product.availability[color] ? Object.keys(product.availability[color])[0] : null);
-      if (color && size && product.availability[color] && product.availability[color][size]) {
+      const size =
+        selectedSize ||
+        (color && product.availability[color]
+          ? Object.keys(product.availability[color])[0]
+          : null);
+      if (
+        color &&
+        size &&
+        product.availability[color] &&
+        product.availability[color][size]
+      ) {
         return product.availability[color][size];
       }
       return null;
@@ -82,7 +95,6 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
   const availabilityStatus = getAvailabilityForSelection();
 
   return (
-
     <div className="w-full">
       {/* Mobile: pill-style horizontal scrollable selector */}
       <div className="block sm:hidden w-full bg-white border-b border-gray-200">
@@ -95,9 +107,10 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
                 role="tab"
                 aria-selected={activeTab === tab.id}
                 className={`px-3 py-1 rounded-full whitespace-nowrap text-sm font-medium transition-colors duration-200 border
-                  ${activeTab === tab.id
-                    ? "bg-[#00bf63] text-white border-[#00bf63]"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                  ${
+                    activeTab === tab.id
+                      ? "bg-[#00bf63] text-white border-[#00bf63]"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                   }`}
               >
                 {tab.label}
@@ -124,9 +137,10 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
                   role="tab"
                   aria-selected={activeTab === tab.id}
                   className={`px-4 py-2 text-base lg:text-md font-medium transition-colors duration-200
-                    ${activeTab === tab.id
-                      ? "text-black"
-                      : "text-gray-600 hover:text-gray-800"
+                    ${
+                      activeTab === tab.id
+                        ? "text-black"
+                        : "text-gray-600 hover:text-gray-800"
                     }`}
                 >
                   {tab.label}
@@ -150,13 +164,22 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
       {/* Tab Content */}
       <div className="p-6 text-gray-700 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 ml-6 sm:ml-50">
         <div
-          className={`transition-opacity duration-300 transform ${contentVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
-            } ${isAnimating ? "pointer-events-none" : ""} w-full sm:w-auto max-w-full sm:max-w-none"`}
+          className={`transition-opacity duration-300 transform ${
+            contentVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 -translate-y-2"
+          } ${
+            isAnimating ? "pointer-events-none" : ""
+          } w-full sm:w-auto max-w-full sm:max-w-none"`}
           aria-live="polite"
         >
           {activeTab === "description" && (
             <div>
-              <p className="whitespace-pre-line">{product?.detailedDescription || product?.description || 'No details available.'}</p>
+              <p className="whitespace-pre-line">
+                {product?.detailedDescription ||
+                  product?.description ||
+                  "No details available."}
+              </p>
 
               {/* Product highlights row */}
               {product?.highlights && product.highlights.length > 0 && (
@@ -164,87 +187,177 @@ export default function ProductTabs({ product = null, selectedColor = null, sele
                   <h3 className="text-3xl font-semibold mb-3">Highlights</h3>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     {product.highlights.map((h, i) => (
-                      <li key={i} className="flex items-start gap-3 px-2 py-2 border border-transparent">
-                        <FiCheckCircle className="text-[#00bf63] shrink-0 mt-1" size={20} aria-hidden />
-                        <span className="text-md text-gray-700 leading-6">{h}</span>
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 px-2 py-2 border border-transparent"
+                      >
+                        <FiCheckCircle
+                          className="text-[#00bf63] shrink-0 mt-1"
+                          size={20}
+                          aria-hidden
+                        />
+                        <span className="text-md text-gray-700 leading-6">
+                          {h}
+                        </span>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
             </div>
-
           )}
           {activeTab === "additional" && (
             <div className="overflow-x-auto">
               <table className="min-w-full text-md text-left border-collapse">
-                  <tbody>
-                    <tr className="bg-gray-50 border-t border-gray-200">
-                      <th className="py-2 pr-0 pl-4 align-top font-medium text-gray-700">Name</th>
-                      <td className="py-2 text-gray-500">{product?.name || '—'}</td>
-                    </tr>
-                    <tr className="bg-white border-t border-gray-200">
-                      <th className="py-2 pr-0 pl-4 align-top font-medium text-gray-700">SKU</th>
-                      <td className="py-2 text-gray-500">{product?.sku || product?.skuId || 'CLN-001'}</td>
-                    </tr>
-                    <tr className="bg-gray-50 border-t border-gray-200">
-                      <th className="py-2 pr-0 pl-4 align-top font-medium text-gray-700">Vendor</th>
-                      <td className="py-2 text-gray-500">{product?.vendor || product?.brand || '—'}</td>
-                    </tr>
-                    <tr className="bg-white border-t border-gray-200">
-                      <th className="py-2 pr-0 pl-4 align-top font-medium text-gray-700">Color</th>
-                      <td className="py-2 text-gray-500">
-                        {product?.availableColors && product.availableColors.length > 0
-                          ? product.availableColors.join(', ')
-                          : selectedColor || '—'}
-                      </td>
-                    </tr>
-                  </tbody>
+                <tbody>
+                  <tr className="bg-gray-50 border-t border-gray-200">
+                    <th className="py-2 pr-0 pl-4 align-top font-medium text-gray-700">
+                      Name
+                    </th>
+                    <td className="py-2 text-gray-500">
+                      {product?.name || "—"}
+                    </td>
+                  </tr>
+                  <tr className="bg-white border-t border-gray-200">
+                    <th className="py-2 pr-0 pl-4 align-top font-medium text-gray-700">
+                      SKU
+                    </th>
+                    <td className="py-2 text-gray-500">
+                      {product?.sku || product?.skuId || "CLN-001"}
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-50 border-t border-gray-200">
+                    <th className="py-2 pr-0 pl-4 align-top font-medium text-gray-700">
+                      Vendor
+                    </th>
+                    <td className="py-2 text-gray-500">
+                      {product?.vendor || product?.brand || "—"}
+                    </td>
+                  </tr>
+                  <tr className="bg-white border-t border-gray-200">
+                    <th className="py-2 pr-0 pl-4 align-top font-medium text-gray-700">
+                      Color
+                    </th>
+                    <td className="py-2 text-gray-500">
+                      {product?.availableColors &&
+                      product.availableColors.length > 0
+                        ? product.availableColors.join(", ")
+                        : selectedColor || "—"}
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           )}
           {activeTab === "shipping" && (
             <div className="content-wrap">
-                <h6 className="text-3xl font-semibold mb-2">Returns policy</h6>
-                <ul className="list-disc pl-6 text-gray-900 mb-6">
-                  <li>We accept returns and exchanges within 30 days of delivery.</li>
-                  <li>Items must be unused, unworn, and in their original packaging with tags attached.</li>
-                  <li>Refunds will be issued to the original payment method within 7–10 business days after inspection.</li>
-                  <li>Sale items, gift cards, and personalized products are non-returnable.</li>
-                  <li>Customers are responsible for return shipping costs unless the item is defective or incorrect.</li>
-                </ul>
-                <h6 className="text-3xl font-semibold mb-2">Shipping policy</h6>
-                <div className="space-y-1 text-gray-600">
-                  <p><span className="font-medium text-gray-900">Processing:</span> Orders are processed and dispatched within 24 hours on business days.</p>
+              <h6 className="text-3xl font-semibold mb-2">Returns policy</h6>
+              <ul className="list-disc pl-6 text-gray-900 mb-6">
+                <li>
+                  We accept returns and exchanges within 30 days of delivery.
+                </li>
+                <li>
+                  Items must be unused, unworn, and in their original packaging
+                  with tags attached.
+                </li>
+                <li>
+                  Refunds will be issued to the original payment method within
+                  7–10 business days after inspection.
+                </li>
+                <li>
+                  Sale items, gift cards, and personalized products are
+                  non-returnable.
+                </li>
+                <li>
+                  Customers are responsible for return shipping costs unless the
+                  item is defective or incorrect.
+                </li>
+              </ul>
+              <h6 className="text-3xl font-semibold mb-2">Shipping policy</h6>
+              <div className="space-y-1 text-gray-600">
+                <p>
+                  <span className="font-medium text-gray-900">Processing:</span>{" "}
+                  Orders are processed and dispatched within 24 hours on
+                  business days.
+                </p>
 
-                  <p><span className="font-medium text-gray-900">Domestic delivery:</span> Estimated 1–3 business days after dispatch, depending on carrier and delivery location.</p>
+                <p>
+                  <span className="font-medium text-gray-900">
+                    Domestic delivery:
+                  </span>{" "}
+                  Estimated 1–3 business days after dispatch, depending on
+                  carrier and delivery location.
+                </p>
 
-                  <p><span className="font-medium text-gray-900">International delivery:</span> Estimated 7–14 business days. Customs clearance and local carrier delays may extend delivery times.</p>
+                <p>
+                  <span className="font-medium text-gray-900">
+                    International delivery:
+                  </span>{" "}
+                  Estimated 7–14 business days. Customs clearance and local
+                  carrier delays may extend delivery times.
+                </p>
 
-                  <p><span className="font-medium text-gray-900">Shipping costs:</span> Calculated at checkout. Free shipping applies on domestic orders over LKR 20,000.</p>
+                <p>
+                  <span className="font-medium text-gray-900">
+                    Shipping costs:
+                  </span>{" "}
+                  Calculated at checkout. Free shipping applies on domestic
+                  orders over LKR 20,000.
+                </p>
 
-                  <p><span className="font-medium text-gray-900">Tracking:</span> A tracking number will be provided by email once your order has shipped.</p>
+                <p>
+                  <span className="font-medium text-gray-900">Tracking:</span> A
+                  tracking number will be provided by email once your order has
+                  shipped.
+                </p>
 
-                  <p><span className="font-medium text-gray-900">Delays & exceptions:</span> Unexpected events such as severe weather, customs inspections, or courier disruptions may delay your shipment. We will notify you promptly of any major changes.</p>
+                <p>
+                  <span className="font-medium text-gray-900">
+                    Delays & exceptions:
+                  </span>{" "}
+                  Unexpected events such as severe weather, customs inspections,
+                  or courier disruptions may delay your shipment. We will notify
+                  you promptly of any major changes.
+                </p>
 
-                  <p><span className="font-medium text-gray-900">Cash on Delivery (COD):</span> Available for eligible products and regions. Please ensure exact payment is ready at delivery.</p>
+                <p>
+                  <span className="font-medium text-gray-900">
+                    Cash on Delivery (COD):
+                  </span>{" "}
+                  Available for eligible products and regions. Please ensure
+                  exact payment is ready at delivery.
+                </p>
 
-                  <p><span className="font-medium text-gray-900">Returns:</span> For returns and exchanges, please follow the Returns Policy above. Contact support for assistance with return labels and instructions.</p>
+                <p>
+                  <span className="font-medium text-gray-900">Returns:</span>{" "}
+                  For returns and exchanges, please follow the Returns Policy
+                  above. Contact support for assistance with return labels and
+                  instructions.
+                </p>
 
-                  <p><span className="font-medium text-gray-900">Questions?</span> Reach our support team at <a href="mailto:support@example.com" className="text-blue-600 hover:underline">support@vtc.com</a> or via live chat.</p>
-                </div>
+                <p>
+                  <span className="font-medium text-gray-900">Questions?</span>{" "}
+                  Reach our support team at{" "}
+                  <a
+                    href="mailto:support@example.com"
+                    className="text-blue-600 hover:underline"
+                  >
+                    support@vtc.com
+                  </a>{" "}
+                  or via live chat.
+                </p>
+              </div>
             </div>
           )}
 
-          {activeTab === "reviews" && (
-            product ? (
+          {activeTab === "reviews" &&
+            (product ? (
               <div className="-ml-8 sm:ml-0">
                 <ReviewSection product={product} />
               </div>
             ) : (
               <p>No reviews available.</p>
-            )
-          )}
+            ))}
         </div>
       </div>
     </div>
