@@ -57,13 +57,15 @@ const OrderStatusBar = ({ progress = 0, statusLabel, statusDetail, orderStatus, 
       {/* If a statusLabel/detail is provided, render the heading, badge and detail. Otherwise render only the progress bar. */}
       {statusLabel || statusDetail ? (
         <section aria-labelledby="order-status-heading" className="mb-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
               <h2 id="order-status-heading" className="text-3xl font-semibold inline-flex items-center gap-2">
                 <FiCheckCircle className="w-6 h-6 text-emerald-700" aria-hidden="true" />
                 <span>Order status</span>
               </h2>
-              {renderBadge()}
+              {/* Status pill below title on mobile, inline on desktop */}
+              <span className="block sm:hidden mt-2">{renderBadge()}</span>
+              <span className="hidden sm:block">{renderBadge()}</span>
             </div>
             {headerActions ? (
               <div className="ml-4">
@@ -88,8 +90,71 @@ const OrderStatusBar = ({ progress = 0, statusLabel, statusDetail, orderStatus, 
         </section>
       ) : null}
 
-      {/* Progress bar (evenly spaced endpoints) */}
-      <div aria-hidden="true" className="w-full">
+      {/* Progress bar: vertical on mobile, horizontal on desktop */}
+      {/* Mobile: vertical */}
+      <div className="block sm:hidden w-full">
+        <div className="flex flex-row items-stretch gap-0 py-4 px-2 relative">
+          {/* Vertical track */}
+          <div className="absolute left-5 top-6 bottom-6 w-2 bg-gray-200 rounded-md" style={{ zIndex: 0 }} />
+          {/* Progress fill */}
+          <div
+            className="absolute left-5 top-6 rounded-md bg-[#0bd964] transition-all duration-300"
+            style={{
+              zIndex: 1,
+              width: '0.5rem',
+              height: `calc(${ICON_SIZE * (progress)}px + 1.5rem)`,
+              background: (orderStatus || '').toLowerCase().includes('cancel') ? '#fdecea' : '#0bd964',
+            }}
+          />
+          {/* Status steps: icon left, text right */}
+          <div className="flex flex-col gap-2 z-10">
+            {statusIcons.map((Icon, idx) => {
+              const bg = idx <= progress ? '#0bd964' : 'white';
+              const border = 'border-gray-900';
+              const iconColor = idx <= progress ? 'text-gray-900' : 'text-gray-400';
+              return (
+                <div key={statusSteps[idx]} className="flex flex-row items-center mb-2 last:mb-0">
+                  <div
+                    className={`flex items-center justify-center border-3 shadow-sm ${border}`}
+                    style={{ width: '40px', height: '40px', background: bg }}
+                  >
+                    <Icon className={`w-6 h-6 ${iconColor}`} />
+                  </div>
+                  <div className="ml-3 flex flex-col">
+                    <div
+                      className={
+                        idx === progress
+                          ? 'font-semibold text-black text-sm'
+                          : idx < progress
+                          ? 'text-gray-700 text-sm'
+                          : 'text-gray-500 text-sm'
+                      }
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
+                      {statusSteps[idx]}
+                    </div>
+                    {idx <= progress && (() => {
+                      const keyMap = ['placed', 'processing', 'shipped', 'delivered'];
+                      const key = keyMap[idx];
+                      const ts = statusTimes && statusTimes[key];
+                      if (!ts) return null;
+                      const display = ts.time ? `${ts.date} ${ts.time}` : ts.date || null;
+                      if (!display) return null;
+                      return (
+                        <div className="text-xs text-gray-600 mt-1">
+                          {display}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      {/* Desktop: horizontal */}
+      <div className="hidden sm:block w-full">
         <div className="relative w-full px-10 pt-10 pb-4" style={{ '--track-width': `calc(100% - ${ICON_SIZE}px)`, '--icon-half': `${ICON_HALF}px` }}>
           {/* Track background inset by half icon so ends are covered by first/last circles */}
           <div

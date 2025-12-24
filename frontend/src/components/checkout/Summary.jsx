@@ -1,9 +1,32 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import { useCart } from '../../context/CartContext'
 import { FiClipboard } from 'react-icons/fi'
+import apiClient from '../../api/axios'
 
-export default function Summary({ couponCode, couponDiscount, onApplyCoupon, couponApplying, couponMessage, setCouponCode }) {
+export default function Summary({ couponCode, couponDiscount, onApplyCoupon, couponApplying, couponMessage, setCouponCode, shippingAmount }) {
   const { cartItems } = useCart()
+  const [localShipping, setLocalShipping] = useState(typeof shippingAmount === 'number' ? shippingAmount : Number(shippingAmount) || 0)
+
+  useEffect(() => {
+    // If parent provided a shippingAmount use it; otherwise try to fetch public config
+    if (typeof shippingAmount === 'number' && shippingAmount > 0) {
+      setLocalShipping(shippingAmount)
+      return
+    }
+    let mounted = true
+    const fetch = async () => {
+      try {
+        const res = await apiClient.get('/api/shipping-config')
+        if (!mounted) return
+        const val = Number(res.data) || 0
+        setLocalShipping(val)
+      } catch (e) {
+        // ignore and keep 0
+      }
+    }
+    fetch()
+    return () => { mounted = false }
+  }, [shippingAmount])
   const formatLKR = (amount) => {
     try {
       const n = Number(amount) || 0
@@ -16,24 +39,23 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
   const { grouped, subtotal, shipping, total, count } = useMemo(() => {
     const map = new Map();
     for (const item of cartItems) {
-      // Use variation id (id) as grouping key; fallback to cartItemId if present
       const key = String(item.id || item.variationId || item.cartItemId || item.productVariationId || item.productId || item.name);
       if (!map.has(key)) {
         map.set(key, { ...item });
       } else {
         const existing = map.get(key);
         existing.quantity = (existing.quantity || 1) + (item.quantity || 1);
-        // prefer a real image if missing
         if (!existing.image && item.image) existing.image = item.image;
       }
     }
     const grouped = Array.from(map.values());
     const subtotal = grouped.reduce((acc, p) => acc + (p.price || 0) * (p.quantity || 1), 0);
     const count = grouped.reduce((acc, p) => acc + (p.quantity || 1), 0);
-    const shipping = subtotal > 10000 || subtotal === 0 ? 0 : 750;
+    // Use dynamic shipping amount
+    const shipping = subtotal > 10000 || subtotal === 0 ? 0 : (typeof localShipping === 'number' ? localShipping : Number(localShipping) || 0);
     const total = subtotal + shipping;
     return { grouped, subtotal, shipping, total, count };
-  }, [cartItems])
+  }, [cartItems, shippingAmount])
 
   const discount = Number(couponDiscount || 0)
 

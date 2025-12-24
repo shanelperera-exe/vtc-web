@@ -22,7 +22,8 @@ function Orders() {
         <p className="text-sm text-neutral-600">View your recent purchases</p>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-black/10 bg-white">
+      {/* Make table horizontally scrollable on mobile */}
+      <div className="overflow-x-auto rounded-2xl border border-black/10 bg-white">
         {loading && <div className="p-6 text-sm text-neutral-600">Loading orders...</div>}
         {error && <div className="p-6 text-sm text-rose-700">Failed to load orders</div>}
         {!loading && !error && (

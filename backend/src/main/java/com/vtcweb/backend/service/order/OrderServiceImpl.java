@@ -11,6 +11,7 @@ import com.vtcweb.backend.repository.order.OrderRepository;
 import com.vtcweb.backend.repository.product.ProductRepository;
 import com.vtcweb.backend.repository.product.ProductVariationRepository;
 import lombok.RequiredArgsConstructor;
+import com.vtcweb.backend.service.config.ShippingConfigService;
 import com.vtcweb.backend.service.email.EmailService;
 import com.vtcweb.backend.service.email.EmailTemplateKey;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductVariationRepository variationRepository;
     private final com.vtcweb.backend.repository.user.UserRepository userRepository;
     private final EmailService emailService;
+    private final ShippingConfigService shippingConfigService;
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -133,7 +135,13 @@ public class OrderServiceImpl implements OrderService {
             order.addItem(item);
         }
 
-        BigDecimal shippingFee = defaultNonNegative(request.getShippingFee());
+        BigDecimal shippingFee;
+        if (request.getShippingFee() != null) {
+            shippingFee = defaultNonNegative(request.getShippingFee());
+        } else {
+            shippingFee = shippingConfigService.getAmount();
+            if (shippingFee == null) shippingFee = BigDecimal.ZERO;
+        }
         BigDecimal discountTotal = defaultNonNegative(request.getDiscountTotal());
         if (discountTotal.compareTo(subtotal) > 0) {
             // clamp discount to subtotal

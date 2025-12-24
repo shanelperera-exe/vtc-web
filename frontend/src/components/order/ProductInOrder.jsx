@@ -2,12 +2,12 @@ import OrderStatusBar from "./OrderStatusBar";
 
 const ProductInOrder = ({ product, address, shippingUpdates, showStatus = true, children }) => {
   return (
-  <div className="bg-white p-4 flex flex-col gap-4 mb-4 overflow-hidden rounded-2xl border border-black/10">
+    <div className="bg-white p-4 flex flex-col gap-4 mb-4 overflow-hidden rounded-2xl border border-black/10">
       {/* Product details + spec + address arranged: image | details | (spec + address) */}
       <div className="w-full">
-        <div className="flex flex-col md:flex-row md:items-start md:gap-8 gap-6 w-full">
+        <div className="flex flex-row md:flex-row md:items-start md:gap-8 gap-4 w-full">
           {/* image wrapper uses responsive fixed size and won't force overflow */}
-          <div className="flex-shrink-0 w-28 h-28 md:w-36 md:h-36">
+          <div className="flex-shrink-0 w-20 h-20 md:w-36 md:h-36">
             {product.image ? (
               <img
                 src={product.image}
@@ -28,11 +28,11 @@ const ProductInOrder = ({ product, address, shippingUpdates, showStatus = true, 
           {/* allow the text column to shrink and let children truncate */}
           <div className="flex-1 flex flex-col justify-center min-w-0">
             <div className="flex items-start">
-              <h3 className="text-lg md:text-xl font-semibold text-gray-900 flex-1 mr-2 overflow-hidden">
+              <h3 className="text-base md:text-xl font-semibold text-gray-900 flex-1 mr-2 overflow-hidden">
                 <a href="#" className="truncate block max-w-full">{product.name}</a>
               </h3>
             </div>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <p className="text-xs md:text-sm text-gray-500 mt-0.5">
               <span title={product.category} className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 truncate max-w-full overflow-hidden">{product.category}</span>
             </p>
 

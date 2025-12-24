@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Navbar from '../components/layout/Navbar';
 import { Stepper } from '../components/checkout/Stepper';
 import { checkoutSteps } from '../components/checkout/checkoutSteps';
@@ -20,6 +21,19 @@ import addressApi from '../api/addressApi';
 import userApi from '../api/userApi';
 
 export default function Checkout() {
+		// Shipping amount state
+		const [shippingAmount, setShippingAmount] = useState(0);
+		useEffect(() => {
+			const fetchShipping = async () => {
+				try {
+					const res = await axios.get('/api/shipping-config');
+					setShippingAmount(Number(res.data) || 0);
+				} catch {
+					setShippingAmount(0);
+				}
+			};
+			fetchShipping();
+		}, []);
 	const [active, setActive] = useState(0)
 	const [authOpen, setAuthOpen] = useState(false)
 	const [billing, setBilling] = useState({ firstName: '', lastName: '', company: '', email: '', phone: '', address1: '', address2: '', city: '', province: '', district: '', postal: '', country: 'Sri Lanka', orderNotes: '' })
@@ -357,6 +371,7 @@ export default function Checkout() {
 							couponApplying={couponApplying}
 							couponMessage={couponMessage}
 							setCouponCode={(val) => setCouponCode(val)}
+							shippingAmount={shippingAmount}
 						/>
 					</div>
 				</div>

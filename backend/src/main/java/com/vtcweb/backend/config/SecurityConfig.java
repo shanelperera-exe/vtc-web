@@ -61,7 +61,7 @@ public class SecurityConfig {
                                 "/api/auth/logout",
                                 "/api/auth/forgot-password", "/api/auth/reset-password")
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**", "/api/shipping-config").permitAll()
                         // Allow submitting product reviews without authentication
                         // Allow posting reviews for a specific product (single-level path).
                         // patterns like "/**/reviews" are not supported by PathPatternParser

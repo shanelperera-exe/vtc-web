@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { FiLock, FiUser, FiBell, FiSliders } from 'react-icons/fi'
+import { FaShippingFast } from "react-icons/fa";
+import { MdLocalShipping } from 'react-icons/md';
 import { useAuth } from '../../context/AuthContext'
 import userApi from '../../api/userApi'
 import { validateEmail as sharedValidateEmail } from '../../utils/validation'
@@ -8,6 +10,8 @@ import AccountSettingsSection from '../components/settings/AccountSettingsSectio
 import SecuritySection from '../components/settings/SecuritySection'
 import NotificationsSection from '../components/settings/NotificationsSection'
 import PreferencesSection from '../components/settings/PreferencesSection'
+import axios from 'axios';
+import apiClient from '../../api/axios';
 
 export default function AdminSettings() {
   const { user, refreshProfile } = useAuth() || {}
@@ -25,6 +29,11 @@ export default function AdminSettings() {
   const [pwdErr, setPwdErr] = useState({ current: '', next: '', confirm: '' })
   const [pwdSaving, setPwdSaving] = useState(false)
   const [pwdMsg, setPwdMsg] = useState('')
+
+  // Shipping amount state (must be at top level)
+  const [shippingAmount, setShippingAmount] = useState('');
+  const [shippingMsg, setShippingMsg] = useState('');
+  const [shippingLoading, setShippingLoading] = useState(false);
 
   // Admin extras
   const roles = user?.roles || []
@@ -45,9 +54,42 @@ export default function AdminSettings() {
         email: user.email || '',
         phone: user.phone || '',
       })
-      // 2FA removed per request
     }
   }, [user])
+
+  // Fetch shipping amount on mount
+  useEffect(() => {
+    const fetchShipping = async () => {
+      try {
+        setShippingLoading(true);
+        const res = await apiClient.get('/api/admin/shipping-config');
+        setShippingAmount(res.data);
+      } catch (e) {
+        setShippingMsg('Failed to load shipping amount');
+      } finally {
+        setShippingLoading(false);
+      }
+    };
+    fetchShipping();
+  }, []);
+
+  const handleShippingChange = (e) => {
+    setShippingAmount(e.target.value);
+  };
+
+  const saveShippingAmount = async (e) => {
+    e.preventDefault();
+    setShippingMsg('');
+    setShippingLoading(true);
+    try {
+      await apiClient.post('/api/admin/shipping-config', null, { params: { amount: shippingAmount } });
+      setShippingMsg('Shipping amount updated.');
+    } catch (e) {
+      setShippingMsg('Failed to update shipping amount.');
+    } finally {
+      setShippingLoading(false);
+    }
+  };
 
   const inputBase = 'w-full h-11 rounded-xl border border-black/10 bg-white px-4 text-sm text-gray-900 placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
   const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-600']
@@ -139,12 +181,37 @@ export default function AdminSettings() {
       setPwdSaving(false)
     }
   }
+              {activeTab === 'shipping' && (
+                <form onSubmit={saveShippingAmount} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Shipping Amount (LKR)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={shippingAmount}
+                      onChange={handleShippingChange}
+                      className="w-full h-11 rounded-xl border border-black/10 bg-white px-4 text-sm text-gray-900 placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                      disabled={shippingLoading}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 rounded-xl bg-black text-white font-semibold disabled:opacity-50"
+                    disabled={shippingLoading}
+                  >
+                    {shippingLoading ? 'Saving...' : 'Save Shipping Amount'}
+                  </button>
+                  {shippingMsg && <div className="text-sm text-red-600">{shippingMsg}</div>}
+                </form>
+              )}
 
   const sections = [
     { key: 'account', label: 'Account', Icon: FiUser, description: 'Profile and contact details' },
     { key: 'security', label: 'Security', Icon: FiLock, description: 'Password and access' },
     { key: 'notifications', label: 'Notifications', Icon: FiBell, description: 'Alerts and updates' },
     { key: 'preferences', label: 'Preferences', Icon: FiSliders, description: 'UI preferences' },
+    { key: 'shipping', label: 'Shipping', Icon: FiSliders, description: 'Shipping configuration' },
   ]
 
   return (
@@ -190,8 +257,9 @@ export default function AdminSettings() {
 
         {/* Content */}
         <div className="lg:col-span-8 xl:col-span-9">
-          <form onSubmit={async (e) => { e.preventDefault(); try { await saveProfile(); } catch {} }} className="space-y-6">
-            {activeTab === 'account' && (
+          {/* Main content for each tab */}
+          {activeTab === 'account' && (
+            <form onSubmit={async (e) => { e.preventDefault(); try { await saveProfile(); } catch {} }} className="space-y-6">
               <AccountSettingsSection
                 values={{ ...values, roles }}
                 errors={errors}
@@ -210,9 +278,11 @@ export default function AdminSettings() {
                 saveProfile={saveProfile}
                 inputBase={inputBase}
               />
-            )}
+            </form>
+          )}
 
-            {activeTab === 'security' && (
+          {activeTab === 'security' && (
+            <form onSubmit={e => { e.preventDefault(); handleChangePassword(); }} className="space-y-6">
               <SecuritySection
                 inputBase={inputBase}
                 pwd={pwd}
@@ -224,16 +294,56 @@ export default function AdminSettings() {
                 strengthColors={strengthColors}
                 handleChangePassword={handleChangePassword}
               />
-            )}
+            </form>
+          )}
 
-            {activeTab === 'notifications' && (
-              <NotificationsSection />
-            )}
+          {activeTab === 'notifications' && (
+            <NotificationsSection />
+          )}
 
-            {activeTab === 'preferences' && (
-              <PreferencesSection />
-            )}
-          </form>
+          {activeTab === 'preferences' && (
+            <PreferencesSection />
+          )}
+
+          {activeTab === 'shipping' && (
+            <div className="rounded-2xl border border-black/10 bg-white p-6">
+              <div className="flex items-start justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 inline-flex items-center gap-2">
+                    <FaShippingFast className="w-5 h-5 text-black" aria-hidden="true" />
+                    <span>Shipping Amount</span>
+                  </h2>
+                  <p className="mt-1 text-sm text-gray-600">Set the default shipping fee for all orders.</p>
+                </div>
+                {shippingMsg && (
+                  <div className={`text-xs ${shippingMsg.includes('updated') ? 'text-green-600' : 'text-red-600'}`}>{shippingMsg}</div>
+                )}
+              </div>
+              <form onSubmit={saveShippingAmount} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">Shipping Amount (LKR)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={shippingAmount}
+                    onChange={handleShippingChange}
+                    className="w-full h-11 rounded-xl border border-black/20 bg-white px-4 text-sm text-gray-900 placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                    disabled={shippingLoading}
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="px-6 py-2 rounded-xl bg-black text-white font-semibold disabled:opacity-50 shadow"
+                    disabled={shippingLoading}
+                  >
+                    {shippingLoading ? 'Saving...' : 'Save Shipping Amount'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </div>

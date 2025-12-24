@@ -22,7 +22,10 @@ import {
   FiCreditCard,
   FiFileText,
   FiPackage,
+  FiXCircle,
 } from "react-icons/fi";
+
+import { motion } from "framer-motion";
 
 const OrderDetails = () => {
   const { orderNumber } = useParams();
@@ -342,13 +345,13 @@ const OrderDetails = () => {
   return (
     <>
       <Navbar />
-      <div className="mx-auto max-w-7xl px-8 pt-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-8 pt-4 sm:pt-8">
         <BackBtn onClick={() => navigate(-1)} />
       </div>
-      <main className="mx-auto max-w-7xl py-8 px-8 relative">
-        <div className="flex items-baseline justify-between mb-8 pb-2 px-0">
-          <div className="flex flex-col md:flex-row items-baseline gap-0 md:gap-4">
-            <h1 className="text-6xl font-semibold tracking-tight text-gray-900 inline-flex items-center gap-3">
+      <main className="mx-auto max-w-7xl py-4 sm:py-8 px-2 sm:px-8 relative">
+        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-6 sm:mb-8 pb-2 px-0 gap-2 sm:gap-0">
+          <div className="w-full flex flex-col items-start gap-0">
+            <h1 className="text-3xl sm:text-6xl font-semibold tracking-tight text-gray-900 inline-flex items-center gap-2 sm:gap-3">
               <span>
                 Order{" "}
                 {effectiveOrder?.orderNumber
@@ -356,30 +359,35 @@ const OrderDetails = () => {
                   : `#${effectiveOrder?.id}`}
               </span>
             </h1>
-            <div className="flex items-center gap-2">
+            {/* Buttons always below title, full width on mobile, inline on desktop */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-3 sm:mt-2 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={onViewInvoice}
-                className="inline-flex w-fit items-center gap-2 rounded-xl px-4 py-2 bg-white border border-black/10 text-sm font-semibold text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                className="inline-flex w-full sm:w-fit items-center gap-2 rounded-xl px-4 py-2 bg-white border-2 border-black text-sm font-semibold text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 title="View invoice"
               >
                 <span>View invoice</span>
                 <span aria-hidden="true">→</span>
               </button>
               {canCancel && (
-                <button
+                <motion.button
                   type="button"
                   onClick={onCancelOrder}
-                  className="inline-flex w-fit items-center gap-2 rounded-xl px-4 py-2 bg-white border border-rose-200 text-sm font-semibold text-rose-700 hover:bg-rose-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                  whileTap={{ scale: 0.93, rotate: -2 }}
+                  whileHover={{ scale: 1.04, boxShadow: "0 4px 24px 0 rgba(244,63,94,0.12)" }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  className="inline-flex w-full sm:w-fit items-center gap-2 rounded-xl px-3 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white text-sm font-semibold shadow-md hover:from-rose-600 hover:to-rose-700 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white border-2 border-black"
                   title="Cancel order"
                 >
-                  Cancel order
-                </button>
+                  <FiXCircle className="text-lg text-white drop-shadow-sm" />
+                  <span>Cancel order</span>
+                </motion.button>
               )}
             </div>
           </div>
-          <div className="flex items-baseline gap-4 justify-end">
-            <div className="text-md text-gray-500 text-right">
+          <div className="flex flex-row sm:flex-col items-end sm:items-baseline gap-2 sm:gap-4 justify-end w-full sm:w-auto">
+            <div className="text-sm sm:text-md text-gray-500 text-right w-full sm:w-auto">
               <div>
                 Order placed{" "}
                 <time dateTime={effectiveOrder.placed}>
@@ -408,23 +416,23 @@ const OrderDetails = () => {
         </section>
 
         {/* Products in order */}
-        <section aria-labelledby="products-heading" className="mb-12">
-          <h2 id="products-heading" className="text-3xl font-semibold mb-6">
+        <section aria-labelledby="products-heading" className="mb-10 sm:mb-12">
+          <h2 id="products-heading" className="text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6">
             <span className="inline-flex items-center gap-2">
               <FiShoppingBag
-                className="w-6 h-6 text-emerald-700"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-700"
                 aria-hidden="true"
               />
               <span>Products purchased</span>
             </span>
           </h2>
-          <div className="grid grid-cols-12 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-8">
             {enrichedProducts.map((product, idx) => {
               const safeKey = `${product.name || "product"}|${
                 product.color || ""
               }|${product.size || ""}|${idx}`;
               return (
-                <div key={safeKey} className="col-span-12 md:col-span-6">
+                <div key={safeKey} className="col-span-1 md:col-span-6">
                   <ProductInOrder
                     product={product}
                     shippingUpdates={effectiveOrder.shippingUpdates}
@@ -432,7 +440,7 @@ const OrderDetails = () => {
                   >
                     <hr className="-mt-3 mb-3 border-t border-gray-200" />
                     <div>
-                      <div className="flex items-start justify-between gap-4">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between gap-2 sm:gap-4 w-full">
                         <h3 className="text-md font-semibold text-gray-900">
                           Share your thoughts
                         </h3>
@@ -442,7 +450,7 @@ const OrderDetails = () => {
                             e.preventDefault();
                             setActiveReviewProductId(product.id);
                           }}
-                          className="inline-flex items-center gap-2 rounded-lg bg-black border border-black text-white text-sm font-semibold px-4 py-2 hover:bg-white hover:text-black transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                          className="inline-flex items-center gap-2 rounded-lg bg-black border border-black text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 hover:bg-white hover:text-black transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white mt-2 sm:mt-0 w-full sm:w-auto"
                         >
                           <FiEdit
                             className="text-white group-hover:text-black"
@@ -452,7 +460,7 @@ const OrderDetails = () => {
                         </a>
                       </div>
                       <p
-                        className="text-gray-600 text-xs -mt-3 max-w-[34rem]"
+                        className="text-gray-600 text-xs mt-2 sm:-mt-3 max-w-full sm:max-w-[34rem]"
                         style={{
                           display: "-webkit-box",
                           WebkitLineClamp: 2,
