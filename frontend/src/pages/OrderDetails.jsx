@@ -15,6 +15,7 @@ import BackToTopBtn from "../components/ui/BackToTopBtn";
 import PopupModal from "../components/ui/PopupModal";
 import ReviewForm from "../components/reviews/ReviewForm";
 import { createReview } from "../api/reviewApi";
+import { useNotifications } from '../components/ui/notificationsContext';
 import {
   FiEdit,
   FiShoppingBag,
@@ -23,7 +24,11 @@ import {
   FiFileText,
   FiPackage,
   FiXCircle,
+  FiCheckCircle,
+  FiAlertTriangle,
 } from "react-icons/fi";
+import { FiCalendar, FiClock } from 'react-icons/fi';
+import { TbInvoice } from 'react-icons/tb';
 
 import { motion } from "framer-motion";
 
@@ -41,6 +46,14 @@ const OrderDetails = () => {
   // State for currently open review modal (product id)
   // Moved here so hooks order remains stable across renders (avoid conditional hooks)
   const [activeReviewProductId, setActiveReviewProductId] = useState(null);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const { notify } = (() => {
+    try {
+      return useNotifications();
+    } catch {
+      return {};
+    }
+  })();
   useEffect(() => {
     const handleScroll = () => {
       setShowTopBtn(window.scrollY > 50);
@@ -364,11 +377,11 @@ const OrderDetails = () => {
               <button
                 type="button"
                 onClick={onViewInvoice}
-                className="inline-flex w-full sm:w-fit items-center gap-2 rounded-xl px-4 py-2 bg-white border-2 border-black text-sm font-semibold text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                className="inline-flex w-full sm:w-fit items-center gap-2 rounded-xl px-3 py-2 bg-white border-2 border-black text-sm font-semibold text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 title="View invoice"
               >
+                <TbInvoice className="w-5 h-5" aria-hidden="true" />
                 <span>View invoice</span>
-                <span aria-hidden="true">→</span>
               </button>
               {canCancel && (
                 <motion.button
@@ -387,18 +400,20 @@ const OrderDetails = () => {
             </div>
           </div>
           <div className="flex flex-row sm:flex-col items-end sm:items-baseline gap-2 sm:gap-4 justify-end w-full sm:w-auto">
-            <div className="text-sm sm:text-md text-gray-500 text-right w-full sm:w-auto">
-              <div>
-                Order placed{" "}
-                <time dateTime={effectiveOrder.placed}>
-                  <span className="text-gray-700 font-bold">
-                    {effectiveOrder.placed}
-                  </span>
+              <div className="text-sm sm:text-md text-gray-500 text-right w-full sm:w-auto">
+              <div className="inline-flex items-center gap-2">
+                <span className="text-gray-700 font-bold">Order placed</span>
+                <time dateTime={effectiveOrder.placed} className="ml-2 inline-flex items-center gap-2">
+                  <FiCalendar className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                  <span className="text-gray-700 font-bold">{effectiveOrder.placed}</span>
                 </time>
               </div>
               {effectiveOrder.placedTime && (
-                <div className="text-gray-700 font-bold">
-                  {formatToAmPm(effectiveOrder.placedTime)}
+                <div className="inline-flex items-center gap-2 mt-1 sm:mt-0">
+                  <time className="inline-flex items-center gap-2">
+                    <FiClock className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                    <span className="text-gray-700 font-bold">{formatToAmPm(effectiveOrder.placedTime)}</span>
+                  </time>
                 </div>
               )}
             </div>
@@ -448,6 +463,7 @@ const OrderDetails = () => {
                           href="#"
                           onClick={(e) => {
                             e.preventDefault();
+                            setReviewSubmitted(false);
                             setActiveReviewProductId(product.id);
                           }}
                           className="inline-flex items-center gap-2 rounded-lg bg-black border border-black text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 hover:bg-white hover:text-black transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white mt-2 sm:mt-0 w-full sm:w-auto"
@@ -486,12 +502,11 @@ const OrderDetails = () => {
             >
               <ReviewForm
                 productId={activeReviewProductId}
+                submitted={reviewSubmitted}
                 onCancel={() => setActiveReviewProductId(null)}
                 onSubmit={async (payload) => {
                   try {
-                    // Build payload matching backend CreateReviewRequest
                     const body = {
-                      // ensure productId is present for backend validation
                       productId: activeReviewProductId,
                       rating: payload.rating,
                       title: payload.title,
@@ -499,20 +514,17 @@ const OrderDetails = () => {
                       name: payload.name,
                       email: payload.email,
                     };
-                    // debug logging to help trace why form submissions may not persist
-                    // eslint-disable-next-line no-console
                     console.debug("Submitting review from UI", {
                       productId: activeReviewProductId,
                       body,
                       payload,
                     });
                     const res = await createReview(activeReviewProductId, body);
-                    // eslint-disable-next-line no-console
                     console.debug("createReview response", res);
-                    // simple UX feedback for manual testing
-                    try {
-                      window.alert("Review submitted successfully");
-                    } catch {}
+                    // show inline success state in form
+                    setReviewSubmitted(true);
+                    // notification toast
+                    notify?.({ type: 'success', text: 'Review submitted', icon: FiCheckCircle });
                     // Refresh product details in cache so new review shows up
                     try {
                       const p = await getProductDetails(activeReviewProductId);
@@ -523,16 +535,11 @@ const OrderDetails = () => {
                     } catch (e) {
                       // ignore refresh errors
                     }
+                    // close modal after a short delay so user can see the success message
+                    setTimeout(() => setActiveReviewProductId(null), 1400);
                   } catch (e) {
-                    // eslint-disable-next-line no-console
                     console.error("Failed to submit review", e);
-                    try {
-                      window.alert(
-                        "Failed to submit review: " + (e?.message || e)
-                      );
-                    } catch {}
-                  } finally {
-                    setActiveReviewProductId(null);
+                    notify?.({ type: 'error', text: 'Failed to submit review', icon: FiAlertTriangle });
                   }
                 }}
               />

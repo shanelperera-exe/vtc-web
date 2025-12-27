@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiCheck, FiClock, FiRefreshCw, FiTruck, FiCheckCircle, FiXCircle, FiArrowRight, FiShoppingBag, FiUser, FiCreditCard, FiChevronDown } from 'react-icons/fi';
+import { FiCheck, FiClock, FiRefreshCw, FiTruck, FiCheckCircle, FiXCircle, FiShoppingBag, FiUser, FiCreditCard, FiChevronDown, FiCalendar } from 'react-icons/fi';
+import { TbInvoice } from 'react-icons/tb';
 import { motion } from "framer-motion";
 import ProductInOrder from "../../components/order/ProductInOrder";
 import OrderStatusBar from "../../components/order/OrderStatusBar";
@@ -379,16 +380,28 @@ const AdminOrderDetails = () => {
 									href="#"
 									className="mt-3 inline-flex w-fit items-center gap-2 rounded-xl px-4 py-2 bg-white border border-black/10 text-sm font-semibold text-gray-900 hover:bg-black hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 								>
-									View invoice <FiArrowRight className="inline-block" aria-hidden="true" />
+									<TbInvoice className="w-4 h-4" aria-hidden="true" />
+									<span>View invoice</span>
 								</a>
 							</div>
 						</div>
 					</div>
 					<div className="flex items-baseline gap-4 justify-end">
 						<div className="text-md text-gray-500 text-right">
-							<div>Order placed <time dateTime={order?.placed}><span className="text-gray-700 font-bold">{order?.placed || '—'}</span></time></div>
+							<div className="inline-flex items-center gap-2">
+								<span className="text-gray-700 font-bold">Order placed</span>
+								<time dateTime={order?.placed} className="ml-2 inline-flex items-center gap-2">
+									<FiCalendar className="w-4 h-4 text-gray-500" aria-hidden="true" />
+									<span className="text-gray-700 font-bold">{order?.placed || '—'}</span>
+								</time>
+							</div>
 							{order?.placedTime && (
-								<div className="text-gray-700 font-bold">{formatToAmPm(order.placedTime)}</div>
+								<div className="inline-flex items-center gap-2 mt-1 sm:mt-0">
+									<time className="inline-flex items-center gap-2">
+										<FiClock className="w-4 h-4 text-gray-500" aria-hidden="true" />
+										<span className="text-gray-700 font-bold">{formatToAmPm(order.placedTime)}</span>
+									</time>
+								</div>
 							)}
 						</div>
 					</div>

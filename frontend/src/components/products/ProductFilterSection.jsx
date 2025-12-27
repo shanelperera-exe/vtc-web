@@ -179,7 +179,7 @@ const ProductFilterSection = ({ onFilterChange }) => {
 							</div>
 						</div>
 						<div
-							className={`transition-all duration-300 ease-in-out overflow-hidden ${openSections.sort ? 'max-h-40 opacity-100 pt-2' : 'max-h-0 opacity-0 pt-0'}`}
+							className={`transition-all duration-300 ease-in-out overflow-hidden ${openSections.sort ? 'max-h-60 opacity-100 pt-2 pb-2' : 'max-h-0 opacity-0 pt-0'}`}
 						>
 							<div className="flex flex-col gap-1">
 								{['Manual', 'Best Selling', 'Price: Low-High', 'Price: High-Low', 'Date, new to old'].map(sort => (

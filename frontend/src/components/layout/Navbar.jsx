@@ -39,10 +39,15 @@ const Navbar = () => {
         {/* Logo */}
         <a href="/" className="flex items-center gap-1.5 sm:gap-2 min-w-0">
           <img src={logo3} alt="Logo" className="h-8 xs:h-8 sm:h-8 md:h-10 w-auto flex-shrink-0" />
+          {/* Show brand text on mobile (to the right of the logo) */}
+          <span className="flex sm:hidden flex-col text-md font-bold truncate" style={{ fontFamily: 'Poppins, sans-serif', lineHeight: '0.90' }}>
+            <span className="text-black">vidara</span>
+            <span className="text-gray-500">tradecenter</span>
+          </span>
           {/* Hide brand text on mobile; show from small screens up */}
           <span className="hidden sm:flex flex-col text-base sm:text-lg md:text-2xl font-bold truncate" style={{ fontFamily: 'Poppins, sans-serif', lineHeight: '0.9' }}>
             <span className="text-black">vidara</span>
-            <span className="text-gray-500">tradecenter.</span>
+            <span className="text-gray-500">tradecenter</span>
           </span>
         </a>
 

@@ -14,6 +14,7 @@ import {
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
+import logo4 from '../../../assets/vtc_logo4.svg';
 
 const Sidebar = () => {
     const [open, setOpen] = useState(false);
@@ -192,26 +193,9 @@ const TitleSection = ({ open }) => {
 };
 
 const Logo = () => {
-    // Temp logo from https://logoipsum.com/
     return (
         <div className="grid size-12 shrink-0 place-content-center rounded-md bg-black mt-1">
-            <svg
-                width="24"
-                height="24"
-                viewBox="0 0 50 39"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="fill-green-400"
-            >
-                <path
-                    d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z"
-                    stopColor="#000000"
-                ></path>
-                <path
-                    d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z"
-                    stopColor="#000000"
-                ></path>
-            </svg>
+            <img src={logo4} alt="VTC logo" className="h-8 w-auto p-0.5" />
         </div>
     );
 };

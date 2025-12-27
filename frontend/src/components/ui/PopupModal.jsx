@@ -18,7 +18,7 @@ const PopupModal = ({ isOpen = true, onClose, children, maxWidthClass = 'max-w-l
             exit={{ scale: 0.95, rotate: "0deg" }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className={`relative w-full ${maxWidthClass} h-auto max-h-[90vh] overflow-hidden cursor-default border-2 border-neutral-950 bg-white`}
+            className={`relative w-full ${maxWidthClass} h-auto max-h-[90vh] overflow-hidden cursor-default bg-white rounded-xl`}
           >
             <button
               onClick={onClose}

@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { FiUpload, FiImage, FiX, FiChevronDown } from 'react-icons/fi';
+import { FiUpload, FiImage, FiX, FiChevronDown, FiCheckCircle } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import StarReviewInput from '../ui/StarReviewInput';
 
 
-export default function ReviewForm({ productId = null, onCancel = () => { }, onSubmit = () => { } }) {
+export default function ReviewForm({ productId = null, onCancel = () => { }, onSubmit = () => { }, submitted = false }) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [title, setTitle] = useState('');
@@ -58,8 +58,20 @@ export default function ReviewForm({ productId = null, onCancel = () => { }, onS
   };
 
   return (
-    <form className="w-full bg-white p-6 rounded-none" onSubmit={submit} noValidate>
-      <div className="text-4xl font-semibold mb-4">Write a review</div>
+    <form className="w-full p-6 relative" onSubmit={submit} noValidate>
+      {/* overlay when submitted */}
+      {submitted && (
+        <div className="absolute inset-0 z-20 grid place-items-center bg-white/60 backdrop-blur-sm rounded-md pointer-events-none">
+          <div className="flex flex-col items-center gap-2 px-6 py-4">
+            <FiCheckCircle className="h-10 w-10 text-emerald-600" />
+            <div className="text-lg font-semibold">Review submitted</div>
+            <div className="text-sm text-gray-600 text-center">Thanks — your review will appear after approval.</div>
+          </div>
+        </div>
+      )}
+
+      <div className={submitted ? 'pointer-events-none blur-sm' : ''}>
+      <div className="text-2xl font-semibold mb-4">Write a review</div>
 
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700">Rating</label>
@@ -71,13 +83,13 @@ export default function ReviewForm({ productId = null, onCancel = () => { }, onS
 
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700" htmlFor="review-title">Review Title</label>
-        <input id="review-title" value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Give your review a title" className="mt-1 block w-full rounded-none border border-gray-300 bg-white px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
+        <input id="review-title" value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Give your review a title" className="mt-1 block w-full rounded-md border border-gray-200 bg-transparent px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
         {errors.title && <p className="text-sm text-red-600 mt-1">{errors.title}</p>}
       </div>
 
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700" htmlFor="review-body">Review</label>
-        <textarea id="review-body" value={body} onChange={(e) => setBody(e.target.value)} rows={5} placeholder="Write your comments here" className="mt-1 block w-full rounded-none border border-gray-300 bg-white px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
+        <textarea id="review-body" value={body} onChange={(e) => setBody(e.target.value)} rows={5} placeholder="Write your comments here" className="mt-1 block w-full rounded-md border border-gray-200 bg-transparent px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
         {errors.body && <p className="text-sm text-red-600 mt-1">{errors.body}</p>}
       </div>
 
@@ -99,7 +111,7 @@ export default function ReviewForm({ productId = null, onCancel = () => { }, onS
           <button
             type="button"
             onClick={() => fileRef.current && fileRef.current.click()}
-            className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-none bg-white text-sm text-gray-700 hover:bg-gray-50"
+            className="inline-flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-md bg-transparent text-sm text-gray-700 hover:bg-gray-50"
             aria-label="Attach pictures or videos"
           >
             <FiUpload className="w-4 h-4" />
@@ -110,7 +122,7 @@ export default function ReviewForm({ productId = null, onCancel = () => { }, onS
         {mediaFiles.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-2">
             {mediaFiles.map((f, i) => (
-              <div key={i} className="flex items-center text-xs text-gray-700 px-2 py-1 bg-gray-100 border border-gray-200 rounded-none">
+              <div key={i} className="flex items-center text-xs text-gray-700 px-2 py-1 bg-gray-100 border border-gray-200 rounded-md">
                 <FiImage className="w-4 h-4 mr-2 text-gray-600" />
                 <span className="truncate mr-2">{f.name}</span>
                 <button
@@ -129,13 +141,13 @@ export default function ReviewForm({ productId = null, onCancel = () => { }, onS
 
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700" htmlFor="yt-url">YouTube URL (optional)</label>
-        <input id="yt-url" value={ytUrl} onChange={(e) => setYtUrl(e.target.value)} type="url" placeholder="YouTube URL" className="mt-1 block w-full rounded-none border border-gray-300 bg-white px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
+        <input id="yt-url" value={ytUrl} onChange={(e) => setYtUrl(e.target.value)} type="url" placeholder="YouTube URL" className="mt-1 block w-full rounded-md border border-gray-200 bg-transparent px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700" htmlFor="reviewer-name">Name</label>
-          <input id="reviewer-name" value={name} onChange={(e) => setName(e.target.value)} type="text" placeholder="Enter your name (public)" className="mt-1 block w-full rounded-none border border-gray-300 bg-white px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
+          <input id="reviewer-name" value={name} onChange={(e) => setName(e.target.value)} type="text" placeholder="Enter your name (public)" className="mt-1 block w-full rounded-md border border-gray-200 bg-transparent px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
         </div>
 
         <div>
@@ -148,7 +160,7 @@ export default function ReviewForm({ productId = null, onCancel = () => { }, onS
 
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700" htmlFor="reviewer-email">Email</label>
-        <input id="reviewer-email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Enter your email (private)" className="mt-1 block w-full rounded-none border border-gray-300 bg-white px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
+        <input id="reviewer-email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Enter your email (private)" className="mt-1 block w-full rounded-md border border-gray-200 bg-transparent px-3 py-2 placeholder:text-sm focus:outline-none focus:border-[#00bf63] focus:ring-1 focus:ring-[#00bf63]" />
         {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
       </div>
 
@@ -157,8 +169,9 @@ export default function ReviewForm({ productId = null, onCancel = () => { }, onS
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-3">
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm border-2 border-black rounded-none text-black bg-white hover:bg-gray-50">Cancel review</button>
-        <button type="submit" className="px-4 py-2 text-sm border-2 border-black bg-[#00bf63] font-medium text-black hover:bg-black hover:text-white">Submit Review</button>
+        <button type="button" onClick={onCancel} disabled={submitted} className="px-4 py-2 text-sm rounded-md text-black bg-white/90 hover:bg-gray-100 disabled:opacity-60">Cancel review</button>
+        <button type="submit" disabled={submitted} className="px-4 py-2 text-sm rounded-md bg-[#00bf63] font-medium text-black hover:bg-black hover:text-white disabled:opacity-60">Submit Review</button>
+      </div>
       </div>
     </form>
   );

@@ -51,11 +51,11 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
     const grouped = Array.from(map.values());
     const subtotal = grouped.reduce((acc, p) => acc + (p.price || 0) * (p.quantity || 1), 0);
     const count = grouped.reduce((acc, p) => acc + (p.quantity || 1), 0);
-    // Use dynamic shipping amount
+    // Use dynamic shipping amount (applied shipping may be zero for free thresholds)
     const shipping = subtotal > 10000 || subtotal === 0 ? 0 : (typeof localShipping === 'number' ? localShipping : Number(localShipping) || 0);
     const total = subtotal + shipping;
     return { grouped, subtotal, shipping, total, count };
-  }, [cartItems, shippingAmount])
+  }, [cartItems, localShipping])
 
   const discount = Number(couponDiscount || 0)
 
@@ -119,7 +119,7 @@ export default function Summary({ couponCode, couponDiscount, onApplyCoupon, cou
         </div>
         <div className="py-3 text-sm space-y-1">
           <div className="flex justify-between"><span>Items ({count})</span><span>{formatLKR(subtotal)}</span></div>
-          <div className="flex justify-between"><span>Shipping</span><span>{shipping ? formatLKR(shipping) : 'Free'}</span></div>
+          <div className="flex justify-between"><span>Shipping Fee</span><span>{formatLKR(localShipping)}</span></div>
           {discount > 0 && (
             <div className="flex justify-between text-emerald-700"><span>Discount {couponCode ? `(${couponCode})` : ''}</span><span>- {formatLKR(discount)}</span></div>
           )}
