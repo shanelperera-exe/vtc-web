@@ -1,145 +1,129 @@
-# Vidara Trade Center Frontend
+# VTC Frontend
 
-React + Vite application powering the Vidara Trade Center storefront and admin panel.
+Overview
+- React + Vite single-page application for the VTC storefront and admin UI.
+- Provides customer storefront, cart/checkout flow, account management, product browsing, reviews, wishlist, and a full-featured admin interface for products, categories, orders, analytics and settings.
 
-## Quick Start
+Tech Stack
+- React 19, Vite
+- Tailwind CSS (configured), styled-components
+- React Router v6 for client routing
+- Axios for HTTP requests
+- Recharts for charts (admin analytics)
+- Lottie, Swiper, Leaflet used for UI/UX enhancements
 
-1. Copy environment file:
-	 ```bash
-	 cp .env.example .env
-	 ```
-2. (Optional) change `VITE_API_BASE_URL` if backend runs on a different host/port.
-3. Install deps & run:
-	 ```bash
-	 npm install
-	 npm run dev
-	 ```
-4. Visit http://localhost:5173
+Project Structure (important folders)
+- `src/` — application source
+	- `api/` — frontend API clients (e.g., `productApi.js`, `authApi.js`, `orderApi.js`, `adminAnalyticsApi.js`)
+	- `admin/` — admin UI components and pages (analytics, products, orders, users, settings)
+	- `components/` — reusable UI components organized by feature (cart, auth, account, products, checkout, common, layout, etc.)
+	- `pages/` — route-level pages for customer-facing app (Home, ProductDetails, Checkout, Account, Login, Register, Wishlist, etc.)
+	- `context/` — `AuthContext.jsx`, `CartContext.jsx` for global state
+	- `services/` — client helpers (e.g., avatar, reviews)
+	- `utils/` — helpers (slugify, validation, wishlist)
+	- `styles/` — `App.css`, `index.css`
 
-## Environment Variables
+Key Features
+- Public storefront: product listing, search, category pages, product details with variations and images.
+- Cart: add/update/remove items, localStorage sync and merge on login.
+- Checkout: authenticated checkout flow integrated with backend `POST /api/checkout`.
+- Orders: order history, order details, order confirmation flow.
+- Account: registration, login, refresh token handling (via backend), profile update, change password, addresses (billing/shipping).
+- Wishlist: per-user wishlist with local merge support.
+- Reviews: submit and list product reviews (supports anonymous reviewers with name/email and optional JWT-authenticated user association).
+- Coupons: apply coupon codes client-side using `/api/coupons/apply`.
+- Admin UI: product management (images, variations), category management (images & tiles), order management, users management, analytics dashboards.
+- Image uploads: admin image upload flows (frontend posts multipart to backend endpoints which proxy to Cloudinary).
+- Notifications: in-app notifications via `api/notifications.js`.
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `VITE_API_BASE_URL` | Base URL for Spring Boot backend API | `http://localhost:8080` |
+Authentication & API Integration
+- The frontend uses `src/api/axios.js` to create an Axios instance configured with the backend base URL and interceptors for auth tokens.
+- Auth flow: login/register -> receive access token (stored in memory or localStorage per app policy) and `vtc_refresh` cookie set by backend. The client calls `POST /api/auth/refresh` or relies on backend cookie to refresh tokens.
+- Protected routes use `AuthContext` and role checks for admin pages.
 
-## API Layer Structure
+Scripts
+- Install dependencies:
 
-```
-src/api/
-	axios.js          # Shared axios instance (base URL, interceptors)
-	apiUtils.js       # Error + pagination helpers & simple cache
-	categoryApi.js    # Category CRUD + list
-	productApi.js     # Product CRUD + list/search/byCategory
-	authApi.js        # Auth endpoints (login/register/refresh/logout/me)
-	hooks/
-		useCategories.js
-		useProducts.js
-		(use future) useAuth* (context based)
-
-	## Authentication Integration
-
-	Auth state is handled via `AuthContext` (`src/context/AuthContext.jsx`).
-
-	Workflow:
-	1. User logs in -> `authApi.login` returns `{ accessToken, user }`.
-	2. Access token stored in `localStorage` (key `vtc_access_token`).
-	3. Axios request interceptor attaches `Authorization: Bearer <token>` automatically.
-	4. On 401, a single automatic refresh attempt is made via `POST /api/auth/refresh`.
-	5. User profile preloaded via `authApi.me()` if token exists on page load.
-
-	Usage example inside a component:
-	```jsx
-	import { useAuth } from '@/context/AuthContext';
-
-	function AccountBadge() {
-	  const { user, isAuthenticated, logout } = useAuth();
-	  if (!isAuthenticated) return <button onClick={() => {/* open auth modal */}}>Sign In</button>;
-	  return <div>Hello {user.firstName}! <button onClick={logout}>Sign out</button></div>;
-	}
+	```bash
+	npm install
 	```
-```
 
-### Usage Examples
+- Development:
 
-Fetch categories inside a component:
-```jsx
-import { useCategories } from '@/api/hooks/useCategories';
+	```bash
+	npm run dev
+	```
 
-function CategoryChips() {
-	const { data, loading, error } = useCategories();
-	if (loading) return <p>Loading…</p>;
-	if (error) return <p>Error: {error.message}</p>;
-	return data.map(c => <span key={c.id}>{c.name}</span>);
-}
-```
+- Build for production:
 
-Create a product:
-```js
-import { createProduct } from '@/api/productApi';
-await createProduct({ name:'Mug', basePrice: 12.99, categoryId: 1 });
-```
+	```bash
+	npm run build
+	```
 
-### Hook Contract
+- Preview production build:
 
-Each hook returns:
-```ts
-{
-	data: T[];          // array of entities for current criteria
-	page: PageMeta;     // page metadata (if obtained)
-	loading: boolean;
-	error: { message, status? } | null;
-	reload(): Promise<void>;
-	create(payload): Promise<T>;
-	update(id, payload): Promise<T>;
-	remove(id): Promise<boolean>;
-}
-```
+	```bash
+	npm run preview
+	```
 
-### Pagination
+- Lint:
 
-Hooks accept `{ page, size, sort }`. `page` is 0-based when passed to the API; UI components may wrap it in 1-based indexing.
+	```bash
+	npm run lint
+	```
 
-### Error Handling
+Configuration & Environment
+- Copy `.env.example` to `.env` and update values before running.
+- Typical env vars used by the frontend (see `.env.example`):
+	- `VITE_API_BASE_URL` — backend API base URL (e.g., `http://localhost:8080`)
+	- Any third-party keys used by the frontend (maps, analytics) should be placed in environment variables prefixed with `VITE_`.
 
-Errors are normalized in `apiUtils.normalizeError` to shape:
-```jsonc
-{ "message": "Readable message", "status": 400, "details": { ...raw } }
-```
+Routing
+- Main app routes are defined in `src/main.jsx`, `App.jsx` and admin routes under `src/admin/routes`.
+- Legacy redirects and route guards exist (see `routes/LegacyProductRedirect.jsx` and admin route components).
 
-### Caching
+Admin Panel
+- The admin application (`src/admin/*`) exposes features:
+	- Analytics dashboard and sales analytics pages
+	- Product manager with create/edit/full-add (images & variations)
+	- Category management with image uploads for `main|tile1|tile2`
+	- Orders list and order details with status updates
+	- User management (list, edit, create, roles) integrated with backend admin endpoints
 
-A minimal in-memory cache stores list responses for the session. Mutations invalidate relevant keys via `cacheInvalidate`.
+Assets & Static Files
+- Static assets live under `public/assets` and `src/assets` (brand logos, carousel images, etc.).
 
-## Admin Integrations
+Styling
+- Tailwind CSS is present and integrated with Vite; additional component-level styling uses `styled-components`.
 
-| Area | Backend Connected | Notes |
-|------|-------------------|-------|
-| Categories | Yes | CRUD + listing; dynamic storefront categories. |
-| Products | Yes | Listing + create/update/delete; dynamic customer views. |
-| Category Menu / Hamburger | Yes | Dynamic fetch; slug generated client-side. |
-| Storefront Product Lists | Yes | Home & carousels use backend data. |
-| Authentication | Yes | Login & registration integrated with backend JWT + refresh. |
+Testing & Quality
+- ESLint config provided. Run `npm run lint` and address warnings.
+- Add unit/integration tests as needed; current repo focuses on UI and manual testing flows.
 
-## Future Enhancements
+Deployment
+- This project is suitable for Vercel, Netlify, or static hosting behind a CDN. `vercel.json` and an `nginx.conf` are included for reference.
+- Build and ship static assets produced by `npm run build` to your hosting platform, ensuring `VITE_API_BASE_URL` points to the deployed backend.
 
-- Token rotation on each refresh (backend enhancement)
-- Migrate simple cache to TanStack Query for stale-time control
-- Optimistic updates for orders & user profile
-- Add toast notifications for mutation success/error
-- Accessibility pass (focus trapping in auth modal, aria-live for errors)
+Troubleshooting
+- If API calls fail, verify `VITE_API_BASE_URL` and backend health.
+- For CORS issues, ensure backend CORS config allows frontend origin.
+- For image uploads, ensure backend Cloudinary credentials are configured and reachable.
 
-## Development Scripts
+Contributing
+- Follow existing component and hook patterns. Keep components small, use `context` for cross-cutting state (auth/cart), and centralize API calls in `src/api`.
 
-| Script | Description |
-|--------|-------------|
-| `dev` | Start Vite dev server |
-| `build` | Production build |
-| `preview` | Preview production build |
+Useful file references
+- Main entry: `src/main.jsx`
+- App root: `src/App.jsx`
+- Admin entry: `src/AdminApp.jsx`
+- API clients: `src/api` (e.g., `productApi.js`, `authApi.js`)
 
-## License
+License & Attribution
+- See project root for license and contributor information.
 
-Internal project – add license info if distributing.
+---
+Created from the codebase files in this workspace. If you want, I can:
+- add example requests/responses for key API calls,
+- extract a focused frontend checklist for tests, or
+- generate a minimal style guide for components.
 
-## Environment file usage
-
-Copy `.env.example` to `.env` and fill in real values for local development. Never commit your `.env` file or paste secret keys into the frontend repo. Use the backend to hold secret API keys (for example, Cloudinary API secrets) and implement signed uploads when needed.
