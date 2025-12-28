@@ -1,22 +1,22 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from '../products/ProductCard';
 import { useProducts } from '../../api/hooks/useProducts';
 
 export default function CustomersPurchased() {
   const { data = [], loading } = useProducts({ size: 50, status: 'ACTIVE' });
+  const [swiper, setSwiper] = useState(null);
   const products = useMemo(() => {
     const copy = (data || []).slice();
     // prefer top-rated first
     if (copy.some(p => typeof p.rating === 'number')) {
       copy.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     }
-    return copy.slice(0, 10);
+    return copy.slice(0, 8);
   }, [data]);
 
   return (
@@ -35,21 +35,21 @@ export default function CustomersPurchased() {
             ))}
           </div>
         ) : (
-          <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            navigation
-            pagination={{ clickable: true }}
-            autoplay={{ delay: 4800, disableOnInteraction: false }}
-            loop={false}
-            spaceBetween={16}
-            slidesPerView={1}
-            breakpoints={{
-              640: { slidesPerView: 2 },
-              768: { slidesPerView: 3 },
-              1024: { slidesPerView: 4 }
-            }}
-            className="py-4"
-          >
+          <div className="relative">
+            <Swiper
+              modules={[Autoplay]}
+              onSwiper={setSwiper}
+              autoplay={{ delay: 4800, disableOnInteraction: false }}
+              loop={false}
+              spaceBetween={16}
+              slidesPerView={1}
+              breakpoints={{
+                640: { slidesPerView: 2 },
+                768: { slidesPerView: 3 },
+                1024: { slidesPerView: 4 }
+              }}
+              className="py-4"
+            >
             {products.map((p) => (
               <SwiperSlide key={p.id} className="!flex !justify-center">
                 <div style={{ width: '100%', maxWidth: 320 }}>
@@ -67,7 +67,26 @@ export default function CustomersPurchased() {
                 </div>
               </SwiperSlide>
             ))}
-          </Swiper>
+            </Swiper>
+
+            <button
+              type="button"
+              onClick={() => swiper?.slidePrev()}
+              aria-label="Previous"
+              className="flex md:flex items-center justify-center rounded-xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-10 h-10 md:w-14 md:h-14 left-2 md:-left-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
+            >
+              <ChevronLeft size={30} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => swiper?.slideNext()}
+              aria-label="Next"
+              className="flex md:flex items-center justify-center rounded-xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200 w-10 h-10 md:w-14 md:h-14 right-2 md:-right-8 top-1/2 -translate-y-1/2 absolute z-30 hover:bg-white"
+            >
+              <ChevronRight size={30} />
+            </button>
+          </div>
         )}
 
         <div className="text-center mt-8">
