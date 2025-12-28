@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import orderApi from '../api/orderApi';
+import shippingApi from '../api/shippingApi';
 import { getProductDetails } from '../api/productApi';
 import {
   BadgeCheck,
@@ -98,6 +99,7 @@ export default function OrderConfirmed() {
   const [error, setError] = useState(null);
   // Cache of productId -> primary image URL for items missing snapshot
   const [productImages, setProductImages] = useState({});
+  const [shippingFromConfig, setShippingFromConfig] = useState(null);
   const id = paramOrderNumber || (order && (order.orderNumber || order.id || order.orderId)) || location.state?.orderNumber || location.state?.orderId;
 
   useEffect(() => {
@@ -108,7 +110,9 @@ export default function OrderConfirmed() {
       // But if items are present but billing/shipping/contact are missing (e.g. location.state from checkout may have partial data), fetch full order details.
       const hasItems = order && Array.isArray(order.items) && order.items.length > 0;
       const hasContactOrAddress = order && (order.billingAddress || order.shippingAddress || order.customerPhone || order.customerFirstName || order.customerEmail);
-      if (hasItems && hasContactOrAddress) return;
+      const hasShipping = order && (order.shippingFee != null || order.shipping != null || order.shippingAmount != null || order.summary?.shipping != null || order.shipping_amount != null);
+      // If we already have items, contact info and shipping, skip fetching. Otherwise fetch full order from API.
+      if (hasItems && hasContactOrAddress && hasShipping) return;
       setLoading(true);
       try {
         const o = await orderApi.getOrder(id, { withItems: true });
@@ -203,10 +207,39 @@ export default function OrderConfirmed() {
   const itemCost = order?.subtotal != null
     ? Number(order.subtotal)
     : items.reduce((s, it) => s + ((Number(it.unitPrice ?? it.price ?? 0)) * (it.quantity ?? it.qty ?? 1)), 0);
-  const shippingCost = order?.shippingFee != null ? Number(order.shippingFee) : 0;
-  const tax = order?.taxTotal != null ? Number(order.taxTotal) : 0;
+  const parseNumber = (v) => {
+    if (v == null) return 0
+    if (typeof v === 'number') return v
+    if (typeof v === 'string') return Number(v) || 0
+    if (typeof v === 'object') return Number(v.amount ?? v.value ?? v.shippingFee ?? v.fee ?? 0) || 0
+    return 0
+  }
+  const shippingCandidates = (
+    order?.shippingFee ?? order?.shipping ?? order?.shippingAmount ?? order?.shipping_amount ?? order?.summary?.shipping ?? order?.billing?.summary?.shipping ?? null
+  )
+  const shippingCost = parseNumber(shippingCandidates)
+  const effectiveShipping = (shippingFromConfig != null) ? Number(shippingFromConfig) : shippingCost;
+  const tax = 0
   const coupon = order?.discountTotal != null ? Number(order.discountTotal) : 0;
-  const totalCost = order?.total != null ? Number(order.total) : (itemCost + shippingCost + tax - (coupon || 0));
+  const totalCost = itemCost + effectiveShipping - (coupon || 0)
+
+  useEffect(() => {
+    let active = true;
+    async function fetchShippingConfig() {
+      // If shipping already present or a positive amount, skip config fetch.
+      if (!order) return;
+      if (shippingCost && Number(shippingCost) > 0) return;
+      try {
+        const amt = await shippingApi.getShippingAmount();
+        if (!active) return;
+        if (amt != null) setShippingFromConfig(Number(amt) || 0);
+      } catch {
+        // ignore errors, leave as null
+      }
+    }
+    fetchShippingConfig();
+    return () => { active = false; };
+  }, [order, shippingCost]);
 
   const statusChip = useMemo(() => {
     const map = {
@@ -373,7 +406,7 @@ export default function OrderConfirmed() {
               <div className="border border-black/10 rounded-2xl p-5 bg-gray-50">
                 <div className="text-sm mt-0 flex justify-between items-center text-gray-600"><span>Items subtotal</span><span className="font-medium text-gray-900">{formatCurrency(itemCost)}</span></div>
 
-                <div className="mt-3 text-sm flex justify-between text-gray-600"><span>Shipping</span><span>{formatCurrency(shippingCost)}</span></div>
+                <div className="mt-3 text-sm flex justify-between text-gray-600"><span>Shipping</span><span>{formatCurrency(effectiveShipping)}</span></div>
                 <div className="mt-1 text-sm flex justify-between text-gray-600"><span>Tax</span><span>{formatCurrency(tax)}</span></div>
                 <div className="mt-1 text-sm flex justify-between text-gray-600"><span>Discount</span><span className="text-emerald-700">-{formatCurrency(coupon)}</span></div>
 

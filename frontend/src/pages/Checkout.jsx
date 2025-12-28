@@ -24,10 +24,17 @@ export default function Checkout() {
 		// Shipping amount state
 		const [shippingAmount, setShippingAmount] = useState(0);
 		useEffect(() => {
+			const parseShipping = (v) => {
+				if (v == null) return 0
+				if (typeof v === 'number') return v
+				if (typeof v === 'string') return Number(v) || 0
+				if (typeof v === 'object') return Number(v.amount ?? v.value ?? v.shippingFee ?? v.fee ?? 0) || 0
+				return 0
+			}
 			const fetchShipping = async () => {
 				try {
 					const res = await axios.get('/api/shipping-config');
-					setShippingAmount(Number(res.data) || 0);
+					setShippingAmount(parseShipping(res.data));
 				} catch {
 					setShippingAmount(0);
 				}
@@ -230,7 +237,17 @@ export default function Checkout() {
 			};
 		}
 
-		const payload = {
+			// compute subtotal and applied shipping to include in checkout snapshot
+			const subtotal = cartItems.reduce((acc, p) => acc + (p.price || 0) * (p.quantity || 1), 0)
+			const parseShippingVal = (v) => {
+				if (v == null) return 0
+				if (typeof v === 'number') return v
+				if (typeof v === 'string') return Number(v) || 0
+				if (typeof v === 'object') return Number(v.amount ?? v.value ?? v.shippingFee ?? v.fee ?? 0) || 0
+				return 0
+			}
+			const appliedShipping = subtotal > 10000 || subtotal === 0 ? 0 : parseShippingVal(shippingAmount);
+			const payload = {
 			// Optional customer snapshot fields (backend will fallback to auth user details)
 			customerFirstName: billing.firstName || undefined,
 			customerLastName: billing.lastName || undefined,
@@ -244,6 +261,9 @@ export default function Checkout() {
 			couponCode: couponCode || undefined,
 			orderNotes: billing.orderNotes || delivery.shippingNotes || undefined,
 		};
+			// include explicit shippingFee and zeroed tax to avoid server applying taxes
+			payload.shippingFee = appliedShipping
+			payload.taxTotal = 0
 
 		try {
 			const response = await orderApi.checkout(payload);

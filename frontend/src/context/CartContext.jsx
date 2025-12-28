@@ -93,7 +93,7 @@ export function CartProvider({ children }) {
           setItems(apiItems.map(mapApiItemToUI))
           setServerSummary({
             subtotal: Number(res?.subtotal) || 0,
-            tax: Number(res?.tax) || 0,
+            tax: 0,
             total: Number(res?.total) || 0,
           })
         } else {
@@ -139,7 +139,7 @@ export function CartProvider({ children }) {
             setItems(apiItems.map(mapApiItemToUI))
             setServerSummary({
               subtotal: Number(res?.subtotal) || 0,
-              tax: Number(res?.tax) || 0,
+              tax: 0,
               total: Number(res?.total) || 0,
             })
           } else {
@@ -247,7 +247,7 @@ export function CartProvider({ children }) {
             setItems(apiItems.map(mapApiItemToUI))
             setServerSummary({
               subtotal: Number(res?.subtotal) || 0,
-              tax: Number(res?.tax) || 0,
+              tax: 0,
               total: Number(res?.total) || 0,
             })
           } else {
@@ -337,7 +337,7 @@ export function CartProvider({ children }) {
             setItems(apiItems.map(mapApiItemToUI))
             setServerSummary({
               subtotal: Number(res?.subtotal) || 0,
-              tax: Number(res?.tax) || 0,
+              tax: 0,
               total: Number(res?.total) || 0,
             })
           } else {

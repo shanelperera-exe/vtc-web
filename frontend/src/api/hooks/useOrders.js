@@ -70,7 +70,7 @@ export function useOrders({ orderId, orderNumber, admin = false, initialData } =
       summary: {
         subtotal: Number(o.subtotal ?? 0),
         shipping: Number(o.shippingFee ?? 0),
-        tax: Number(o.taxTotal ?? 0),
+        tax: 0,
         total: Number(o.total ?? 0),
       },
     };
