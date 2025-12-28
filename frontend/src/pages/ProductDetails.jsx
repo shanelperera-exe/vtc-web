@@ -259,6 +259,39 @@ export default function ProductDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [colorOptions, sortedSizes]);
 
+  // Map a wide range of color names to Tailwind background + checked-outline classes.
+  // Handles non-standard names like "Walnut", "Coffee", "Burgundy", "Navy", etc.
+  function colorClassesFor(color) {
+    const c = (color || "").toString().trim().toLowerCase();
+    if (!c) return "bg-gray-200 checked:outline-gray-400";
+    if (c.includes("white") || c === "ivory" || c === "cream")
+      return "bg-white checked:outline-gray-400";
+    if (c.includes("black") || c.includes("charcoal"))
+      return "bg-gray-900 checked:outline-gray-900";
+    if (c.includes("red") || c.includes("burgundy") || c.includes("maroon"))
+      return "bg-red-600 checked:outline-red-600";
+    if (c.includes("blue") || c.includes("navy") || c.includes("indigo"))
+      return "bg-blue-500 checked:outline-blue-500";
+    if (c.includes("green") || c.includes("olive") || c.includes("emerald") || c.includes("mint"))
+      return "bg-green-500 checked:outline-green-500";
+    if (c.includes("silver") || c.includes("gray") || c.includes("grey") || c.includes("slate"))
+      return "bg-gray-300 checked:outline-gray-400";
+    if (c.includes("brown") || c.includes("walnut") || c.includes("coffee") || c.includes("tan") || c.includes("beige"))
+      return "bg-amber-700 checked:outline-amber-700";
+    if (c.includes("yellow") || c.includes("mustard") || c.includes("gold"))
+      return "bg-yellow-500 checked:outline-yellow-500";
+    if (c.includes("orange")) return "bg-orange-500 checked:outline-orange-500";
+    if (c.includes("purple") || c.includes("violet")) return "bg-purple-500 checked:outline-purple-500";
+    if (c.includes("pink") || c.includes("rose") || c.includes("fuchsia"))
+      return "bg-pink-500 checked:outline-pink-500";
+    if (c.includes("teal") || c.includes("cyan") || c.includes("aqua"))
+      return "bg-teal-500 checked:outline-teal-500";
+    if (c.includes("bronze") || c.includes("copper"))
+      return "bg-amber-400 checked:outline-amber-400";
+    // fallback neutral
+    return "bg-gray-200 checked:outline-gray-400";
+  }
+
   // Derive rating and number of reviews: prefer fields from product; else compute from attached reviews
   const numReviews = useMemo(() => {
     const revs = rawProduct?.reviews;
@@ -641,17 +674,15 @@ export default function ProductDetails() {
                           >
                             <div className="flex items-center gap-x-2 w-44 sm:w-auto">
                               {colorOptions.map((color) => {
-                                const colorAvail =
-                                  product?.availability?.[color];
+                                const colorAvail = product?.availability?.[color];
                                 const outOfStock = colorAvail
                                   ? Object.values(colorAvail).every(
                                       (s) =>
                                         !s ||
-                                        String(s)
-                                          .toLowerCase()
-                                          .indexOf("in stock") === -1
+                                        String(s).toLowerCase().indexOf("in stock") === -1
                                     )
                                   : false;
+                                const colorClass = colorClassesFor(color);
                                 return (
                                   <div
                                     key={color}
@@ -665,21 +696,7 @@ export default function ProductDetails() {
                                       value={color}
                                       checked={selectedColor === color}
                                       aria-label={color}
-                                      className={`w-8 h-8 rounded-md appearance-none forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3 ${
-                                        color === "White"
-                                          ? "bg-white checked:outline-gray-400"
-                                          : color === "Black"
-                                          ? "bg-gray-900 checked:outline-gray-900"
-                                          : color === "Red"
-                                          ? "bg-red-500 checked:outline-red-500"
-                                          : color === "Blue"
-                                          ? "bg-blue-500 checked:outline-blue-500"
-                                          : color === "Green"
-                                          ? "bg-green-500 checked:outline-green-500"
-                                          : color === "Silver"
-                                          ? "bg-gray-300 checked:outline-gray-400"
-                                          : "bg-gray-200 checked:outline-gray-400"
-                                      }`}
+                                      className={`w-8 h-8 rounded-md appearance-none forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3 ${colorClass}`}
                                       onChange={() => setSelectedColor(color)}
                                     />
                                     {outOfStock && (
