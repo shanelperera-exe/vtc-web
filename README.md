@@ -2,7 +2,7 @@
 
 This repository contains the VTC storefront and admin web application: a modern React frontend (Vite) and a Spring Boot backend API. The project provides a complete e-commerce stack with product & category management, cart & wishlist, checkout & orders, user accounts, admin analytics, image uploads, email templates and more.
 
-<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7411019189148123136?compact=1" height="399" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+LinkedIn post: https://www.linkedin.com/feed/update/urn:li:ugcPost:7411019189148123136
 
 ## High-level Overview
 - Monorepo with two main subprojects:
