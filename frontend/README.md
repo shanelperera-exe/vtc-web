@@ -121,9 +121,3 @@ Useful file references
 License & Attribution
 - See project root for license and contributor information.
 
----
-Created from the codebase files in this workspace. If you want, I can:
-- add example requests/responses for key API calls,
-- extract a focused frontend checklist for tests, or
-- generate a minimal style guide for components.
-
