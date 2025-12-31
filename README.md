@@ -124,9 +124,3 @@ docker-compose up --build
 
 ## Contact
 - Repository owner and contributors: check project settings or git history for contact details.
-
----
-This README was generated from the repository's code and existing module READMEs. If you want, I can:
-- add example API requests/responses, or
-- generate an OpenAPI spec for the backend from the controllers, or
-- add CI/CD pipeline examples for deployment.
